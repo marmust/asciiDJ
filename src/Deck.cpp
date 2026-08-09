@@ -1,0 +1,237 @@
+#include <Deck.hpp>
+
+namespace Playback
+{
+
+/// @brief ctor
+Deck::Deck() {}
+
+/// @brief dtor
+Deck::~Deck()
+{
+	this->stop();
+	this->unloadTrack();
+	this->isLoaded = false;
+}
+
+/// @brief helper to copy all the deck's modifiers into the track struct ridealong section
+void Deck::syncModifiersToTrack()
+{
+	this->loadedTrack.playbackSpeed = static_cast<ma_double>(this->playbackSpeed);
+	this->loadedTrack.turntableShift = static_cast<ma_double>(this->turntableShift);
+	this->loadedTrack.volume = static_cast<ma_double>(this->volume);
+}
+
+/// @brief loads an audio file onto the deck, translates into frames in a Track struct
+/// @param std::string fpath the filepath to load
+void Deck::loadTrack(std::string fpath)
+{
+	// setup a temporary miniaudio decoder
+	ma_decoder_config decoderConfig = ma_decoder_config_init(ma_format_f32, 0, 0);
+	ma_decoder decoder;
+
+	if (ma_decoder_init_file(fpath.c_str(), &decoderConfig, &decoder) != MA_SUCCESS)
+		// possibly add a warning system through TUI later
+		return;
+
+	// setup metadata
+	this->loadedTrack.channels = decoder.outputChannels;
+	this->loadedTrack.sampleRate = decoder.outputSampleRate;
+
+	const ma_uint32 CHUNK = 4096;
+
+	// holder for each incoming batch
+	std::vector<float> extractedFrames((size_t)CHUNK * this->loadedTrack.channels);
+
+	// extract all file frames into the clip
+	while (true)
+	{
+		ma_uint64 currentFramesRead = 0;
+		ma_result result = ma_decoder_read_pcm_frames(&decoder, extractedFrames.data(), CHUNK, &currentFramesRead);
+
+		if (currentFramesRead > 0)
+		{
+			this->loadedTrack.frames.insert(this->loadedTrack.frames.end(), extractedFrames.begin(), extractedFrames.begin() +
+										         (size_t)currentFramesRead * this->loadedTrack.channels);
+		}
+
+		if (result != MA_SUCCESS || currentFramesRead < CHUNK)
+			break;
+	}
+
+	this->loadedTrack.frameCount = this->loadedTrack.frames.size() / this->loadedTrack.channels;
+
+	ma_decoder_uninit(&decoder);
+}
+
+/// @brief helper to wipe the loaded track's audio data and metadata (frames, channels, sampleRate, frameCount)
+void Deck::resetTrackMetadata()
+{
+	this->loadedTrack.frames = {};
+	this->loadedTrack.channels = 0;
+	this->loadedTrack.sampleRate = 0;
+	this->loadedTrack.frameCount = 0;
+}
+
+/// @brief resets playback position and modifiers back to their defaults, keeps loaded audio intact
+void Deck::resetTrack()
+{
+	// reset params;
+	this->loadedTrack.cursor = 0;
+	this->playbackSpeed = 1.0;
+	this->turntableShift = 0.0;
+	this->volume = 1.0;
+
+	// push to the active track
+	this->syncModifiersToTrack();
+}
+
+/// @brief unloads the current track and resets metadata
+void Deck::unloadTrack()
+{
+	// unload the audio itself along with resetting all the metadata
+	this->resetTrackMetadata();
+
+	// and reset playback position/modifiers on top of that
+	this->resetTrack();
+}
+
+/// @brief a func to be called upon by the miniaudio's audio thread, reads track and sends a batch to miniaudio
+/// @param idk u asking me?
+void Deck::data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 ma_frameCount)
+{
+	// source of data (track) and dst of data (miniaudio's driver wrapper)
+	Track* track = static_cast<Track*>(pDevice->pUserData);
+	float* out = static_cast<float*>(pOutput);
+
+	// cast everything into c primitives because ts highkey ragebait
+	int frameCount = static_cast<int>(ma_frameCount);
+	long cursor = static_cast<long>(track->cursor);
+	double playbackSpeed = static_cast<double>(track->playbackSpeed);
+	double turntableShift = static_cast<double>(track->turntableShift);
+	ma_uint32 channels = track->channels;
+
+	// fill the requested number of frames into the output
+
+	int currentlyTransferred = 0;
+	double currentSample = (double)cursor; // is double because speed control is analog
+
+	// BuT A fOr LoOp iS tHe CorReCT oNe
+	while (currentlyTransferred < frameCount)
+	{
+		long sampleIndex = (long)currentSample;
+
+		// past end of track: output silence instead of reading out of bounds
+		if (sampleIndex < 0 || (ma_uint64)sampleIndex >= track->frameCount)
+		{
+			for (ma_uint32 ch = 0; ch < channels; ch++)
+				out[currentlyTransferred * channels + ch] = 0.0f;
+		}
+		else
+		{
+			// frames/out are interleaved per channel, so index accordingly
+			for (ma_uint32 ch = 0; ch < channels; ch++)
+				out[currentlyTransferred * channels + ch] = track->frames[(size_t)sampleIndex * channels + ch] * track->volume;
+		}
+
+		// move the cursor according to the settings
+		currentSample += playbackSpeed + turntableShift;
+		currentlyTransferred++;
+	}
+
+	// update the struct to the new cursor positin
+	track->cursor = (ma_uint64)currentSample;
+}
+
+/// @brief function to launch the miniaudio thread and actually play the audio
+void Deck::play()
+{
+	// no-op if already playing
+	if (this->isPlaying && this->isLoaded)
+		return;
+
+	/// config and create the miniaudio device to playback the loaded track
+	ma_device_config deviceConfig = ma_device_config_init(ma_device_type_playback);
+    	deviceConfig.playback.format   = ma_format_f32;
+    	deviceConfig.playback.channels = this->loadedTrack.channels;
+    	deviceConfig.sampleRate        = this->loadedTrack.sampleRate;
+	deviceConfig.dataCallback      = this->data_callback;
+	deviceConfig.pUserData         = &this->loadedTrack;
+
+	// launch failiure checks
+	if (ma_device_init(NULL, &deviceConfig, &this->device) != MA_SUCCESS)
+        	return;
+
+	if (ma_device_start(&this->device) != MA_SUCCESS)
+	{
+	        ma_device_uninit(&this->device);
+	        return;
+	}
+
+	// device now runs the data_callback on its own thread; this call does not block
+	this->isPlaying = true;
+}
+
+/// @brief function to hault the miniaudio player thread if running
+void Deck::stop()
+{
+	// no op if already stopped
+	if (!this->isPlaying && this->isLoaded)
+		return;
+
+	ma_device_uninit(&this->device);
+	this->isPlaying = false;
+
+	// reset the track without unloading the audio
+	this->resetTrack();
+}
+
+/// @brief function to pause a currently playing track (keeps cursor pos and turntable mods)
+void Deck::pause()
+{
+	// no op if already stopped
+	if (!this->isPlaying && this->isLoaded)
+		return;
+
+	ma_device_uninit(&this->device);
+	this->isPlaying = false;
+
+	// DO NOT reset track params so cursor & deck mods stay the same
+}
+
+/// @brief function to unpause and keep playing the loaded track from the position left off when paused
+void Deck::unpause()
+{
+	// no op if already playing
+	if (this->isPlaying && this->isLoaded)
+		return;
+
+	// rebuilds the miniaudio player and starts the thread
+	this->play();
+}
+
+/// @brief setter for the turn table shift (record scratch)
+/// @param double shift new shift
+void Deck::setTurntableShift(double shift)
+{
+	this->turntableShift = shift;
+	this->syncModifiersToTrack();
+}
+
+/// @brief setter for the turn table speed
+/// @param double speed new speed
+void Deck::setPlaybackSpeed(double speed)
+{
+	this->playbackSpeed = speed;
+	this->syncModifiersToTrack();
+}
+
+/// @brief setter for volume (default=1.0)
+/// @param double volume volume to be set
+void Deck::setVolume(double volume)
+{
+	this->volume = volume;
+	this->syncModifiersToTrack();
+}
+
+}
