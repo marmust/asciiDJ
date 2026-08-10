@@ -1,38 +1,22 @@
 #pragma once
 
 #include <Deck.hpp>
+#include <Equalizer.hpp>
 #include <vector>
 
 namespace Playback
 {
 
-struct EQmemory
-{
-	float x1 = 0.0;
-	float x2 = 0.0;
-	float y1 = 0.0;
-	float y2 = 0.0;
-};
-
-struct EQsetup
-{
-	float a1 = 0.0;
-	float a2 = 0.0;
-	float b1 = 0.0;
-	float b2 = 0.0;
-};
-
 struct DeckRidealong
 {
-	// deck instance itself (non-owning, externally owned and kept alive by the caller)
+	// deck and eq instances
 	Deck* deck;
+	Equalizer* eq;
 
 	// everything the mixer needs to control
 	std::atomic<ma_double> volume = 1.0;
-	std::atomic<EQmemory> eqMem;
-	std::atomic<EQsetup> eqSetup;
 
-	DeckRidealong(Deck* deck) : deck(deck) {}
+	DeckRidealong(Deck* deck, Equalizer* eq) : deck(deck), eq(eq) {}
 };
 
 class Mixer
@@ -57,7 +41,7 @@ public:
 	Mixer();
 	~Mixer() = default;
 
-	void addDeck(Deck* newDeck);
+	void addDeck(Deck* newDeck, Equalizer* eq);
 
 	// miniaudio backend
 	static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);

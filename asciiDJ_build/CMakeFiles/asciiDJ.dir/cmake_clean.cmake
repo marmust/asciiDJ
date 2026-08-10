@@ -2,6 +2,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/asciiDJ.dir/link.d"
   "CMakeFiles/asciiDJ.dir/src/Deck.cpp.o"
   "CMakeFiles/asciiDJ.dir/src/Deck.cpp.o.d"
+  "CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o"
+  "CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o.d"
   "CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o"
   "CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o.d"
   "CMakeFiles/asciiDJ.dir/src/main.cpp.o"

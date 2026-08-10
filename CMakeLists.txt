@@ -10,6 +10,7 @@ add_executable(asciiDJ
     src/main.cpp
     src/Deck.cpp
     src/Mixer.cpp
+    src/Equalizer.cpp
     third_party/miniaudio/miniaudio_impl.cpp
 )
 

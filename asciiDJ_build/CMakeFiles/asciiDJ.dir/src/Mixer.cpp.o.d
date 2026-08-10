@@ -175,4 +175,7 @@ CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o: \
  /usr/include/c++/14/bits/basic_ios.tcc \
  /usr/include/c++/14/bits/ostream.tcc /usr/include/c++/14/istream \
  /usr/include/c++/14/bits/istream.tcc \
- /home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio.h
+ /home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio.h \
+ /home/kali/Desktop/asciiDJ/include/Equalizer.hpp \
+ /usr/include/c++/14/mutex /usr/include/c++/14/bits/std_mutex.h \
+ /usr/include/c++/14/bits/unique_lock.h

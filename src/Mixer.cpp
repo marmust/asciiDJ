@@ -7,8 +7,9 @@ namespace Playback
 Mixer::Mixer() {}
 
 /// @brief adds a deck to mix from
-/// @param Deck* newDeck non-owning deck ptr to mix from, caller keeps ownership and must keep it alive
-void Mixer::addDeck(Deck* newDeck)
+/// @param Deck* newDeck non-owning deck ptr to mix from
+/// @param Equalizer* eq externally owned EQ to be applied over that deck
+void Mixer::addDeck(Deck* newDeck, Equalizer* eq)
 {
 	// for now only support audio files with idenical sample rates and chunnel numbers
 	// TODO: currently this disallows adding unloaded decks, and also to swap the track on a deck another guard needs to be
@@ -36,7 +37,7 @@ void Mixer::addDeck(Deck* newDeck)
 	}
 
 	// craft a deck ridealong struct (default init params)
-	this->decks.push_back(std::make_unique<DeckRidealong>(newDeck));
+	this->decks.push_back(std::make_unique<DeckRidealong>(newDeck, eq));
 }
 
 /// @brief func inits a miniaudio device
@@ -101,8 +102,8 @@ void Mixer::data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
 		// mix currentExtracted with the miniaudio output, sample by interleaved sample
 		for (ma_uint32 sampleIdx = 0; sampleIdx < frameCount * channels; sampleIdx++)
 		{
+			(*it)->eq->applyEQ(&currentExtracted[sampleIdx]);
 			out[sampleIdx] += currentExtracted[sampleIdx] * (float)(*it)->volume;
-			// TODO: apply eqs
 		}
 
 		delete[] currentExtracted;
