@@ -1,0 +1,74 @@
+#pragma once
+
+#include <Deck.hpp>
+#include <vector>
+
+namespace Playback
+{
+
+struct EQmemory
+{
+	float x1 = 0.0;
+	float x2 = 0.0;
+	float y1 = 0.0;
+	float y2 = 0.0;
+};
+
+struct EQsetup
+{
+	float a1 = 0.0;
+	float a2 = 0.0;
+	float b1 = 0.0;
+	float b2 = 0.0;
+};
+
+struct DeckRidealong
+{
+	// deck instance itself (non-owning, externally owned and kept alive by the caller)
+	Deck* deck;
+
+	// everything the mixer needs to control
+	std::atomic<ma_double> volume = 1.0;
+	std::atomic<EQmemory> eqMem;
+	std::atomic<EQsetup> eqSetup;
+
+	DeckRidealong(Deck* deck) : deck(deck) {}
+};
+
+class Mixer
+{
+private:
+	// held in a vector, limited to 2 currently
+	std::vector<std::unique_ptr<DeckRidealong>> decks;
+
+	// only supports 2 decks with 1 float
+	double crossfader = 0.0;
+
+        // miniaudio backend
+        ma_device device;
+	bool isPlaying = false;
+
+	// temp for identical track metadata enforcement
+	int allowedSampleRate = 0;
+	int allowedChannelCount = 0;
+
+public:
+	// ctor / dtor
+	Mixer();
+	~Mixer() = default;
+
+	void addDeck(Deck* newDeck);
+
+	// miniaudio backend
+	static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);
+
+	// state controls
+	void play();
+	void stop();
+
+	// external controls
+	void setVolume(double volume, int deckIdx);
+	void setEQ(double level, int freqRangeIdx, int deckIdx);
+};
+
+}

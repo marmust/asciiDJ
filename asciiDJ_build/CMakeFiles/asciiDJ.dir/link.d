@@ -4,6 +4,7 @@ asciiDJ: \
   /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o \
   CMakeFiles/asciiDJ.dir/src/main.cpp.o \
   CMakeFiles/asciiDJ.dir/src/Deck.cpp.o \
+  CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o \
   CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o \
   /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/libdl.a \
   /usr/lib/gcc/x86_64-linux-gnu/14/libstdc++.so \
@@ -43,6 +44,8 @@ asciiDJ: \
 CMakeFiles/asciiDJ.dir/src/main.cpp.o:
 
 CMakeFiles/asciiDJ.dir/src/Deck.cpp.o:
+
+CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o:
 
 CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o:
 

@@ -176,4 +176,5 @@ CMakeFiles/asciiDJ.dir/src/main.cpp.o: \
  /usr/include/c++/14/bits/std_thread.h \
  /usr/include/c++/14/bits/unique_ptr.h \
  /usr/include/c++/14/bits/this_thread_sleep.h \
- /home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio.h
+ /home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio.h \
+ /home/kali/Desktop/asciiDJ/include/Mixer.hpp

@@ -9,6 +9,7 @@ find_package(Threads REQUIRED)
 add_executable(asciiDJ
     src/main.cpp
     src/Deck.cpp
+    src/Mixer.cpp
     third_party/miniaudio/miniaudio_impl.cpp
 )
 

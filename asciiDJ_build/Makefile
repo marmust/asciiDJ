@@ -153,6 +153,30 @@ src/Deck.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Deck.cpp.s
 .PHONY : src/Deck.cpp.s
 
+src/Mixer.o: src/Mixer.cpp.o
+.PHONY : src/Mixer.o
+
+# target to build an object file
+src/Mixer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o
+.PHONY : src/Mixer.cpp.o
+
+src/Mixer.i: src/Mixer.cpp.i
+.PHONY : src/Mixer.i
+
+# target to preprocess a source file
+src/Mixer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Mixer.cpp.i
+.PHONY : src/Mixer.cpp.i
+
+src/Mixer.s: src/Mixer.cpp.s
+.PHONY : src/Mixer.s
+
+# target to generate assembly for a file
+src/Mixer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Mixer.cpp.s
+.PHONY : src/Mixer.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -213,6 +237,9 @@ help:
 	@echo "... src/Deck.o"
 	@echo "... src/Deck.i"
 	@echo "... src/Deck.s"
+	@echo "... src/Mixer.o"
+	@echo "... src/Mixer.i"
+	@echo "... src/Mixer.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

@@ -44,8 +44,6 @@ private:
 	// miniaudio backend
 	ma_device device;
 
-	static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);
-
 	void syncModifiersToTrack();
 	void resetTrackMetadata();
 
@@ -71,6 +69,10 @@ public:
 	// control
 	void setTurntableShift(double shift);
 	void setPlaybackSpeed(double speed);
+
+	// miniaudio comms
+	static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);
+	Track* getLoadedTrack();
 };
 
 }

@@ -60,6 +60,7 @@ void Deck::loadTrack(std::string fpath)
 	}
 
 	this->loadedTrack.frameCount = this->loadedTrack.frames.size() / this->loadedTrack.channels;
+	this->isLoaded = true;
 
 	ma_decoder_uninit(&decoder);
 }
@@ -141,6 +142,16 @@ void Deck::data_callback(ma_device* pDevice, void* pOutput, const void* pInput, 
 
 	// update the struct to the new cursor positin
 	track->cursor = (ma_uint64)currentSample;
+}
+
+/// @brief external accessor to the loaded track struct (used to give back to this instance's callback in the mixer)
+/// @returns Track* to currently loaded track struct (nullptr if unloaded)
+Track* Deck::getLoadedTrack()
+{
+	if (!isLoaded)
+		return nullptr;
+
+	return &this->loadedTrack;
 }
 
 /// @brief function to launch the miniaudio thread and actually play the audio

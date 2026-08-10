@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/kali/Desktop/asciiDJ/src/Deck.cpp" "CMakeFiles/asciiDJ.dir/src/Deck.cpp.o" "gcc" "CMakeFiles/asciiDJ.dir/src/Deck.cpp.o.d"
+  "/home/kali/Desktop/asciiDJ/src/Mixer.cpp" "CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o" "gcc" "CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o.d"
   "/home/kali/Desktop/asciiDJ/src/main.cpp" "CMakeFiles/asciiDJ.dir/src/main.cpp.o" "gcc" "CMakeFiles/asciiDJ.dir/src/main.cpp.o.d"
   "/home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio_impl.cpp" "CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o" "gcc" "CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o.d"
   "" "asciiDJ" "gcc" "CMakeFiles/asciiDJ.dir/link.d"
