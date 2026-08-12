@@ -177,6 +177,54 @@ src/Equalizer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.s
 .PHONY : src/Equalizer.cpp.s
 
+src/InputInterpreter.o: src/InputInterpreter.cpp.o
+.PHONY : src/InputInterpreter.o
+
+# target to build an object file
+src/InputInterpreter.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o
+.PHONY : src/InputInterpreter.cpp.o
+
+src/InputInterpreter.i: src/InputInterpreter.cpp.i
+.PHONY : src/InputInterpreter.i
+
+# target to preprocess a source file
+src/InputInterpreter.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.i
+.PHONY : src/InputInterpreter.cpp.i
+
+src/InputInterpreter.s: src/InputInterpreter.cpp.s
+.PHONY : src/InputInterpreter.s
+
+# target to generate assembly for a file
+src/InputInterpreter.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.s
+.PHONY : src/InputInterpreter.cpp.s
+
+src/InputReader.o: src/InputReader.cpp.o
+.PHONY : src/InputReader.o
+
+# target to build an object file
+src/InputReader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o
+.PHONY : src/InputReader.cpp.o
+
+src/InputReader.i: src/InputReader.cpp.i
+.PHONY : src/InputReader.i
+
+# target to preprocess a source file
+src/InputReader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/InputReader.cpp.i
+.PHONY : src/InputReader.cpp.i
+
+src/InputReader.s: src/InputReader.cpp.s
+.PHONY : src/InputReader.s
+
+# target to generate assembly for a file
+src/InputReader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/InputReader.cpp.s
+.PHONY : src/InputReader.cpp.s
+
 src/Mixer.o: src/Mixer.cpp.o
 .PHONY : src/Mixer.o
 
@@ -264,6 +312,12 @@ help:
 	@echo "... src/Equalizer.o"
 	@echo "... src/Equalizer.i"
 	@echo "... src/Equalizer.s"
+	@echo "... src/InputInterpreter.o"
+	@echo "... src/InputInterpreter.i"
+	@echo "... src/InputInterpreter.s"
+	@echo "... src/InputReader.o"
+	@echo "... src/InputReader.i"
+	@echo "... src/InputReader.s"
 	@echo "... src/Mixer.o"
 	@echo "... src/Mixer.i"
 	@echo "... src/Mixer.s"

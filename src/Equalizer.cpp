@@ -103,7 +103,6 @@ void Equalizer::addBand(float freq, float q, float gainDB)
 	this->bands.push_back(computedBand);
 }
 
-
 /// @brief changes an existing band in the eq
 /// @param int bandIdx which band to change (0 - last added)
 /// @param float freq frequency to work at
@@ -121,6 +120,23 @@ void Equalizer::changeBand(int bandIdx, float freq, float q, float gainDB)
 	EQparams computedBand = this->computeIIRparams(this->sampleRate, freq, q, gainDB);
 
 	this->bands[bandIdx] = computedBand;
+}
+
+/// @brief delete one of the active bands in the EQ
+/// @param int bandIdx which band to delete by idx (last added = 0)
+void Equalizer::deleteBand(int bandIdx)
+{
+	// handle range
+	if (bandIdx < 0 || bandIdx >= this->bands.size())
+		return;
+
+	this->bands.erase(this->bands.begin() + bandIdx);
+}
+
+/// @brief deletes all bands from the EQ
+void Equalizer::resetEQ()
+{
+	this->bands.clear();
 }
 
 }

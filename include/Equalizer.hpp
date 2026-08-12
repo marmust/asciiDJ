@@ -50,8 +50,11 @@ public:
 	void applyEQ(float* sample);
 
 	void reportSampleRate(int sampleRate);
+
 	void addBand(float freq, float q, float gainDB);
 	void changeBand(int bandIdx, float freq, float q, float gainDB);
+	void deleteBand(int bandIdx);
+	void resetEQ();
 };
 
 }

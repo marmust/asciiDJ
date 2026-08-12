@@ -9,7 +9,7 @@ Deck::Deck() {}
 /// @brief dtor
 Deck::~Deck()
 {
-	this->stop();
+	this->stopStandalone();
 	this->unloadTrack();
 	this->isLoaded = false;
 }
@@ -82,6 +82,7 @@ void Deck::resetTrack()
 	this->playbackSpeed = 1.0;
 	this->turntableShift = 0.0;
 	this->volume = 1.0;
+	this->isPaused = false;
 
 	// push to the active track
 	this->syncModifiersToTrack();
@@ -155,10 +156,10 @@ Track* Deck::getLoadedTrack()
 }
 
 /// @brief function to launch the miniaudio thread and actually play the audio
-void Deck::play()
+void Deck::playStandalone()
 {
 	// no-op if already playing
-	if (this->isPlaying && this->isLoaded)
+	if (this->isStandalonePlaying && this->isLoaded)
 		return;
 
 	/// config and create the miniaudio device to playback the loaded track
@@ -180,32 +181,38 @@ void Deck::play()
 	}
 
 	// device now runs the data_callback on its own thread; this call does not block
-	this->isPlaying = true;
+	this->isStandalonePlaying = true;
 }
 
 /// @brief function to hault the miniaudio player thread if running
-void Deck::stop()
+void Deck::stopStandalone()
 {
-	// no op if already stopped
-	if (!this->isPlaying && this->isLoaded)
+	// no op if already stopped (and if never started, there is no device to uninit)
+	if (!this->isStandalonePlaying)
 		return;
 
 	ma_device_uninit(&this->device);
-	this->isPlaying = false;
+	this->isStandalonePlaying = false;
 
 	// reset the track without unloading the audio
 	this->resetTrack();
 }
 
-/// @brief function to pause a currently playing track (keeps cursor pos and turntable mods)
+/// @brief function to pause a currently playing track (keeps cursor pos and turntable mods), independent of
+/// whether the deck's audio is being pulled by its own standalone device or by a mixer
 void Deck::pause()
 {
-	// no op if already stopped
-	if (!this->isPlaying && this->isLoaded)
+	// no op if already paused
+	if (this->isPaused)
 		return;
 
-	ma_device_uninit(&this->device);
-	this->isPlaying = false;
+	// freeze cursor advancement entirely (both speed and turntable shift feed the cursor), remember both for unpause
+	this->previousPlaybackSpeed = this->playbackSpeed;
+	this->previousTurntableShift = this->turntableShift;
+	this->playbackSpeed = 0.0;
+	this->turntableShift = 0.0;
+	this->syncModifiersToTrack();
+	this->isPaused = true;
 
 	// DO NOT reset track params so cursor & deck mods stay the same
 }
@@ -213,12 +220,15 @@ void Deck::pause()
 /// @brief function to unpause and keep playing the loaded track from the position left off when paused
 void Deck::unpause()
 {
-	// no op if already playing
-	if (this->isPlaying && this->isLoaded)
+	// no op if not paused
+	if (!this->isPaused)
 		return;
 
-	// rebuilds the miniaudio player and starts the thread
-	this->play();
+	// restore the playback speed and turntable shift to whatever they were before the pause
+	this->playbackSpeed = this->previousPlaybackSpeed;
+	this->turntableShift = this->previousTurntableShift;
+	this->syncModifiersToTrack();
+	this->isPaused = false;
 }
 
 /// @brief setter for the turn table shift (record scratch)
@@ -239,7 +249,7 @@ void Deck::setPlaybackSpeed(double speed)
 
 /// @brief setter for volume (default=1.0)
 /// @param double volume volume to be set
-void Deck::setVolume(double volume)
+void Deck::setStandaloneVolume(double volume)
 {
 	this->volume = volume;
 	this->syncModifiersToTrack();

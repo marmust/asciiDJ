@@ -128,10 +128,38 @@ CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kali/Desktop/asciiDJ/src/Equalizer.cpp -o CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.s
 
+CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o: CMakeFiles/asciiDJ.dir/flags.make
+CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o: /home/kali/Desktop/asciiDJ/src/InputReader.cpp
+CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o: CMakeFiles/asciiDJ.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o -MF CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o.d -o CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o -c /home/kali/Desktop/asciiDJ/src/InputReader.cpp
+
+CMakeFiles/asciiDJ.dir/src/InputReader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/asciiDJ.dir/src/InputReader.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kali/Desktop/asciiDJ/src/InputReader.cpp > CMakeFiles/asciiDJ.dir/src/InputReader.cpp.i
+
+CMakeFiles/asciiDJ.dir/src/InputReader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/asciiDJ.dir/src/InputReader.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kali/Desktop/asciiDJ/src/InputReader.cpp -o CMakeFiles/asciiDJ.dir/src/InputReader.cpp.s
+
+CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o: CMakeFiles/asciiDJ.dir/flags.make
+CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o: /home/kali/Desktop/asciiDJ/src/InputInterpreter.cpp
+CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o: CMakeFiles/asciiDJ.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o -MF CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o.d -o CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o -c /home/kali/Desktop/asciiDJ/src/InputInterpreter.cpp
+
+CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kali/Desktop/asciiDJ/src/InputInterpreter.cpp > CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.i
+
+CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kali/Desktop/asciiDJ/src/InputInterpreter.cpp -o CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.s
+
 CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o: CMakeFiles/asciiDJ.dir/flags.make
 CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o: /home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio_impl.cpp
 CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o: CMakeFiles/asciiDJ.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o -MF CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o.d -o CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o -c /home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio_impl.cpp
 
 CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.i: cmake_force
@@ -148,6 +176,8 @@ asciiDJ_OBJECTS = \
 "CMakeFiles/asciiDJ.dir/src/Deck.cpp.o" \
 "CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o" \
 "CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o" \
+"CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o" \
+"CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o" \
 "CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o"
 
 # External object files for target asciiDJ
@@ -157,11 +187,14 @@ asciiDJ: CMakeFiles/asciiDJ.dir/src/main.cpp.o
 asciiDJ: CMakeFiles/asciiDJ.dir/src/Deck.cpp.o
 asciiDJ: CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o
 asciiDJ: CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o
+asciiDJ: CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o
+asciiDJ: CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o
 asciiDJ: CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o
 asciiDJ: CMakeFiles/asciiDJ.dir/build.make
 asciiDJ: CMakeFiles/asciiDJ.dir/compiler_depend.ts
+asciiDJ: /usr/lib/x86_64-linux-gnu/libX11.so
 asciiDJ: CMakeFiles/asciiDJ.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable asciiDJ"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable asciiDJ"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/asciiDJ.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

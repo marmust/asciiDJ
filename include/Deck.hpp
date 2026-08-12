@@ -34,11 +34,14 @@ private:
 	// track frame array
 	Track loadedTrack;
 	bool isLoaded = false;
-	bool isPlaying = false;
+	bool isStandalonePlaying = false;
+	bool isPaused = false;
 
 	// track progress and modifiers
 	std::atomic<ma_double> playbackSpeed = 1.0;
+	double previousPlaybackSpeed = 1.0;
 	std::atomic<ma_double> turntableShift = 0.0;
+	double previousTurntableShift = 0.0;
 	std::atomic<ma_double> volume = 1.0;
 
 	// miniaudio backend
@@ -58,13 +61,13 @@ public:
 
 	void resetTrack();
 
-	void play();
-	void stop();
+	void playStandalone();
+	void stopStandalone();
 	void pause();
 	void unpause();
 
 	// temp, should be on the mixer
-	void setVolume(double volume);
+	void setStandaloneVolume(double volume);
 
 	// control
 	void setTurntableShift(double shift);

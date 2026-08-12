@@ -1,15 +1,10 @@
-asciiDJ: \
+asciiDJ_slider_test: \
   /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o \
   /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o \
   /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o \
-  CMakeFiles/asciiDJ.dir/src/main.cpp.o \
-  CMakeFiles/asciiDJ.dir/src/Deck.cpp.o \
-  CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o \
-  CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o \
-  CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o \
-  CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o \
-  CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o \
-  /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/libdl.a \
+  CMakeFiles/asciiDJ_slider_test.dir/src/slider_test_main.cpp.o \
+  CMakeFiles/asciiDJ_slider_test.dir/src/InputReader.cpp.o \
+  CMakeFiles/asciiDJ_slider_test.dir/src/InputInterpreter.cpp.o \
   /usr/lib/x86_64-linux-gnu/libX11.so \
   /usr/lib/gcc/x86_64-linux-gnu/14/libstdc++.so \
   /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/libm.so \
@@ -48,21 +43,11 @@ asciiDJ: \
 
 /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o:
 
-CMakeFiles/asciiDJ.dir/src/main.cpp.o:
+CMakeFiles/asciiDJ_slider_test.dir/src/slider_test_main.cpp.o:
 
-CMakeFiles/asciiDJ.dir/src/Deck.cpp.o:
+CMakeFiles/asciiDJ_slider_test.dir/src/InputReader.cpp.o:
 
-CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o:
-
-CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o:
-
-CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o:
-
-CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o:
-
-CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o:
-
-/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/libdl.a:
+CMakeFiles/asciiDJ_slider_test.dir/src/InputInterpreter.cpp.o:
 
 /usr/lib/x86_64-linux-gnu/libX11.so:
 
