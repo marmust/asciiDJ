@@ -17,9 +17,9 @@ Deck::~Deck()
 /// @brief helper to copy all the deck's modifiers into the track struct ridealong section
 void Deck::syncModifiersToTrack()
 {
-	this->loadedTrack.playbackSpeed = static_cast<ma_double>(this->playbackSpeed);
-	this->loadedTrack.turntableShift = static_cast<ma_double>(this->turntableShift);
-	this->loadedTrack.volume = static_cast<ma_double>(this->volume);
+	this->loadedTrack.params.playbackSpeed = static_cast<ma_double>(this->deckParams.playbackSpeed);
+	this->loadedTrack.params.turntableShift = static_cast<ma_double>(this->deckParams.turntableShift);
+	this->loadedTrack.params.volume = static_cast<ma_double>(this->deckParams.volume);
 }
 
 /// @brief loads an audio file onto the deck, translates into frames in a Track struct
@@ -79,9 +79,9 @@ void Deck::resetTrack()
 {
 	// reset params;
 	this->loadedTrack.cursor = 0;
-	this->playbackSpeed = 1.0;
-	this->turntableShift = 0.0;
-	this->volume = 1.0;
+	this->deckParams.playbackSpeed = 1.0;
+	this->deckParams.turntableShift = 0.0;
+	this->deckParams.volume = 1.0;
 	this->isPaused = false;
 
 	// push to the active track
@@ -100,49 +100,61 @@ void Deck::unloadTrack()
 
 /// @brief a func to be called upon by the miniaudio's audio thread, reads track and sends a batch to miniaudio
 /// @param idk u asking me?
-void Deck::data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 ma_frameCount)
+void Deck::data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
 	// source of data (track) and dst of data (miniaudio's driver wrapper)
 	Track* track = static_cast<Track*>(pDevice->pUserData);
 	float* out = static_cast<float*>(pOutput);
 
-	// cast everything into c primitives because ts highkey ragebait
-	int frameCount = static_cast<int>(ma_frameCount);
-	long cursor = static_cast<long>(track->cursor);
-	double playbackSpeed = static_cast<double>(track->playbackSpeed);
-	double turntableShift = static_cast<double>(track->turntableShift);
-	ma_uint32 channels = track->channels;
-
 	// fill the requested number of frames into the output
 
 	int currentlyTransferred = 0;
-	double currentSample = (double)cursor; // is double because speed control is analog
+	double currentSample = (double)track->cursor; // is double because speed control is analog
+
+	// snapshot of the live params at the start of this callback, DeckParams' copy ctor
+	// handles the atomic members (a plain brace-init no longer works now that it has one)
+	DeckParams interpolationParams = track->params;
 
 	// BuT A fOr LoOp iS tHe CorReCT oNe
 	while (currentlyTransferred < frameCount)
 	{
+		// linear input interpolation
+		double lerpProgress = (double)currentlyTransferred / (double)frameCount;
+
+		interpolationParams.playbackSpeed = track->trailingParams.playbackSpeed * (1.0 - lerpProgress) +
+						     track->params.playbackSpeed * lerpProgress;
+
+		interpolationParams.turntableShift = track->trailingParams.turntableShift * (1.0 - lerpProgress) +
+						      track->params.turntableShift * lerpProgress;
+
+		interpolationParams.volume = track->trailingParams.volume * (1.0 - lerpProgress) +
+					      track->params.volume * lerpProgress;
+
 		long sampleIndex = (long)currentSample;
 
 		// past end of track: output silence instead of reading out of bounds
 		if (sampleIndex < 0 || (ma_uint64)sampleIndex >= track->frameCount)
 		{
-			for (ma_uint32 ch = 0; ch < channels; ch++)
-				out[currentlyTransferred * channels + ch] = 0.0f;
+			for (ma_uint32 ch = 0; ch < track->channels; ch++)
+				out[currentlyTransferred * track->channels + ch] = 0.0f;
 		}
 		else
 		{
 			// frames/out are interleaved per channel, so index accordingly
-			for (ma_uint32 ch = 0; ch < channels; ch++)
-				out[currentlyTransferred * channels + ch] = track->frames[(size_t)sampleIndex * channels + ch] * track->volume;
+			for (ma_uint32 ch = 0; ch < track->channels; ch++)
+				out[currentlyTransferred * track->channels + ch] = track->frames[(size_t)sampleIndex * track->channels + ch] * interpolationParams.volume;
 		}
 
 		// move the cursor according to the settings
-		currentSample += playbackSpeed + turntableShift;
+		currentSample += interpolationParams.playbackSpeed + interpolationParams.turntableShift;
 		currentlyTransferred++;
 	}
 
-	// update the struct to the new cursor positin
+	// update the struct to the new cursor position
 	track->cursor = (ma_uint64)currentSample;
+
+	// update interpolation for next cycle
+	track->trailingParams = track->params;
 }
 
 /// @brief external accessor to the loaded track struct (used to give back to this instance's callback in the mixer)
@@ -169,6 +181,8 @@ void Deck::playStandalone()
     	deviceConfig.sampleRate        = this->loadedTrack.sampleRate;
 	deviceConfig.dataCallback      = this->data_callback;
 	deviceConfig.pUserData         = &this->loadedTrack;
+	// default low-latency period is ~10ms; ask for ~10x faster callbacks (a hint - the backend may clamp it)
+	deviceConfig.periodSizeInMilliseconds = 1;
 
 	// launch failiure checks
 	if (ma_device_init(NULL, &deviceConfig, &this->device) != MA_SUCCESS)
@@ -207,10 +221,10 @@ void Deck::pause()
 		return;
 
 	// freeze cursor advancement entirely (both speed and turntable shift feed the cursor), remember both for unpause
-	this->previousPlaybackSpeed = this->playbackSpeed;
-	this->previousTurntableShift = this->turntableShift;
-	this->playbackSpeed = 0.0;
-	this->turntableShift = 0.0;
+	this->previousPlaybackSpeed = this->deckParams.playbackSpeed;
+	this->previousTurntableShift = this->deckParams.turntableShift;
+	this->deckParams.playbackSpeed = 0.0;
+	this->deckParams.turntableShift = 0.0;
 	this->syncModifiersToTrack();
 	this->isPaused = true;
 
@@ -225,8 +239,8 @@ void Deck::unpause()
 		return;
 
 	// restore the playback speed and turntable shift to whatever they were before the pause
-	this->playbackSpeed = this->previousPlaybackSpeed;
-	this->turntableShift = this->previousTurntableShift;
+	this->deckParams.playbackSpeed = this->previousPlaybackSpeed;
+	this->deckParams.turntableShift = this->previousTurntableShift;
 	this->syncModifiersToTrack();
 	this->isPaused = false;
 }
@@ -235,7 +249,7 @@ void Deck::unpause()
 /// @param double shift new shift
 void Deck::setTurntableShift(double shift)
 {
-	this->turntableShift = shift;
+	this->deckParams.turntableShift = shift;
 	this->syncModifiersToTrack();
 }
 
@@ -243,7 +257,7 @@ void Deck::setTurntableShift(double shift)
 /// @param double speed new speed
 void Deck::setPlaybackSpeed(double speed)
 {
-	this->playbackSpeed = speed;
+	this->deckParams.playbackSpeed = speed;
 	this->syncModifiersToTrack();
 }
 
@@ -251,7 +265,7 @@ void Deck::setPlaybackSpeed(double speed)
 /// @param double volume volume to be set
 void Deck::setStandaloneVolume(double volume)
 {
-	this->volume = volume;
+	this->deckParams.volume = volume;
 	this->syncModifiersToTrack();
 }
 

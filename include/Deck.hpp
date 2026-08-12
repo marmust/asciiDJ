@@ -12,6 +12,31 @@
 namespace Playback
 {
 
+struct DeckParams
+{
+	std::atomic<ma_double> playbackSpeed = 1.0;
+	std::atomic<ma_double> turntableShift = 0.0;
+	std::atomic<ma_double> volume = 1.0;
+
+	// std::atomic itself is neither copyable nor assignable, so DeckParams needs these spelled
+	// out by hand (loading/storing the underlying value rather than copying the atomics themselves)
+	DeckParams() = default;
+
+	DeckParams(const DeckParams& other)
+		: playbackSpeed(other.playbackSpeed.load()),
+		  turntableShift(other.turntableShift.load()),
+		  volume(other.volume.load())
+	{}
+
+	DeckParams& operator=(const DeckParams& other)
+	{
+		this->playbackSpeed.store(other.playbackSpeed.load());
+		this->turntableShift.store(other.turntableShift.load());
+		this->volume.store(other.volume.load());
+		return *this;
+	}
+};
+
 struct Track
 {
 	// track data / metadata
@@ -22,10 +47,10 @@ struct Track
 	std::atomic<ma_uint64> cursor = 0;
 
 	// ride along because we can only access this struct in the data_callback()
-	std::atomic<ma_double> playbackSpeed = 1.0;
-	std::atomic<ma_double> turntableShift = 0.0;
+	DeckParams params;
 
-	std::atomic<ma_double> volume = 1.0;
+	// for input interpolation
+	DeckParams trailingParams;
 };
 
 class Deck
@@ -38,11 +63,11 @@ private:
 	bool isPaused = false;
 
 	// track progress and modifiers
-	std::atomic<ma_double> playbackSpeed = 1.0;
+	DeckParams deckParams;
+
+	// for pausing / unpausing
 	double previousPlaybackSpeed = 1.0;
-	std::atomic<ma_double> turntableShift = 0.0;
 	double previousTurntableShift = 0.0;
-	std::atomic<ma_double> volume = 1.0;
 
 	// miniaudio backend
 	ma_device device;

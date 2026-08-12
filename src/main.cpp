@@ -39,9 +39,9 @@ int main()
 	//mixer.addDeck(&deck2, &eq2);
 
 	g_deck1 = &deck1;
-	interpreter.addInput('d', 'a', 0.0, 0.1, 0.1, -2.0, 2.0, onScratchMove);
+	interpreter.addInput('d', 'a', 0.0, 0.001, 0.999, -2.0, 2.0, onScratchMove);
 	interpreter.startRefreshThread();
-
+	deck1.pause();
 	mixer.play();
 
 	std::cout << "playing simultaniously..." << std::endl;

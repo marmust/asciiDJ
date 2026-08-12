@@ -167,8 +167,8 @@ void InputInterpreter::moverUpdateLoop(InputInterpreter* self)
 		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - cycleStart);
 		auto sleepFor = std::chrono::milliseconds(Input::refreshRateMS) - elapsed;
 
-		if (sleepFor > std::chrono::milliseconds::zero())
-			std::this_thread::sleep_for(sleepFor);
+//		if (sleepFor > std::chrono::milliseconds::zero())
+//			std::this_thread::sleep_for(sleepFor);
 	}
 }
 

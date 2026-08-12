@@ -54,6 +54,8 @@ void Mixer::play()
         deviceConfig.sampleRate        = this->allowedSampleRate;
         deviceConfig.dataCallback      = this->data_callback;
         deviceConfig.pUserData         = &this->decks;
+        // default low-latency period is ~10ms; ask for ~10x faster callbacks (a hint - the backend may clamp it)
+        deviceConfig.periodSizeInMilliseconds = 1;
 
         // launch failiure checks
         if (ma_device_init(NULL, &deviceConfig, &this->device) != MA_SUCCESS)
