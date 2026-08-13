@@ -8,6 +8,7 @@ asciiDJ: \
   CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o \
   CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o \
   CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o \
+  CMakeFiles/asciiDJ.dir/src/CentralController.cpp.o \
   CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o \
   /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/libdl.a \
   /usr/lib/x86_64-linux-gnu/libX11.so \
@@ -59,6 +60,8 @@ CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o:
 CMakeFiles/asciiDJ.dir/src/InputReader.cpp.o:
 
 CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o:
+
+CMakeFiles/asciiDJ.dir/src/CentralController.cpp.o:
 
 CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o:
 

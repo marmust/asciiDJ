@@ -101,6 +101,10 @@ public:
 	// miniaudio comms
 	static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);
 	Track* getLoadedTrack();
+
+	// state accessors
+	bool getIsPaused() const;
+	bool getIsStandalonePlaying() const;
 };
 
 }

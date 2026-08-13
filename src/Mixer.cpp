@@ -53,7 +53,10 @@ void Mixer::play()
         deviceConfig.playback.channels = this->allowedChannelCount;
         deviceConfig.sampleRate        = this->allowedSampleRate;
         deviceConfig.dataCallback      = this->data_callback;
-        deviceConfig.pUserData         = &this->decks;
+        // pack pointers to decks and crossfader together, just for this handoff (pUserData is a
+        // single void*), unpacked back out at the top of data_callback
+        this->callbackData = { &this->decks, &this->crossfader };
+        deviceConfig.pUserData         = &this->callbackData;
         // default low-latency period is ~10ms; ask for ~10x faster callbacks (a hint - the backend may clamp it)
         deviceConfig.periodSizeInMilliseconds = 1;
 
@@ -77,7 +80,15 @@ void Mixer::data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
 {
 	// dst of data (miniaudio's driver wrapper)
 	float* out = static_cast<float*>(pOutput);
-	std::vector<std::unique_ptr<DeckRidealong>>* deckvec = static_cast<std::vector<std::unique_ptr<DeckRidealong>>*>(pDevice->pUserData);
+
+	// unpack the decks vector and crossfader value handed over by play()
+	auto* callbackData = static_cast<std::pair<std::vector<std::unique_ptr<DeckRidealong>>*, double*>*>(pDevice->pUserData);
+	std::vector<std::unique_ptr<DeckRidealong>>* deckvec = callbackData->first;
+	double crossfader = *callbackData->second;
+	double normedXfader = (crossfader + 1.0) / 2.0;
+
+	// used to only activate the crossfader on the even / odd tracks
+	int currentTrack = 0;
 
 	// request from each deck his share of audio (decks' callback), and mix according to mixer params
 	for (auto it = deckvec->begin(); it != deckvec->end(); it++)
@@ -88,9 +99,7 @@ void Mixer::data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
 		if (!deckTrack)
 			continue;
 
-		// create a dummy pDevice* (the deck data_callback() only needs the track* from the pDevice's->pUserData)
-		// NOTE: must not call ma_device_init here - that opens a real backend stream and is not safe to do
-		// from inside another device's audio callback thread (causes reentrant backend calls / heap corruption)
+		// create a dummy device only to carry over the deckTrack
 		ma_device dummyDevice{};
 		dummyDevice.pUserData = deckTrack;
 
@@ -105,10 +114,18 @@ void Mixer::data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
 		for (ma_uint32 sampleIdx = 0; sampleIdx < frameCount * channels; sampleIdx++)
 		{
 			(*it)->eq->applyEQ(&currentExtracted[sampleIdx]);
-			out[sampleIdx] += currentExtracted[sampleIdx] * (float)(*it)->volume;
+
+			// apply volume
+			currentExtracted[sampleIdx] *= (float)(*it)->volume;
+
+			// apply crossfader as volume (invert on odd decks)
+			currentExtracted[sampleIdx] *= currentTrack % 2 == 0 ? 1 - normedXfader : normedXfader;
+
+			out[sampleIdx] += currentExtracted[sampleIdx];
 		}
 
 		delete[] currentExtracted;
+		currentTrack++;
 	}
 }
 
@@ -127,6 +144,29 @@ void Mixer::stop()
 	{
 		(*it)->deck->resetTrack();
 	}
+}
+
+/// @brief setter for an individual deck's volume
+/// @param double volume volume to be set [0, 1]
+/// @param int deckIdx which deck to set the volume for (0 = first added to mixer)
+void Mixer::setVolume(double volume, int deckIdx)
+{
+	// no op if idx out of range
+	if (deckIdx < 0 || deckIdx >= decks.size())
+		return;
+
+	this->decks[deckIdx]->volume = volume;
+}
+
+/// @brief setter for an individual deck's volume
+/// @param double volume volume to be set [0, 1]
+/// @param int deckIdx which deck to set the volume for (0 = first added to mixer)
+void Mixer::setXfader(double xfaderPos)
+{
+	// clamp to supported range
+	xfaderPos = std::clamp(xfaderPos, -1.0, 1.0);
+
+	this->crossfader = xfaderPos;
 }
 
 }

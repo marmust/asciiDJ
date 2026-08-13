@@ -14,6 +14,7 @@ add_executable(asciiDJ
     src/Equalizer.cpp
     src/InputReader.cpp
     src/InputInterpreter.cpp
+    src/CentralController.cpp
     third_party/miniaudio/miniaudio_impl.cpp
 )
 

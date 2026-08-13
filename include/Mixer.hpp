@@ -3,6 +3,8 @@
 #include <Deck.hpp>
 #include <Equalizer.hpp>
 #include <vector>
+#include <utility>
+#include <algorithm>
 
 namespace Playback
 {
@@ -25,8 +27,10 @@ private:
 	// held in a vector, limited to 2 currently
 	std::vector<std::unique_ptr<DeckRidealong>> decks;
 
-	// only supports 2 decks with 1 float
+	// works on even / odd decks, -1 = 0th (usually left) deck plays
 	double crossfader = 0.0;
+
+	std::pair<std::vector<std::unique_ptr<DeckRidealong>>*, double*> callbackData;
 
         // miniaudio backend
         ma_device device;
@@ -52,7 +56,7 @@ public:
 
 	// external controls
 	void setVolume(double volume, int deckIdx);
-	void setEQ(double level, int freqRangeIdx, int deckIdx);
+	void setXfader(double xfaderPos);
 };
 
 }

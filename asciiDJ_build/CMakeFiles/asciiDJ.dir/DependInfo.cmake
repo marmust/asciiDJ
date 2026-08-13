@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/kali/Desktop/asciiDJ/src/CentralController.cpp" "CMakeFiles/asciiDJ.dir/src/CentralController.cpp.o" "gcc" "CMakeFiles/asciiDJ.dir/src/CentralController.cpp.o.d"
   "/home/kali/Desktop/asciiDJ/src/Deck.cpp" "CMakeFiles/asciiDJ.dir/src/Deck.cpp.o" "gcc" "CMakeFiles/asciiDJ.dir/src/Deck.cpp.o.d"
   "/home/kali/Desktop/asciiDJ/src/Equalizer.cpp" "CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o" "gcc" "CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o.d"
   "/home/kali/Desktop/asciiDJ/src/InputInterpreter.cpp" "CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o" "gcc" "CMakeFiles/asciiDJ.dir/src/InputInterpreter.cpp.o.d"

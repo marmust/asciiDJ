@@ -129,6 +129,30 @@ asciiDJ/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/build
 .PHONY : asciiDJ/fast
 
+src/CentralController.o: src/CentralController.cpp.o
+.PHONY : src/CentralController.o
+
+# target to build an object file
+src/CentralController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/CentralController.cpp.o
+.PHONY : src/CentralController.cpp.o
+
+src/CentralController.i: src/CentralController.cpp.i
+.PHONY : src/CentralController.i
+
+# target to preprocess a source file
+src/CentralController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/CentralController.cpp.i
+.PHONY : src/CentralController.cpp.i
+
+src/CentralController.s: src/CentralController.cpp.s
+.PHONY : src/CentralController.s
+
+# target to generate assembly for a file
+src/CentralController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/CentralController.cpp.s
+.PHONY : src/CentralController.cpp.s
+
 src/Deck.o: src/Deck.cpp.o
 .PHONY : src/Deck.o
 
@@ -306,6 +330,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... asciiDJ"
+	@echo "... src/CentralController.o"
+	@echo "... src/CentralController.i"
+	@echo "... src/CentralController.s"
 	@echo "... src/Deck.o"
 	@echo "... src/Deck.i"
 	@echo "... src/Deck.s"

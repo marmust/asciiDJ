@@ -136,6 +136,20 @@ void InputInterpreter::processInput(MomentumMoverInput* input)
 	input->callback(input->value);
 }
 
+/// @brief function to update a given button input based on the report of the iReader and report to input's callback
+/// @param ButtonInput* input input pointer to which input to update / report
+void InputInterpreter::processInput(ButtonInput* input)
+{
+	input->pressed = this->iReader->queryKey(input->activationKey);
+
+	// callback only if the button is PRESSED and not RELEASED and there was a difference between the current and trailing status
+	if (input->pressed && input->pressed != input->lastPressed)
+		input->callback();
+
+	// progress the trailing param
+	input->lastPressed = input->pressed;
+}
+
 /// @brief runs one polling pass over every registered input, updating state and firing callbacks as needed
 void InputInterpreter::updateAllMovers()
 {
@@ -149,6 +163,12 @@ void InputInterpreter::updateAllMovers()
 	{
 		std::lock_guard<std::mutex> lock(this->momentumMoverLocks[currentInputIdx]);
 		this->processInput(&this->momentumMoverInputs[currentInputIdx]);
+	}
+
+	for (int currentInputIdx = 0; currentInputIdx < this->buttonInputs.size(); currentInputIdx++)
+	{
+		std::lock_guard<std::mutex> lock(this->buttonLocks[currentInputIdx]);
+		this->processInput(&this->buttonInputs[currentInputIdx]);
 	}
 }
 
@@ -184,12 +204,6 @@ void InputInterpreter::startRefreshThread()
 void InputInterpreter::stopRefreshThread()
 {
 	this->running = false;
-}
-
-/// @brief manual single-shot poll, see header for usage
-void InputInterpreter::update()
-{
-	this->updateAllMovers();
 }
 
 }

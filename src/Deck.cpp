@@ -167,6 +167,18 @@ Track* Deck::getLoadedTrack()
 	return &this->loadedTrack;
 }
 
+/// @brief external accessor for whether the deck is currently paused
+bool Deck::getIsPaused() const
+{
+	return this->isPaused;
+}
+
+/// @brief external accessor for whether the deck's own standalone device is currently running
+bool Deck::getIsStandalonePlaying() const
+{
+	return this->isStandalonePlaying;
+}
+
 /// @brief function to launch the miniaudio thread and actually play the audio
 void Deck::playStandalone()
 {

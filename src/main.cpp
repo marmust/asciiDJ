@@ -4,15 +4,7 @@
 #include <Equalizer.hpp>
 #include <InputReader.hpp>
 #include <InputInterpreter.hpp>
-
-// addInput's callback is a raw function pointer (void (*)(double)), so it can't capture
-// deck1 as a closure - route it through this file-scope pointer instead
-static Playback::Deck* g_deck1 = nullptr;
-
-static void onScratchMove(double value)
-{
-	g_deck1->setTurntableShift(value);
-}
+#include <CentralController.hpp>
 
 int main()
 {
@@ -36,59 +28,14 @@ int main()
 	eq2.reportSampleRate(deck2.getLoadedTrack()->sampleRate);
 
 	mixer.addDeck(&deck1, &eq1);
-	//mixer.addDeck(&deck2, &eq2);
+	mixer.addDeck(&deck2, &eq2);
 
-	g_deck1 = &deck1;
-	interpreter.addInput('d', 'a', 0.0, 0.001, 0.999, -2.0, 2.0, onScratchMove);
-	interpreter.startRefreshThread();
-	deck1.pause();
-	mixer.play();
+	// wires every control (speed/shift/pause/volume/EQ, both decks) into interpreter itself
+	CommandAndControl::CentralController controller(&deck1, &deck2, &eq1, &eq2, &mixer, &iReader, &interpreter);
 
-	std::cout << "playing simultaniously..." << std::endl;
+	controller.startRun();
 
 	for (int x = 0; x < 999; x++) { std::this_thread::sleep_for(std::chrono::seconds(1)); std::cout << x << std::endl; }
-
-	return 0;
-
-	std::cout << "spinning deck1..." << std::endl;
-
-        for (int x = 0; x <= 150; x++)
-        {
-                deck1.setTurntableShift((double)x / 100.0);
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
-
-	std::this_thread::sleep_for(std::chrono::seconds(3));
-
-        for (int x = 150; x >= 0; x--)
-        {
-                deck1.setTurntableShift((double)x / 100.0);
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
-
-	for (int x = 0; x < 5; x++) { std::this_thread::sleep_for(std::chrono::seconds(1)); std::cout << x << std::endl; }
-
-	std::cout << "lowering highpass..." << std::endl;
-
-	eq1.addBand(700.0, 0.1, 0.0);
-
-	for (int x = 0; x >= -64; x--)
-	{
-		eq1.changeBand(0, 700.0, 0.1, x);
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	}
-
-	for (int x = 0; x < 5; x++) { std::this_thread::sleep_for(std::chrono::seconds(1)); std::cout << x << std::endl; }
-
-	std::cout << "raising highpass..." << std::endl;
-
-	for (int x = -64; x <= 0; x++)
-	{
-		eq1.changeBand(0, 700.0, 0.1, x);
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	}
-
-	for (int x = 0; x < 5; x++) { std::this_thread::sleep_for(std::chrono::seconds(1)); std::cout << x << std::endl; }
 
 	return 0;
 }

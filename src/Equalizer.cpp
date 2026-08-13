@@ -119,6 +119,15 @@ void Equalizer::changeBand(int bandIdx, float freq, float q, float gainDB)
 
 	EQparams computedBand = this->computeIIRparams(this->sampleRate, freq, q, gainDB);
 
+	// keep the existing filter memory - only the coefficients should change, otherwise every
+	// call (which happens on every poll tick while a control is held) wipes the filter's
+	// history and it never accumulates enough state to produce an audible response
+	EQmemory preservedMemory = this->bands[bandIdx];
+	computedBand.x1 = preservedMemory.x1;
+	computedBand.x2 = preservedMemory.x2;
+	computedBand.y1 = preservedMemory.y1;
+	computedBand.y2 = preservedMemory.y2;
+
 	this->bands[bandIdx] = computedBand;
 }
 

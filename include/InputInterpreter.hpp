@@ -55,7 +55,7 @@ struct ButtonInput
 
 	// internal
 	bool pressed;
-	bool pressReported;
+	bool lastPressed;
 };
 
 class InputInterpreter
@@ -108,11 +108,6 @@ public:
 
 	void addInput(char activationKey,
 		      void (*callback)());
-
-	// manual single-shot poll: runs one pass over every registered input, updating state
-	// and firing callbacks as needed. Call this from your own loop (with your own sleep)
-	// until moverUpdateLoop()'s background thread is wired up.
-	void update();
 };
 
 }

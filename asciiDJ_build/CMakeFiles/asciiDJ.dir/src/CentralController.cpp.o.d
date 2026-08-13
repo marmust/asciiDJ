@@ -1,6 +1,7 @@
-CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o: \
- /home/kali/Desktop/asciiDJ/src/Mixer.cpp /usr/include/stdc-predef.h \
- /home/kali/Desktop/asciiDJ/include/Mixer.hpp \
+CMakeFiles/asciiDJ.dir/src/CentralController.cpp.o: \
+ /home/kali/Desktop/asciiDJ/src/CentralController.cpp \
+ /usr/include/stdc-predef.h \
+ /home/kali/Desktop/asciiDJ/include/CentralController.hpp \
  /home/kali/Desktop/asciiDJ/include/Deck.hpp /usr/include/c++/14/vector \
  /usr/include/c++/14/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/c++config.h \
@@ -176,6 +177,7 @@ CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o: \
  /usr/include/c++/14/bits/ostream.tcc /usr/include/c++/14/istream \
  /usr/include/c++/14/bits/istream.tcc \
  /home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio.h \
+ /home/kali/Desktop/asciiDJ/include/Mixer.hpp \
  /home/kali/Desktop/asciiDJ/include/Equalizer.hpp \
  /usr/include/c++/14/mutex /usr/include/c++/14/bits/std_mutex.h \
  /usr/include/c++/14/bits/unique_lock.h /usr/include/c++/14/utility \
@@ -186,4 +188,14 @@ CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o: \
  /usr/include/c++/14/bits/uniform_int_dist.h \
  /usr/include/c++/14/bits/stl_tempbuf.h \
  /usr/include/c++/14/pstl/glue_algorithm_defs.h \
- /usr/include/c++/14/pstl/execution_defs.h
+ /usr/include/c++/14/pstl/execution_defs.h \
+ /home/kali/Desktop/asciiDJ/include/InputReader.hpp \
+ /usr/include/X11/Xlib.h /usr/include/X11/X.h \
+ /usr/include/X11/Xfuncproto.h /usr/include/X11/Xosdefs.h \
+ /usr/include/X11/keysym.h /usr/include/X11/keysymdef.h \
+ /home/kali/Desktop/asciiDJ/include/InputInterpreter.hpp \
+ /usr/include/c++/14/deque /usr/include/c++/14/bits/stl_deque.h \
+ /usr/include/c++/14/bits/deque.tcc \
+ /home/kali/Desktop/asciiDJ/include/InputTuning.hpp \
+ /home/kali/Desktop/asciiDJ/include/InputSchema.hpp \
+ /home/kali/Desktop/asciiDJ/include/EQsetup.hpp
