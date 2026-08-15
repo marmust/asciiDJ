@@ -841,8 +841,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-KTHjd9"
-      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-KTHjd9"
+      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-o0fsPa"
+      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-o0fsPa"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -853,13 +853,13 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-KTHjd9'
+        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-o0fsPa'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_0040a/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_0040a.dir/build.make CMakeFiles/cmTC_0040a.dir/build
-        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-KTHjd9'
-        Building CXX object CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o
-        /usr/bin/c++   -v -o CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e1db5/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_e1db5.dir/build.make CMakeFiles/cmTC_e1db5.dir/build
+        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-o0fsPa'
+        Building CXX object CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o
+        /usr/bin/c++   -v -o CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp
         Using built-in specs.
         COLLECT_GCC=/usr/bin/c++
         OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
@@ -869,8 +869,8 @@ events:
         Thread model: posix
         Supported LTO compression algorithms: zlib zstd
         gcc version 14.3.0 (Debian 14.3.0-5) 
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_0040a.dir/'
-         /usr/libexec/gcc/x86_64-linux-gnu/14/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_0040a.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -o /tmp/cctn8VpQ.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e1db5.dir/'
+         /usr/libexec/gcc/x86_64-linux-gnu/14/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e1db5.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -o /tmp/ccvntxqM.s
         GNU C++17 (Debian 14.3.0-5) version 14.3.0 (x86_64-linux-gnu)
         	compiled by GNU C version 14.3.0, GMP version 6.3.0, MPFR version 4.2.2, MPC version 1.3.1, isl version isl-0.27-GMP
         
@@ -891,14 +891,14 @@ events:
          /usr/include
         End of search list.
         Compiler executable checksum: 9ac80053b6f0a0f10adf507b527307ac
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_0040a.dir/'
-         as -v --64 -o CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o /tmp/cctn8VpQ.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e1db5.dir/'
+         as -v --64 -o CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccvntxqM.s
         GNU assembler version 2.45 (x86_64-linux-gnu) using BFD version (GNU Binutils for Debian) 2.45
         COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/14/:/usr/libexec/gcc/x86_64-linux-gnu/14/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/14/:/usr/lib/gcc/x86_64-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/14/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.'
-        Linking CXX executable cmTC_0040a
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0040a.dir/link.txt --verbose=1
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_e1db5
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e1db5.dir/link.txt --verbose=1
         Using built-in specs.
         COLLECT_GCC=/usr/bin/c++
         COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper
@@ -911,14 +911,14 @@ events:
         gcc version 14.3.0 (Debian 14.3.0-5) 
         COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/14/:/usr/libexec/gcc/x86_64-linux-gnu/14/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/14/:/usr/lib/gcc/x86_64-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/14/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_0040a' '-foffload-options=-l_GCC_m' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_0040a.'
-         /usr/libexec/gcc/x86_64-linux-gnu/14/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/cc8Wpp7o.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_0040a /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. -v CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e1db5' '-foffload-options=-l_GCC_m' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e1db5.'
+         /usr/libexec/gcc/x86_64-linux-gnu/14/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/ccQC9TYg.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_e1db5 /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. -v CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o
         collect2 version 14.3.0
-        /usr/bin/ld -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/cc8Wpp7o.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_0040a /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. -v CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o
+        /usr/bin/ld -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/ccQC9TYg.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_e1db5 /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. -v CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o
         GNU ld (GNU Binutils for Debian) 2.45
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_0040a' '-foffload-options=-l_GCC_m' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_0040a.'
-        /usr/bin/c++  -v -Wl,-v CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_0040a
-        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-KTHjd9'
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e1db5' '-foffload-options=-l_GCC_m' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e1db5.'
+        /usr/bin/c++  -v -Wl,-v CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_e1db5
+        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-o0fsPa'
         
       exitCode: 0
   -
@@ -959,13 +959,13 @@ events:
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
-        ignore line: [Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-KTHjd9']
+        ignore line: [Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-o0fsPa']
         ignore line: []
-        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_0040a/fast]
-        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_0040a.dir/build.make CMakeFiles/cmTC_0040a.dir/build]
-        ignore line: [gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-KTHjd9']
-        ignore line: [Building CXX object CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o]
-        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e1db5/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_e1db5.dir/build.make CMakeFiles/cmTC_e1db5.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-o0fsPa']
+        ignore line: [Building CXX object CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/usr/bin/c++]
         ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
@@ -975,8 +975,8 @@ events:
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib zstd]
         ignore line: [gcc version 14.3.0 (Debian 14.3.0-5) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_0040a.dir/']
-        ignore line: [ /usr/libexec/gcc/x86_64-linux-gnu/14/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_0040a.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -o /tmp/cctn8VpQ.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e1db5.dir/']
+        ignore line: [ /usr/libexec/gcc/x86_64-linux-gnu/14/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e1db5.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -o /tmp/ccvntxqM.s]
         ignore line: [GNU C++17 (Debian 14.3.0-5) version 14.3.0 (x86_64-linux-gnu)]
         ignore line: [	compiled by GNU C version 14.3.0  GMP version 6.3.0  MPFR version 4.2.2  MPC version 1.3.1  isl version isl-0.27-GMP]
         ignore line: []
@@ -997,14 +997,14 @@ events:
         ignore line: [ /usr/include]
         ignore line: [End of search list.]
         ignore line: [Compiler executable checksum: 9ac80053b6f0a0f10adf507b527307ac]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_0040a.dir/']
-        ignore line: [ as -v --64 -o CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o /tmp/cctn8VpQ.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e1db5.dir/']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccvntxqM.s]
         ignore line: [GNU assembler version 2.45 (x86_64-linux-gnu) using BFD version (GNU Binutils for Debian) 2.45]
         ignore line: [COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/14/:/usr/libexec/gcc/x86_64-linux-gnu/14/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/14/:/usr/lib/gcc/x86_64-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/14/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.']
-        ignore line: [Linking CXX executable cmTC_0040a]
-        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0040a.dir/link.txt --verbose=1]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_e1db5]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e1db5.dir/link.txt --verbose=1]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/usr/bin/c++]
         ignore line: [COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper]
@@ -1017,13 +1017,13 @@ events:
         ignore line: [gcc version 14.3.0 (Debian 14.3.0-5) ]
         ignore line: [COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/14/:/usr/libexec/gcc/x86_64-linux-gnu/14/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/14/:/usr/lib/gcc/x86_64-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/14/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/14/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_0040a' '-foffload-options=-l_GCC_m' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_0040a.']
-        link line: [ /usr/libexec/gcc/x86_64-linux-gnu/14/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/cc8Wpp7o.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_0040a /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. -v CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e1db5' '-foffload-options=-l_GCC_m' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e1db5.']
+        link line: [ /usr/libexec/gcc/x86_64-linux-gnu/14/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/ccQC9TYg.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_e1db5 /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. -v CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o]
           arg [/usr/libexec/gcc/x86_64-linux-gnu/14/collect2] ==> ignore
           arg [-plugin] ==> ignore
           arg [/usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so] ==> ignore
           arg [-plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper] ==> ignore
-          arg [-plugin-opt=-fresolution=/tmp/cc8Wpp7o.res] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccQC9TYg.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
           arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -1039,7 +1039,7 @@ events:
           arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
           arg [-pie] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_0040a] ==> ignore
+          arg [cmTC_e1db5] ==> ignore
           arg [/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o]
           arg [/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o]
           arg [/usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o]
@@ -1052,7 +1052,7 @@ events:
           arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
           arg [-L/usr/lib/gcc/x86_64-linux-gnu/14/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/14/../../..]
           arg [-v] ==> ignore
-          arg [CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
           arg [-lstdc++] ==> lib [stdc++]
           arg [-lm] ==> lib [m]
           arg [-lgcc_s] ==> lib [gcc_s]
@@ -1063,7 +1063,7 @@ events:
           arg [/usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o]
           arg [/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o]
         ignore line: [collect2 version 14.3.0]
-        ignore line: [/usr/bin/ld -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/cc8Wpp7o.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_0040a /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. -v CMakeFiles/cmTC_0040a.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o]
+        ignore line: [/usr/bin/ld -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/ccQC9TYg.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_e1db5 /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. -v CMakeFiles/cmTC_e1db5.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o]
         linker tool for 'CXX': /usr/bin/ld
         collapse obj [/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o] ==> [/usr/lib/x86_64-linux-gnu/Scrt1.o]
         collapse obj [/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o] ==> [/usr/lib/x86_64-linux-gnu/crti.o]
@@ -1103,8 +1103,8 @@ events:
     checks:
       - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
     directories:
-      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-qjqPZR"
-      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-qjqPZR"
+      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-7qeqPl"
+      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-7qeqPl"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -1114,17 +1114,17 @@ events:
       variable: "CMAKE_HAVE_LIBC_PTHREAD"
       cached: true
       stdout: |
-        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-qjqPZR'
+        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-7qeqPl'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_d6d51/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_d6d51.dir/build.make CMakeFiles/cmTC_d6d51.dir/build
-        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-qjqPZR'
-        Building CXX object CMakeFiles/cmTC_d6d51.dir/src.cxx.o
-        /usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=gnu++17 -o CMakeFiles/cmTC_d6d51.dir/src.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-qjqPZR/src.cxx
-        Linking CXX executable cmTC_d6d51
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d6d51.dir/link.txt --verbose=1
-        /usr/bin/c++ CMakeFiles/cmTC_d6d51.dir/src.cxx.o -o cmTC_d6d51
-        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-qjqPZR'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_7aeab/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_7aeab.dir/build.make CMakeFiles/cmTC_7aeab.dir/build
+        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-7qeqPl'
+        Building CXX object CMakeFiles/cmTC_7aeab.dir/src.cxx.o
+        /usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=gnu++23 -o CMakeFiles/cmTC_7aeab.dir/src.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-7qeqPl/src.cxx
+        Linking CXX executable cmTC_7aeab
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7aeab.dir/link.txt --verbose=1
+        /usr/bin/c++ CMakeFiles/cmTC_7aeab.dir/src.cxx.o -o cmTC_7aeab
+        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-7qeqPl'
         
       exitCode: 0
   -
@@ -16101,8 +16101,8 @@ events:
     checks:
       - "Looking for XOpenDisplay in /usr/lib/x86_64-linux-gnu/libX11.so;/usr/lib/x86_64-linux-gnu/libXext.so"
     directories:
-      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-bdVuIf"
-      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-bdVuIf"
+      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RDzwRV"
+      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RDzwRV"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -16112,17 +16112,17 @@ events:
       variable: "X11_LIB_X11_SOLO"
       cached: true
       stdout: |
-        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-bdVuIf'
+        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RDzwRV'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_97e81/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_97e81.dir/build.make CMakeFiles/cmTC_97e81.dir/build
-        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-bdVuIf'
-        Building CXX object CMakeFiles/cmTC_97e81.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=XOpenDisplay -std=gnu++17 -o CMakeFiles/cmTC_97e81.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-bdVuIf/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_97e81
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_97e81.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=XOpenDisplay CMakeFiles/cmTC_97e81.dir/CheckFunctionExists.cxx.o -o cmTC_97e81  /usr/lib/x86_64-linux-gnu/libX11.so /usr/lib/x86_64-linux-gnu/libXext.so
-        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-bdVuIf'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_2ca4d/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_2ca4d.dir/build.make CMakeFiles/cmTC_2ca4d.dir/build
+        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RDzwRV'
+        Building CXX object CMakeFiles/cmTC_2ca4d.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=XOpenDisplay -std=gnu++23 -o CMakeFiles/cmTC_2ca4d.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RDzwRV/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_2ca4d
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2ca4d.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=XOpenDisplay CMakeFiles/cmTC_2ca4d.dir/CheckFunctionExists.cxx.o -o cmTC_2ca4d  /usr/lib/x86_64-linux-gnu/libX11.so /usr/lib/x86_64-linux-gnu/libXext.so
+        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RDzwRV'
         
       exitCode: 0
   -
@@ -16134,8 +16134,8 @@ events:
     checks:
       - "Looking for gethostbyname"
     directories:
-      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Uehyxa"
-      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Uehyxa"
+      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RvxwxZ"
+      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RvxwxZ"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -16145,17 +16145,17 @@ events:
       variable: "CMAKE_HAVE_GETHOSTBYNAME"
       cached: true
       stdout: |
-        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Uehyxa'
+        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RvxwxZ'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e5860/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_e5860.dir/build.make CMakeFiles/cmTC_e5860.dir/build
-        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Uehyxa'
-        Building CXX object CMakeFiles/cmTC_e5860.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=gethostbyname -std=gnu++17 -o CMakeFiles/cmTC_e5860.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Uehyxa/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_e5860
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e5860.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=gethostbyname CMakeFiles/cmTC_e5860.dir/CheckFunctionExists.cxx.o -o cmTC_e5860
-        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Uehyxa'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_8a2c3/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_8a2c3.dir/build.make CMakeFiles/cmTC_8a2c3.dir/build
+        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RvxwxZ'
+        Building CXX object CMakeFiles/cmTC_8a2c3.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=gethostbyname -std=gnu++23 -o CMakeFiles/cmTC_8a2c3.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RvxwxZ/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_8a2c3
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8a2c3.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=gethostbyname CMakeFiles/cmTC_8a2c3.dir/CheckFunctionExists.cxx.o -o cmTC_8a2c3
+        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RvxwxZ'
         
       exitCode: 0
   -
@@ -16167,8 +16167,8 @@ events:
     checks:
       - "Looking for connect"
     directories:
-      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-tvTjXI"
-      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-tvTjXI"
+      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-yC5nfi"
+      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-yC5nfi"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -16178,17 +16178,17 @@ events:
       variable: "CMAKE_HAVE_CONNECT"
       cached: true
       stdout: |
-        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-tvTjXI'
+        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-yC5nfi'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_6df26/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_6df26.dir/build.make CMakeFiles/cmTC_6df26.dir/build
-        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-tvTjXI'
-        Building CXX object CMakeFiles/cmTC_6df26.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=connect -std=gnu++17 -o CMakeFiles/cmTC_6df26.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-tvTjXI/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_6df26
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6df26.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=connect CMakeFiles/cmTC_6df26.dir/CheckFunctionExists.cxx.o -o cmTC_6df26
-        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-tvTjXI'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_25336/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_25336.dir/build.make CMakeFiles/cmTC_25336.dir/build
+        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-yC5nfi'
+        Building CXX object CMakeFiles/cmTC_25336.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=connect -std=gnu++23 -o CMakeFiles/cmTC_25336.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-yC5nfi/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_25336
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_25336.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=connect CMakeFiles/cmTC_25336.dir/CheckFunctionExists.cxx.o -o cmTC_25336
+        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-yC5nfi'
         
       exitCode: 0
   -
@@ -16200,8 +16200,8 @@ events:
     checks:
       - "Looking for remove"
     directories:
-      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RJPYuF"
-      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RJPYuF"
+      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-zmsjxZ"
+      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-zmsjxZ"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -16211,17 +16211,17 @@ events:
       variable: "CMAKE_HAVE_REMOVE"
       cached: true
       stdout: |
-        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RJPYuF'
+        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-zmsjxZ'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_6a51e/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_6a51e.dir/build.make CMakeFiles/cmTC_6a51e.dir/build
-        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RJPYuF'
-        Building CXX object CMakeFiles/cmTC_6a51e.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=remove -std=gnu++17 -o CMakeFiles/cmTC_6a51e.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RJPYuF/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_6a51e
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6a51e.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=remove CMakeFiles/cmTC_6a51e.dir/CheckFunctionExists.cxx.o -o cmTC_6a51e
-        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-RJPYuF'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_2152b/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_2152b.dir/build.make CMakeFiles/cmTC_2152b.dir/build
+        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-zmsjxZ'
+        Building CXX object CMakeFiles/cmTC_2152b.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=remove -std=gnu++23 -o CMakeFiles/cmTC_2152b.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-zmsjxZ/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_2152b
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2152b.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=remove CMakeFiles/cmTC_2152b.dir/CheckFunctionExists.cxx.o -o cmTC_2152b
+        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-zmsjxZ'
         
       exitCode: 0
   -
@@ -16233,8 +16233,8 @@ events:
     checks:
       - "Looking for shmat"
     directories:
-      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Ssn26l"
-      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Ssn26l"
+      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-by5YEA"
+      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-by5YEA"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -16244,17 +16244,17 @@ events:
       variable: "CMAKE_HAVE_SHMAT"
       cached: true
       stdout: |
-        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Ssn26l'
+        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-by5YEA'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_097df/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_097df.dir/build.make CMakeFiles/cmTC_097df.dir/build
-        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Ssn26l'
-        Building CXX object CMakeFiles/cmTC_097df.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=shmat -std=gnu++17 -o CMakeFiles/cmTC_097df.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Ssn26l/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_097df
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_097df.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=shmat CMakeFiles/cmTC_097df.dir/CheckFunctionExists.cxx.o -o cmTC_097df
-        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-Ssn26l'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_f365d/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_f365d.dir/build.make CMakeFiles/cmTC_f365d.dir/build
+        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-by5YEA'
+        Building CXX object CMakeFiles/cmTC_f365d.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=shmat -std=gnu++23 -o CMakeFiles/cmTC_f365d.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-by5YEA/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_f365d
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f365d.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=shmat CMakeFiles/cmTC_f365d.dir/CheckFunctionExists.cxx.o -o cmTC_f365d
+        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-by5YEA'
         
       exitCode: 0
   -
@@ -16266,8 +16266,8 @@ events:
     checks:
       - "Looking for IceConnectionNumber in ICE"
     directories:
-      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-prpxVb"
-      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-prpxVb"
+      source: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-V4jF5o"
+      binary: "/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-V4jF5o"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -16277,17 +16277,17 @@ events:
       variable: "CMAKE_LIB_ICE_HAS_ICECONNECTIONNUMBER"
       cached: true
       stdout: |
-        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-prpxVb'
+        Change Dir: '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-V4jF5o'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_00b03/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_00b03.dir/build.make CMakeFiles/cmTC_00b03.dir/build
-        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-prpxVb'
-        Building CXX object CMakeFiles/cmTC_00b03.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=IceConnectionNumber -std=gnu++17 -o CMakeFiles/cmTC_00b03.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-prpxVb/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_00b03
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_00b03.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=IceConnectionNumber CMakeFiles/cmTC_00b03.dir/CheckFunctionExists.cxx.o -o cmTC_00b03  -lICE
-        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-prpxVb'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_86fee/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_86fee.dir/build.make CMakeFiles/cmTC_86fee.dir/build
+        gmake[1]: Entering directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-V4jF5o'
+        Building CXX object CMakeFiles/cmTC_86fee.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=IceConnectionNumber -std=gnu++23 -o CMakeFiles/cmTC_86fee.dir/CheckFunctionExists.cxx.o -c /home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-V4jF5o/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_86fee
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_86fee.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=IceConnectionNumber CMakeFiles/cmTC_86fee.dir/CheckFunctionExists.cxx.o -o cmTC_86fee  -lICE
+        gmake[1]: Leaving directory '/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/CMakeScratch/TryCompile-V4jF5o'
         
       exitCode: 0
 ...

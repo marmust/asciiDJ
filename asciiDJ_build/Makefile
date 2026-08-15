@@ -201,6 +201,30 @@ src/Equalizer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.s
 .PHONY : src/Equalizer.cpp.s
 
+src/FFTprocessor.o: src/FFTprocessor.cpp.o
+.PHONY : src/FFTprocessor.o
+
+# target to build an object file
+src/FFTprocessor.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.o
+.PHONY : src/FFTprocessor.cpp.o
+
+src/FFTprocessor.i: src/FFTprocessor.cpp.i
+.PHONY : src/FFTprocessor.i
+
+# target to preprocess a source file
+src/FFTprocessor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.i
+.PHONY : src/FFTprocessor.cpp.i
+
+src/FFTprocessor.s: src/FFTprocessor.cpp.s
+.PHONY : src/FFTprocessor.s
+
+# target to generate assembly for a file
+src/FFTprocessor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.s
+.PHONY : src/FFTprocessor.cpp.s
+
 src/InputInterpreter.o: src/InputInterpreter.cpp.o
 .PHONY : src/InputInterpreter.o
 
@@ -273,6 +297,30 @@ src/Mixer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Mixer.cpp.s
 .PHONY : src/Mixer.cpp.s
 
+src/Renderer.o: src/Renderer.cpp.o
+.PHONY : src/Renderer.o
+
+# target to build an object file
+src/Renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Renderer.cpp.o
+.PHONY : src/Renderer.cpp.o
+
+src/Renderer.i: src/Renderer.cpp.i
+.PHONY : src/Renderer.i
+
+# target to preprocess a source file
+src/Renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Renderer.cpp.i
+.PHONY : src/Renderer.cpp.i
+
+src/Renderer.s: src/Renderer.cpp.s
+.PHONY : src/Renderer.s
+
+# target to generate assembly for a file
+src/Renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Renderer.cpp.s
+.PHONY : src/Renderer.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -339,6 +387,9 @@ help:
 	@echo "... src/Equalizer.o"
 	@echo "... src/Equalizer.i"
 	@echo "... src/Equalizer.s"
+	@echo "... src/FFTprocessor.o"
+	@echo "... src/FFTprocessor.i"
+	@echo "... src/FFTprocessor.s"
 	@echo "... src/InputInterpreter.o"
 	@echo "... src/InputInterpreter.i"
 	@echo "... src/InputInterpreter.s"
@@ -348,6 +399,9 @@ help:
 	@echo "... src/Mixer.o"
 	@echo "... src/Mixer.i"
 	@echo "... src/Mixer.s"
+	@echo "... src/Renderer.o"
+	@echo "... src/Renderer.i"
+	@echo "... src/Renderer.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

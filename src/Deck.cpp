@@ -167,6 +167,53 @@ Track* Deck::getLoadedTrack()
 	return &this->loadedTrack;
 }
 
+/// @brief extracts the track waveform expected to play over the next/previous 10 seconds of
+/// *replay* time (so at 10x combined speed, that's +-100 track-seconds = 200 total), stepping
+/// the same way data_callback does (accounting for playback speed and turntable shift) so the
+/// preview matches what will actually be heard. Positions outside the loaded track are silence.
+/// mono-mixed across channels (one float per output sample) for use as a single waveform trace.
+/// @returns std::vector<float> the extracted waveform, empty if no track is loaded
+std::vector<float> Deck::extractExpectedWaveform(double windowSeconds)
+{
+	if (!this->isLoaded)
+		return {};
+
+	Track* track = &this->loadedTrack;
+
+	ma_uint32 channels = track->channels;
+	double effectiveSpeed = (double)track->params.playbackSpeed + (double)track->params.turntableShift;
+
+	// +-10 seconds of replay time; at effectiveSpeed x that covers +-(10*x) track-seconds,
+	// exactly matching how far data_callback's cursor would actually travel in that time
+	long halfWindowFrames = (long)(windowSeconds * track->sampleRate);
+	long totalFrames = halfWindowFrames * 2;
+
+	std::vector<float> waveform;
+	waveform.reserve((size_t)totalFrames);
+
+	double cursor = (double)track->cursor;
+
+	for (long i = 0; i < totalFrames; i++)
+	{
+		double trackSample = cursor + (double)(i - halfWindowFrames) * effectiveSpeed;
+		long sampleIndex = (long)trackSample;
+
+		if (sampleIndex < 0 || (ma_uint64)sampleIndex >= track->frameCount)
+		{
+			waveform.push_back(0.0f);
+			continue;
+		}
+
+		float sum = 0.0f;
+		for (ma_uint32 ch = 0; ch < channels; ch++)
+			sum += track->frames[(size_t)sampleIndex * channels + ch];
+
+		waveform.push_back(channels > 0 ? sum / (float)channels : 0.0f);
+	}
+
+	return waveform;
+}
+
 /// @brief external accessor for whether the deck is currently paused
 bool Deck::getIsPaused() const
 {

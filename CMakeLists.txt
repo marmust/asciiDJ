@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.20)
 project(asciiDJ CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Threads REQUIRED)
@@ -15,6 +15,8 @@ add_executable(asciiDJ
     src/InputReader.cpp
     src/InputInterpreter.cpp
     src/CentralController.cpp
+    src/Renderer.cpp
+    src/FFTprocessor.cpp
     third_party/miniaudio/miniaudio_impl.cpp
 )
 
