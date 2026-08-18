@@ -1,5 +1,7 @@
-CMakeFiles/asciiDJ.dir/src/Deck.cpp.o: \
- /home/magshimim/Desktop/asciiDJ/src/Deck.cpp /usr/include/stdc-predef.h \
+CMakeFiles/asciiDJ.dir/src/TUIdisplay.cpp.o: \
+ /home/magshimim/Desktop/asciiDJ/src/TUIdisplay.cpp \
+ /usr/include/stdc-predef.h \
+ /home/magshimim/Desktop/asciiDJ/include/TUIdisplay.hpp \
  /home/magshimim/Desktop/asciiDJ/include/Deck.hpp \
  /usr/include/c++/13/vector /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \

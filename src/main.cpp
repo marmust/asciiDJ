@@ -13,6 +13,21 @@
 #include <InputInterpreter.hpp>
 #include <CentralController.hpp>
 #include <Renderer.hpp>
+#include <TUIdisplay.hpp>
+#include <GraphicsComposer.hpp>
+#include <InputSchema.hpp>
+#include <InputTuning.hpp>
+
+namespace
+{
+	// InputInterpreter callbacks are plain function pointers (no captures), so the demo loop's
+	// live speed/shift have to live here rather than as locals in main()
+	double demoDeck1Speed = Input::SPEED_START_VAL;
+	double demoDeck1Shift = Input::SHIFT_START_VAL;
+
+	void demoDeck1SpeedCallback(double speed) { demoDeck1Speed = speed; }
+	void demoDeck1ShiftCallback(double shift) { demoDeck1Shift = shift; }
+}
 
 int main()
 {
@@ -230,6 +245,47 @@ int main()
 
 		std::cout << "\033[25;1H" << std::flush;
 	}
+
+	// GraphicsComposer demo: live deck1 speed/shift (own InputReader/InputInterpreter, not
+	// the one further down - same keys/tuning as CentralController::configureInputs() wires
+	// deck1 to, just without the rest of the deck/mixer/EQ controls) drives the composer's
+	// wall-time-based turntable animation frame by frame
+	{
+		Input::InputReader demoIReader = Input::InputReader();
+		Input::InputInterpreter demoInterpreter = Input::InputInterpreter();
+
+		demoInterpreter.provideIReader(&demoIReader);
+
+		demoInterpreter.addInput(Input::DECK1_SPEED_UP, Input::DECK1_SPEED_DOWN,
+					  Input::SPEED_START_VAL, Input::SPEED_MOVE_SPEED,
+					  Input::SPEED_MIN, Input::SPEED_MAX,
+					  demoDeck1SpeedCallback);
+
+		demoInterpreter.addInput(Input::DECK1_SHIFT_FWD, Input::DECK1_SHIFT_BACK,
+					  Input::SHIFT_START_VAL, Input::SHIFT_MOVE_SPEED, Input::SHIFT_DECAY_RATE,
+					  Input::SHIFT_MIN, Input::SHIFT_MAX,
+					  demoDeck1ShiftCallback);
+
+		demoInterpreter.startRefreshThread();
+
+		Graphics::GraphicsComposer composer;
+		Graphics::TUItelemetry telemetry;
+
+		std::cout << "\033[2J";
+
+		while (true)
+		{
+			telemetry.d1speed = demoDeck1Speed;
+			telemetry.d1shift = demoDeck1Shift;
+			composer.reportAudioEngineTelemetry(telemetry);
+
+			std::cout << "\033[H" << composer.composeFrame() << std::flush;
+			std::cout << telemetry.d1speed << std::endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(16));
+		}
+	}
+
+	return 0;
 
 	while (true)
 	{
