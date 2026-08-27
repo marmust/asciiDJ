@@ -25,6 +25,9 @@ struct EQsetup
 
 struct EQparams : public EQmemory, public EQsetup
 {
+	// the gain (dB) computeIIRparams() was last called with for this band, kept around
+	// purely for telemetry - the biquad coefficients above are what's actually applied
+	float gainDB = 0.0;
 };
 
 class Equalizer
@@ -55,6 +58,8 @@ public:
 	void changeBand(int bandIdx, float freq, float q, float gainDB);
 	void deleteBand(int bandIdx);
 	void resetEQ();
+
+	float getBandGain(int bandIdx);
 };
 
 }

@@ -57,6 +57,10 @@ public:
 	// external controls
 	void setVolume(double volume, int deckIdx);
 	void setXfader(double xfaderPos);
+
+	// state accessors
+	double getVolume(int deckIdx) const;
+	double getXfader() const;
 };
 
 }

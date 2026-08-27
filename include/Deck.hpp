@@ -44,7 +44,11 @@ struct Track
 	ma_uint64 frameCount = 0;
 	ma_uint32 channels = 0;
 	ma_uint32 sampleRate = 0;
-	std::atomic<ma_uint64> cursor = 0;
+	// signed: a backwards scratch can legitimately walk the playhead before the start of the
+	// track, and both read paths below already treat a negative index as silence. as an
+	// unsigned type the negative double converted straight back to a ~1.8e19 garbage cursor
+	std::atomic<ma_int64> cursor = 0;
+	std::string name;
 
 	// ride along because we can only access this struct in the data_callback()
 	DeckParams params;
@@ -108,6 +112,8 @@ public:
 	// state accessors
 	bool getIsPaused() const;
 	bool getIsStandalonePlaying() const;
+	float getTrackProgress() const;
+	double getTimeRemainingSeconds() const;
 };
 
 }

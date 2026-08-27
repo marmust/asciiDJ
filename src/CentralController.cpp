@@ -147,7 +147,7 @@ void CentralController::configureInputs()
 {
 	// left deck (deck1)
 	this->interpreter->addInput(Input::DECK1_SPEED_UP, Input::DECK1_SPEED_DOWN, Input::SPEED_START_VAL, Input::SPEED_MOVE_SPEED, Input::SPEED_MIN, Input::SPEED_MAX, deck1SpeedCallback);
-	this->interpreter->addInput(Input::DECK1_SHIFT_FWD, Input::DECK1_SHIFT_BACK, Input::SHIFT_START_VAL, Input::SHIFT_MOVE_SPEED, Input::SHIFT_DECAY_RATE, Input::SHIFT_MIN, Input::SHIFT_MAX, deck1ShiftCallback);
+	this->interpreter->addInput(Input::DECK1_SHIFT_FWD, Input::DECK1_SHIFT_BACK, Input::SHIFT_START_VAL, Input::SHIFT_MOVE_SPEED, Input::SHIFT_DECAY_HALFLIFE, Input::SHIFT_MIN, Input::SHIFT_MAX, deck1ShiftCallback);
 	this->interpreter->addInput(Input::DECK1_PAUSE, deck1pauseCallback);
 	this->interpreter->addInput(Input::DECK1_VOLUME_UP, Input::DECK1_VOLUME_DOWN, Input::VOLUME_START_VAL, Input::VOLUME_MOVE_SPEED, Input::VOLUME_MIN, Input::VOLUME_MAX, deck1VolumeCallback);
 	this->interpreter->addInput(Input::DECK1_EQ_BASS_UP, Input::DECK1_EQ_BASS_DOWN, Input::EQ_START_VAL, Input::EQ_MOVE_SPEED, Input::EQ_MIN, Input::EQ_MAX, deck1EQbassCallback);
@@ -159,7 +159,7 @@ void CentralController::configureInputs()
 
 	// right deck (deck2)
 	this->interpreter->addInput(Input::DECK2_SPEED_UP, Input::DECK2_SPEED_DOWN, Input::SPEED_START_VAL, Input::SPEED_MOVE_SPEED, Input::SPEED_MIN, Input::SPEED_MAX, deck2SpeedCallback);
-	this->interpreter->addInput(Input::DECK2_SHIFT_FWD, Input::DECK2_SHIFT_BACK, Input::SHIFT_START_VAL, Input::SHIFT_MOVE_SPEED, Input::SHIFT_DECAY_RATE, Input::SHIFT_MIN, Input::SHIFT_MAX, deck2ShiftCallback);
+	this->interpreter->addInput(Input::DECK2_SHIFT_FWD, Input::DECK2_SHIFT_BACK, Input::SHIFT_START_VAL, Input::SHIFT_MOVE_SPEED, Input::SHIFT_DECAY_HALFLIFE, Input::SHIFT_MIN, Input::SHIFT_MAX, deck2ShiftCallback);
 	this->interpreter->addInput(Input::DECK2_PAUSE, deck2pauseCallback);
 	this->interpreter->addInput(Input::DECK2_VOLUME_UP, Input::DECK2_VOLUME_DOWN, Input::VOLUME_START_VAL, Input::VOLUME_MOVE_SPEED, Input::VOLUME_MIN, Input::VOLUME_MAX, deck2VolumeCallback);
 	this->interpreter->addInput(Input::DECK2_EQ_BASS_UP, Input::DECK2_EQ_BASS_DOWN, Input::EQ_START_VAL, Input::EQ_MOVE_SPEED, Input::EQ_MIN, Input::EQ_MAX, deck2EQbassCallback);

@@ -20,6 +20,7 @@ public:
 	static std::string renderVerticalFill(int length, int progress);
 	static std::string renderKnob(float position);
 	static std::string renderTurntable(int frame);
+	static std::string renderImage(const std::string& image);
 
 	static std::string renderValue(float value, int promiseLength);
 	static std::string renderValue(double value, int promiseLength);
@@ -29,6 +30,7 @@ public:
 	static std::string makeTransparent(std::string image);
 
 	static std::string renderSpectrum(const std::vector<int>& dominantFreqRanges);
+	static std::string renderWaveform(const std::vector<float>& waveform, int sampleRate, int charCount);
 };
 
 }

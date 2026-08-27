@@ -72,44 +72,122 @@ namespace RenderElements
 
 	// deck turntable spin frames, indexed directly (no interpolation - the caller picks the frame)
 	inline std::vector<std::string> turntableFrames = {
-		R"(   _________
-  /  #####  \
- /           \
-|             |
-|      |      |
-|             |
- \           /
-  \__#####__/)",
-		R"(   _________
-  /       ##\
- /          #\
-|            #|
-|      /      |
-|#            |
- \#          /
-  \##_______/)",
-		R"(   _________
-  /         \
- /           \
-|#           #|
-|#     -     #|
-|#           #|
- \           /
-  \_________/)",
-		R"(   _________
-  /##       \
- /#          \
-|#            |
-|      \      |
-|            #|
- \          #/
-  \_______##/)"
+		R"(      __-----------__
+     /  ###########  \
+   /                   \
+  /                     \
+ |                       |
+|            |            |
+|           ...           |
+|           ...           |
+|            |            |
+ |                       |
+  \                     /
+   \                   /
+     \__###########__/
+        -----------)",
+		R"(      __-----------__
+     /            ###\
+   /                  #\
+  /                    #\
+ |                      #|
+|              /          |
+|           ...           |
+|           ...           |
+|          /              |
+ |#                      |
+  \#                    /
+   \#                  /
+     \###          __/
+        -----------)",
+		R"(      __-----------__
+     /               \
+   /                   \
+  /                     \
+ |#                     #|
+|#                       #|
+|#        __...__        #|
+|#          ...          #|
+|#                       #|
+ |#                     #|
+  \                     /
+   \                   /
+     \__           __/
+        -----------)",
+		R"(      __-----------__
+     /###            \
+   /#                  \
+  /#                    \
+ |#                      |
+|          \              |
+|           ...           |
+|           ...           |
+|              \          |
+ |                      #|
+  \                    #/
+   \                  #/
+     \__          ###/
+        -----------)"
 	};
+
+	// static baked frame: outer border, header (asciiDJ/OSRCS), and the two "DECKn =="
+	// waveform-row labels; every other row's interior is left blank for dynamic
+	// elements (turntables, waveform bars, EQ assembly, speed/xfader/time rows) to
+	// draw over
+	inline std::string frameImage = R"(asciiDJ ----------------------------------------------------------------------------------------- OSRCS
+|                                                                                                     |
+|  DECK1 ==                                                                                           |
+|  DECK2 ==                                                                                           |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
+|                                                                                                     |
++-----------------------------------------------------------------------------------------------------+)";
+
+	// static baked "][" EQ divider column: band labels (HI:/MID:/LO:/DB) and the decorative
+	// bracket pattern between the two knob stacks; the knob art and numeric dB readouts are
+	// blanked out here and drawn as separate dynamic elements. Does NOT include the outer
+	// "#" capped "|" strut columns flanking this block - those are real volume sliders
+	inline std::string middleDividerImage = R"(                                   
+    HI:          ]          HI:    
+                 [                 
+     DB          ]          DB     
+                 [                 
+                 ]                 
+   MID:          [          MID:   
+                 ]                 
+     DB          [          DB     
+                 ]                 
+                 [                 
+    LO:          ]          LO:    
+                 [                 
+     DB          ]          DB     
+                                   )";
+
+	// static playhead marker, drawn one row above the waveform traces at their center column
+	// to mark where the cursor sits in the +-waveformWindowSeconds window each trace spans
+	inline std::string playheadMarkerImage = "v";
 
 	// spectrum density ramp, index 0 (BASS) = densest/loudest down to index size()-1 (HI) = sparsest/quietest
 	inline char spectrumBlank = ' ';
+
 	inline std::vector<char> spectrumChars = {
-		'@', '0', 'O', '&', '$', '#', '%', '=', ':', '*', '^', 'i', '!', '|', ';', '.', '\'', '`'
+		'@', '%', '=', '*', '|', ';', '.', '`', ' '
 	};
 
 	// [low, high) frequency bands in Hz, log-spaced across the audible range (20Hz-20kHz),

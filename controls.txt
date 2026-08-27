@@ -1,6 +1,10 @@
 ASCIIDJ CONTROLS:
 (note: code doesnt pull control schema from here)
 
+modifier:
+	hold SPACE while touching any control to reset it to its default
+	(defaults are the *_START_VAL entries in InputTuning.hpp)
+
 mixer:
 	left deck volume up: t
 	left deck volume down: g

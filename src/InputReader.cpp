@@ -47,6 +47,7 @@ namespace
 			case ';': return KEY_SEMICOLON;
 			case ',': return KEY_COMMA;
 			case '.': return KEY_DOT;
+			case ' ': return KEY_SPACE;
 			default: return -1;
 		}
 	}

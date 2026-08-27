@@ -169,4 +169,21 @@ void Mixer::setXfader(double xfaderPos)
 	this->crossfader = xfaderPos;
 }
 
+/// @brief accessor for an individual deck's volume
+/// @param int deckIdx which deck to read the volume of (0 = first added to mixer)
+/// @returns double the deck's volume, 0.0 if idx out of range
+double Mixer::getVolume(int deckIdx) const
+{
+	if (deckIdx < 0 || deckIdx >= decks.size())
+		return 0.0;
+
+	return this->decks[deckIdx]->volume;
+}
+
+/// @brief accessor for the crossfader position
+double Mixer::getXfader() const
+{
+	return this->crossfader;
+}
+
 }

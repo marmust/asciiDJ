@@ -94,6 +94,14 @@ std::string Renderer::renderTurntable(int frame)
 	return RenderElements::turntableFrames[frame];
 }
 
+/// @brief passes through a pre-baked static multi-line image (eg a frame border or decorative
+/// divider) so callers draw it the same way as every other renderX element
+/// @param std::string image the baked image to render
+std::string Renderer::renderImage(const std::string& image)
+{
+	return image;
+}
+
 /// @brief renders a double, zero-padded at the start and truncated after the decimal point
 /// to fit exactly promiseLength chars (drops the decimal point entirely if no room for any
 /// fractional digits)
@@ -233,6 +241,116 @@ std::string Renderer::renderSpectrum(const std::vector<int>& dominantFreqRanges)
 	}
 
 	return result;
+}
+
+/// @brief renders a waveform window as a row of spectrum chars, one per charCount slice: averages
+/// each slice's absolute amplitude, normalizes against the loudest slice in the window, and maps
+/// that to a RenderElements::spectrumChars entry (index 0 = loudest, last = silent)
+/// @param std::vector<float> waveform the audio window to analyze (eg Deck::extractExpectedWaveform)
+/// @param int sampleRate the waveform's sample rate, only used to reject an unloaded deck here
+/// @param int charCount how many time-slices (chars) to produce across the window
+std::string Renderer::renderWaveform(const std::vector<float>& waveform, int sampleRate, int charCount)
+{
+	// an unloaded deck reports an empty waveform; bail before hopSize's divide and before
+	// indexing into a buffer that isn't there
+	if (waveform.empty() || sampleRate <= 0 || charCount <= 0)
+		return std::string(std::max(0, charCount), RenderElements::spectrumBlank);
+
+	// how many samples each char averages over; wider than hopSize on purpose, so
+	// neighbouring slices overlap and the trace reads smoother than one slice per char would
+	constexpr size_t averagingWindow = 10000;
+
+	std::string result = "";
+	size_t hopSize = waveform.size() / (size_t)charCount;
+
+	std::vector<float> waveformVolumes(charCount, 0.0f);
+
+	for (int currentChar = 0; currentChar < charCount; currentChar++)
+	{
+		// computed directly from currentChar (not accumulated hop-by-hop), so slice 0 starts
+		// exactly at sample 0 and the array's true center - the playhead, per
+		// Deck::extractExpectedWaveform's centered window - always lands exactly on the
+		// boundary between the two middle slices, regardless of charCount/hopSize rounding
+		size_t currentSample = (size_t)currentChar * hopSize;
+
+		// averagingWindow is wider than hopSize, so the last slices would otherwise run off
+		// the end of the buffer and average in whatever the allocator parked there (in
+		// practice the *other* deck's waveform, which is allocated right after this one in
+		// TUIdisplay::gatherTUItelemetry) - clamp to the buffer and divide by what was
+		// actually summed so the tail slices stay this deck's own audio
+		size_t sliceEnd = std::min(waveform.size(), currentSample + averagingWindow);
+		size_t sliceLength = sliceEnd - currentSample;
+
+		float waveformVolume = 0.0f;
+		for (size_t x = currentSample; x < sliceEnd; x++)
+		{
+			waveformVolume += std::abs(waveform[x]);
+		}
+
+		waveformVolumes[currentChar] = sliceLength > 0 ? waveformVolume / (float)sliceLength : 0.0f;
+	}
+
+	// normalize against the loudest slice in this window, so the loudest char is always 1.0
+	float maxVolume = 0.0f;
+	for (float volume : waveformVolumes)
+		maxVolume = std::max(maxVolume, volume);
+
+	for (int currentChar = 0; currentChar < charCount; currentChar++)
+	{
+		float normalizedVolume = maxVolume > 0.0f ? waveformVolumes[currentChar] / maxVolume : 0.0f;
+
+		int spectrumVolume = std::clamp((int)RenderElements::spectrumChars.size() - (int)(normalizedVolume * RenderElements::spectrumChars.size()), 0, (int)RenderElements::spectrumChars.size() - 1);
+
+		result += RenderElements::spectrumChars[spectrumVolume];
+	}
+
+	return result;
+
+	constexpr int binCount = 512;
+
+	int fftSize = 1;
+	while (fftSize < binCount * 2)
+		fftSize *= 2;
+
+	std::vector<std::vector<float>> stft = WaveformMath::FFTprocessor::computeSTFT(waveform, charCount, binCount);
+	int bandCount = (int)RenderElements::frequencyRanges.size();
+
+	std::vector<int> dominantFreqRanges(stft.size(), -1);
+
+	for (size_t frame = 0; frame < stft.size(); frame++)
+	{
+		std::vector<float> bandEnergy(bandCount, 0.0f);
+
+		for (int bin = 0; bin < binCount; bin++)
+		{
+			float freq = (float)bin * (float)sampleRate / (float)fftSize;
+
+			for (int band = 0; band < bandCount; band++)
+			{
+				if (freq >= RenderElements::frequencyRanges[band].first && freq < RenderElements::frequencyRanges[band].second)
+				{
+					bandEnergy[band] += stft[frame][bin];
+					break;
+				}
+			}
+		}
+
+		int bestBand = -1;
+		float bestEnergy = 0.0f;
+
+		for (int band = 0; band < bandCount; band++)
+		{
+			if (bandEnergy[band] > bestEnergy)
+			{
+				bestEnergy = bandEnergy[band];
+				bestBand = band;
+			}
+		}
+
+		dominantFreqRanges[frame] = bestBand;
+	}
+
+	return renderSpectrum(dominantFreqRanges);
 }
 
 }
