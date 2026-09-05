@@ -29,13 +29,26 @@ void Deck::syncModifiersToTrack()
 /// @param std::string fpath the filepath to load
 void Deck::loadTrack(std::string fpath)
 {
-	// setup a temporary miniaudio decoder
-	ma_decoder_config decoderConfig = ma_decoder_config_init(ma_format_f32, 0, 0);
+	// setup a temporary miniaudio decoder - fixed output channels/sampleRate rather than 0/0
+	// (native) so every loaded track ends up in the same canonical format, decoder does the
+	// resampling/remixing internally
+	ma_decoder_config decoderConfig = ma_decoder_config_init(ma_format_f32, kOutputChannels, kOutputSampleRate);
 	ma_decoder decoder;
 
 	if (ma_decoder_init_file(fpath.c_str(), &decoderConfig, &decoder) != MA_SUCCESS)
 		// possibly add a warning system through TUI later
 		return;
+
+	// tear down a live standalone device first: it may still be reading loadedTrack on its own
+	// thread, and resetTrackMetadata() below is about to mutate that data out from under it. also
+	// means playStandalone() never has to reinit for a new track's format - format is now always
+	// the same canonical one, so a fresh init is only ever needed the first time it's started
+	this->stopStandalone();
+
+	// wipe any previously loaded track's audio data/metadata first - loadTrack must be safe to
+	// call on a deck that already has a track loaded (e.g. picking a new file from a browser),
+	// and the frame-extraction loop below appends rather than replaces
+	this->resetTrackMetadata();
 
 	// setup metadata
 	this->loadedTrack.channels = decoder.outputChannels;
@@ -67,6 +80,14 @@ void Deck::loadTrack(std::string fpath)
 	this->isLoaded = true;
 
 	ma_decoder_uninit(&decoder);
+
+	// reset cursor/params to fresh defaults, then land the deck paused at the start of the fresh
+	// track rather than mid-track and playing. explicit here rather than relying on
+	// stopStandalone() above for this - it only resets as a side effect of actually having been
+	// playing, and is a no-op otherwise (e.g. driven by a Mixer instead, which never touches
+	// isStandalonePlaying)
+	this->resetTrack();
+	this->pause();
 }
 
 /// @brief helper to wipe the loaded track's audio data and metadata (frames, channels, sampleRate, frameCount)
@@ -91,6 +112,11 @@ void Deck::resetTrack()
 
 	// push to the active track
 	this->syncModifiersToTrack();
+
+	// flatten the interpolation ramp too, otherwise the next audio callback lerps from whatever
+	// params were trailing before this reset (e.g. leftover from a track loaded onto this deck
+	// previously) instead of starting flat at the just-reset values
+	this->loadedTrack.trailingParams = this->loadedTrack.params;
 }
 
 /// @brief unloads the current track and resets metadata
@@ -236,6 +262,20 @@ bool Deck::getIsStandalonePlaying() const
 	return this->isStandalonePlaying;
 }
 
+/// @brief external accessor for the deck's live playback speed, meaningful whether or not a
+/// track is loaded (0.0 while paused/unloaded, same value the audio callback actually uses)
+double Deck::getPlaybackSpeed() const
+{
+	return this->deckParams.playbackSpeed;
+}
+
+/// @brief external accessor for the deck's live turntable shift, meaningful whether or not a
+/// track is loaded (0.0 while paused/unloaded, same value the audio callback actually uses)
+double Deck::getTurntableShift() const
+{
+	return this->deckParams.turntableShift;
+}
+
 /// @brief external accessor for the loaded track's playback progress
 /// @returns float progress in [0, 1], 0 if no track is loaded
 float Deck::getTrackProgress() const
@@ -310,67 +350,52 @@ void Deck::stopStandalone()
 	this->resetTrack();
 }
 
-/// @brief function to pause a currently playing track (keeps cursor pos and turntable mods), independent of
-/// whether the deck's audio is being pulled by its own standalone device or by a mixer
+/// @brief function to pause a currently playing track (keeps cursor pos and turntable shift),
+/// independent of whether the deck's audio is being pulled by its own standalone device or by a
+/// mixer. only playbackSpeed freezes - turntableShift is left alone so the deck can still be
+/// scratched while paused, same as a real turntable's platter
 void Deck::pause()
 {
 	// no op if already paused
 	if (this->isPaused)
 		return;
 
-	// freeze cursor advancement entirely (both speed and turntable shift feed the cursor), remember both for unpause
 	this->previousPlaybackSpeed = this->deckParams.playbackSpeed;
-	this->previousTurntableShift = this->deckParams.turntableShift;
 	this->deckParams.playbackSpeed = 0.0;
-	this->deckParams.turntableShift = 0.0;
 	this->syncModifiersToTrack();
 	this->isPaused = true;
 
 	// DO NOT reset track params so cursor & deck mods stay the same
 }
 
-/// @brief function to unpause and keep playing the loaded track from the position left off when paused
+/// @brief function to unpause and keep playing the loaded track from the position left off when
+/// paused, restoring whatever playback speed was active before the pause
 void Deck::unpause()
 {
 	// no op if not paused
 	if (!this->isPaused)
 		return;
 
-	// restore the playback speed and turntable shift to whatever they were before the pause
 	this->deckParams.playbackSpeed = this->previousPlaybackSpeed;
-	this->deckParams.turntableShift = this->previousTurntableShift;
 	this->syncModifiersToTrack();
 	this->isPaused = false;
 }
 
-/// @brief setter for the turn table shift (record scratch)
+/// @brief setter for the turn table shift (record scratch) - always live, paused or not, so
+/// scratching still moves the cursor while playbackSpeed is frozen at 0
 /// @param double shift new shift
 void Deck::setTurntableShift(double shift)
 {
-	// a paused deck stays frozen: park the control's position for unpause to pick up instead
-	// of writing it live. without this the input thread (whose momentum mover reports every
-	// pass, held or not) writes the leftover scratch straight back over the 0 pause() set,
-	// and the "stopped" deck keeps walking its cursor - backwards, if the scratch was negative
-	if (this->isPaused)
-	{
-		this->previousTurntableShift = shift;
-		return;
-	}
-
 	this->deckParams.turntableShift = shift;
 	this->syncModifiersToTrack();
 }
 
-/// @brief setter for the turn table speed
+/// @brief setter for the turn table speed - touching this while paused means "make it move
+/// again", so it unpauses first rather than only parking the value for a later manual unpause
 /// @param double speed new speed
 void Deck::setPlaybackSpeed(double speed)
 {
-	// same as setTurntableShift: while paused this only moves what unpause will restore
-	if (this->isPaused)
-	{
-		this->previousPlaybackSpeed = speed;
-		return;
-	}
+	this->isPaused = false;
 
 	this->deckParams.playbackSpeed = speed;
 	this->syncModifiersToTrack();

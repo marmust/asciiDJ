@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <DirReader.hpp>
 
 namespace Graphics
 {
@@ -60,6 +61,12 @@ struct TUItelemetry
 	double deck2EQhigh = 0.0;
 	double deck2EQmid = 0.0;
 	double deck2EQlow = 0.0;
+
+	// file browser - populated fresh by TUIdisplay::gatherTUItelemetry() every tick
+	std::vector<Files::FileEntry> fileList;
+	std::string localDir;
+	bool fileSelectOpen = false;
+	int fileSelectedIdx = 0;
 };
 
 class GraphicsComposer
@@ -104,6 +111,10 @@ public:
 
 	// meat and potatoes
 	void composeFrame();
+
+	// dummy for now: not wired into the update loop or any mode toggle yet, just proves
+	// renderVerticalSelector/renderFileList line up when driven off the same telemetry
+	void composeFileSelectFrame();
 
 	const std::vector<std::string>* getFrameBuffer() const;
 

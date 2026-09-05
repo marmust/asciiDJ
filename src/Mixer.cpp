@@ -11,30 +11,9 @@ Mixer::Mixer() {}
 /// @param Equalizer* eq externally owned EQ to be applied over that deck
 void Mixer::addDeck(Deck* newDeck, Equalizer* eq)
 {
-	// for now only support audio files with idenical sample rates and chunnel numbers
-	// TODO: currently this disallows adding unloaded decks, and also to swap the track on a deck another guard needs to be
-	// added there. in general there needs to be a big rework (possibly adjusting channels / samplerates?) in this system
-
-	if (!newDeck->getLoadedTrack())
-	{
-		std::cout << "mixer: for identical metadata enforcement first load a track onto the deck" << std::endl;
-		return;
-	}
-
-	if (this->decks.size() == 0) // on first deck get the numbers to enforce
-	{
-		this->allowedSampleRate = newDeck->getLoadedTrack()->sampleRate;
-		this->allowedChannelCount = newDeck->getLoadedTrack()->channels;
-
-		std::cout << "this mixer now only allows samplerates: " << this->allowedSampleRate << " channelcounts: " << this->allowedChannelCount << std::endl;
-	}
-
-	if (newDeck->getLoadedTrack()->sampleRate != this->allowedSampleRate ||
-	    newDeck->getLoadedTrack()->channels != this->allowedChannelCount)
-	{
-		std::cout << "mixer got mismatched channelcount or samplerate, rejecting deck" << std::endl;
-		return;
-	}
+	// no format enforcement needed here: Deck::loadTrack() always decodes into the fixed
+	// Deck::kOutputChannels/kOutputSampleRate format, so every deck (loaded now or later,
+	// including a track swapped in after this call) is already guaranteed to match
 
 	// craft a deck ridealong struct (default init params)
 	this->decks.push_back(std::make_unique<DeckRidealong>(newDeck, eq));
@@ -50,8 +29,8 @@ void Mixer::play()
 	        /// config and create the miniaudio device to playback the loaded track
         ma_device_config deviceConfig = ma_device_config_init(ma_device_type_playback);
         deviceConfig.playback.format   = ma_format_f32;
-        deviceConfig.playback.channels = this->allowedChannelCount;
-        deviceConfig.sampleRate        = this->allowedSampleRate;
+        deviceConfig.playback.channels = Deck::kOutputChannels;
+        deviceConfig.sampleRate        = Deck::kOutputSampleRate;
         deviceConfig.dataCallback      = this->data_callback;
         // pack pointers to decks and crossfader together, just for this handoff (pUserData is a
         // single void*), unpacked back out at the top of data_callback

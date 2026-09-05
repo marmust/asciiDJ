@@ -1,8 +1,8 @@
-CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o: \
- /home/kali/Desktop/asciiDJ/src/Mixer.cpp /usr/include/stdc-predef.h \
- /home/kali/Desktop/asciiDJ/include/Mixer.hpp \
- /home/kali/Desktop/asciiDJ/include/Deck.hpp /usr/include/c++/14/vector \
- /usr/include/c++/14/bits/requires_hosted.h \
+CMakeFiles/asciiDJ.dir/src/FileLoadManager.cpp.o: \
+ /home/kali/Desktop/asciiDJ/src/FileLoadManager.cpp \
+ /usr/include/stdc-predef.h \
+ /home/kali/Desktop/asciiDJ/include/FileLoadManager.hpp \
+ /usr/include/c++/14/vector /usr/include/c++/14/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -58,7 +58,8 @@ CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/14/include/stddef.h \
  /usr/include/c++/14/bits/uses_allocator.h \
  /usr/include/c++/14/bits/uses_allocator_args.h /usr/include/c++/14/tuple \
- /usr/include/c++/14/bits/ranges_util.h /usr/include/c++/14/atomic \
+ /usr/include/c++/14/bits/ranges_util.h \
+ /home/kali/Desktop/asciiDJ/include/Deck.hpp /usr/include/c++/14/atomic \
  /usr/include/c++/14/bits/atomic_base.h \
  /usr/lib/gcc/x86_64-linux-gnu/14/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
@@ -233,9 +234,7 @@ CMakeFiles/asciiDJ.dir/src/Mixer.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/semaphore.h \
  /usr/include/c++/14/iostream \
  /home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio.h \
- /home/kali/Desktop/asciiDJ/include/Equalizer.hpp \
- /usr/include/c++/14/mutex /usr/include/c++/14/bits/unique_lock.h \
- /usr/include/c++/14/utility /usr/include/c++/14/bits/stl_relops.h \
+ /home/kali/Desktop/asciiDJ/include/DirReader.hpp \
  /usr/include/c++/14/algorithm /usr/include/c++/14/bits/ranges_algo.h \
  /usr/include/c++/14/pstl/glue_algorithm_defs.h \
  /usr/include/c++/14/pstl/execution_defs.h

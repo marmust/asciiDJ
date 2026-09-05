@@ -320,6 +320,66 @@ void GraphicsComposer::composeFrame()
 	this->frameBuffer.push_back(deck2TimeRemaining);
 }
 
+/// @brief composes the file-select frame (border + directory/selection header + selector pointer
+/// column + truncated file list) - swapped in by TUIdisplay::composeCurrentFrame() while
+/// toggleFileDisplay is on. Coordinates/rowcount below are still tuned by eye, not derived
+void GraphicsComposer::composeFileSelectFrame()
+{
+	const TUItelemetry& telemetry = this->reportedTelemetry;
+
+	// 8, not 10: frameImage's own "DECK1 =="/"DECK2 ==" rows (2-3) are kept now rather than
+	// overwritten, which pushes everything below them down 3 rows - shrunk to still fit inside
+	// the frame's 22 usable body rows at spacing 1
+	constexpr int truncationHeight = 8;
+	constexpr int truncationLength = 40;
+	constexpr int spacing = 1;
+
+	// pagination: which row within the visible page is highlighted vs which file (out of the
+	// full list) that actually is - renderFileList derives the same page from fileSelectedIdx
+	int pageLocalSelected = telemetry.fileSelectedIdx % truncationHeight;
+
+	bool hasSelection = telemetry.fileSelectedIdx >= 0 && telemetry.fileSelectedIdx < (int)telemetry.fileList.size();
+	std::string selectedName = hasSelection ? telemetry.fileList[telemetry.fileSelectedIdx].displayName : "";
+
+	std::string frame = Renderer::renderImage(RenderElements::frameImage);
+
+	// waveform traces that pair with the (kept) "DECK1 =="/"DECK2 ==" labels in DJ mode were
+	// missing here entirely, leaving those rows half-drawn (label with no waveform next to it)
+	std::string deck1Waveform = Renderer::renderWaveform(telemetry.d1waveform, telemetry.d1sampleRate, waveformCharCount);
+	std::string deck2Waveform = Renderer::renderWaveform(telemetry.d2waveform, telemetry.d2sampleRate, waveformCharCount);
+
+	// promiseLength set to each line's own length (not a fixed screen width) so renderValue
+	// neither loops the text into repeats (its behavior for a promiseLength longer than the
+	// text) nor pads it
+	std::string openDirLine = "open directory: " + telemetry.localDir;
+	std::string selectedLine = "selected file: " + selectedName;
+
+	std::string header = Renderer::renderValue(openDirLine, (int)openDirLine.length(), 0) + "\n" +
+			      Renderer::renderValue(selectedLine, (int)selectedLine.length(), 0);
+
+	std::string selectorCol = Renderer::renderVerticalSelector(truncationHeight - 1, pageLocalSelected, spacing);
+	std::string fileListCol = Renderer::renderFileList(telemetry.fileList, truncationLength, truncationHeight, telemetry.fileSelectedIdx, spacing);
+
+	// header/selector/fileList shifted +4 on x from last time; the waveform traces stay at the
+	// same waveformOriginX DJ mode uses, since they pair with the DECK1==/DECK2== labels baked
+	// into frame (unmoved, x=0) rather than with the file-browser-specific elements below them
+	this->drawAtPosition(frame, 0, 0);
+	this->drawAtPosition(deck1Waveform, waveformOriginX, 2);
+	this->drawAtPosition(deck2Waveform, waveformOriginX, 3);
+	this->drawAtPosition(header, 4, 5);
+	this->drawAtPosition(selectorCol, 4, 8);
+	this->drawAtPosition(fileListCol, 7, 8);
+
+	this->frameBuffer.clear();
+
+	this->frameBuffer.push_back(frame);
+	this->frameBuffer.push_back(deck1Waveform);
+	this->frameBuffer.push_back(deck2Waveform);
+	this->frameBuffer.push_back(header);
+	this->frameBuffer.push_back(selectorCol);
+	this->frameBuffer.push_back(fileListCol);
+}
+
 /// @brief accessor for the elements composeFrame() last built, for callers (TUIdisplay) to print
 /// @returns const std::vector<std::string>& the composed frame's elements
 const std::vector<std::string>* GraphicsComposer::getFrameBuffer() const

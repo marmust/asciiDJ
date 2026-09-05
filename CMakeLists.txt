@@ -15,6 +15,8 @@ add_executable(asciiDJ
     src/InputReader.cpp
     src/InputInterpreter.cpp
     src/CentralController.cpp
+    src/DirReader.cpp
+    src/FileLoadManager.cpp
     src/Renderer.cpp
     src/FFTprocessor.cpp
     src/TUIdisplay.cpp

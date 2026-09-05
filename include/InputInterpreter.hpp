@@ -25,8 +25,8 @@ inline constexpr double maxDeltaTime = 0.1;
 struct PrecisionMoverInput
 {
 	// settings
-	char positiveKey;
-	char negativeKey;
+	int positiveKey;
+	int negativeKey;
 
 	double value = 0.0;
 
@@ -45,8 +45,8 @@ struct PrecisionMoverInput
 struct MomentumMoverInput
 {
 	// settings
-	char positiveKey;
-	char negativeKey;
+	int positiveKey;
+	int negativeKey;
 
 	double value = 0.0;
 
@@ -68,7 +68,7 @@ struct MomentumMoverInput
 struct ButtonInput
 {
 	// settings
-	char activationKey;
+	int activationKey;
 
 	void (*callback)();
 
@@ -134,17 +134,17 @@ public:
 	void stopRefreshThread();
 
 	// input addition overloads
-	void addInput(char positiveDirectionKey, char negativeDirectionKey,
+	void addInput(int positiveDirectionKey, int negativeDirectionKey,
 		      double startVal, double speed,
 		      double min, double max,
 		      void (*callback)(double));
 
-	void addInput(char positiveDirectionKey, char negativeDirectionKey,
+	void addInput(int positiveDirectionKey, int negativeDirectionKey,
 		      double startVal, double speed, double decayHalfLife,
 		      double min, double max,
 		      void (*callback)(double));
 
-	void addInput(char activationKey,
+	void addInput(int activationKey,
 		      void (*callback)());
 };
 

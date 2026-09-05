@@ -22,15 +22,15 @@ private:
 	bool isRoot();
 	void openEvdevKeyboard();
 
-	bool queryKeyX11(char key);
-	bool queryKeyEvdev(char key);
+	bool queryKeyX11(int key);
+	bool queryKeyEvdev(int key);
 
 public:
 	// ctor / dtor
 	InputReader();
 	~InputReader();
 
-	bool queryKey(char key);
+	bool queryKey(int key);
 };
 
 }

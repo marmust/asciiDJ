@@ -18,6 +18,9 @@ namespace RenderElements
 	inline std::string verticalSliderRail = "|\n";
 	inline std::string verticalSliderHolder = "=\n";
 
+	inline std::string verticalSelectorBackground = "\n";
+	inline std::string verticalSelectorPointer = ">\n";
+
 
 	inline std::string horizontalFillLeftCap = "[";
 	inline std::string horizontalFillRightCap = "]";

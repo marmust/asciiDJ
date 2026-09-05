@@ -1,7 +1,6 @@
-CMakeFiles/asciiDJ.dir/src/TUIdisplay.cpp.o: \
- /home/kali/Desktop/asciiDJ/src/TUIdisplay.cpp /usr/include/stdc-predef.h \
- /home/kali/Desktop/asciiDJ/include/TUIdisplay.hpp \
- /home/kali/Desktop/asciiDJ/include/GraphicsComposer.hpp \
+CMakeFiles/asciiDJ.dir/src/DirReader.cpp.o: \
+ /home/kali/Desktop/asciiDJ/src/DirReader.cpp /usr/include/stdc-predef.h \
+ /home/kali/Desktop/asciiDJ/include/DirReader.hpp \
  /usr/include/c++/14/string /usr/include/c++/14/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
@@ -124,23 +123,27 @@ CMakeFiles/asciiDJ.dir/src/TUIdisplay.cpp.o: \
  /usr/include/c++/14/bits/stl_uninitialized.h \
  /usr/include/c++/14/bits/stl_vector.h \
  /usr/include/c++/14/bits/stl_bvector.h \
- /usr/include/c++/14/bits/vector.tcc /usr/include/c++/14/chrono \
- /usr/include/c++/14/bits/chrono.h /usr/include/c++/14/ratio \
+ /usr/include/c++/14/bits/vector.tcc /usr/include/c++/14/filesystem \
+ /usr/include/c++/14/bits/fs_fwd.h /usr/include/c++/14/system_error \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
+ /usr/include/c++/14/stdexcept /usr/include/c++/14/exception \
+ /usr/include/c++/14/bits/exception_ptr.h \
+ /usr/include/c++/14/bits/cxxabi_init_exception.h \
+ /usr/include/c++/14/typeinfo /usr/include/c++/14/bits/nested_exception.h \
  /usr/include/c++/14/cstdint \
  /usr/lib/gcc/x86_64-linux-gnu/14/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
+ /usr/include/c++/14/bits/chrono.h /usr/include/c++/14/ratio \
  /usr/include/c++/14/limits /usr/include/c++/14/ctime /usr/include/time.h \
  /usr/include/x86_64-linux-gnu/bits/time.h \
  /usr/include/x86_64-linux-gnu/bits/timex.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h \
- /usr/include/c++/14/bits/parse_numbers.h /usr/include/c++/14/sstream \
- /usr/include/c++/14/istream /usr/include/c++/14/ios \
- /usr/include/c++/14/exception /usr/include/c++/14/bits/exception_ptr.h \
- /usr/include/c++/14/bits/cxxabi_init_exception.h \
- /usr/include/c++/14/typeinfo /usr/include/c++/14/bits/nested_exception.h \
- /usr/include/c++/14/bits/ios_base.h /usr/include/c++/14/ext/atomicity.h \
+ /usr/include/c++/14/bits/parse_numbers.h \
+ /usr/include/c++/14/bits/fs_path.h /usr/include/c++/14/locale \
+ /usr/include/c++/14/bits/locale_classes.h \
+ /usr/include/c++/14/ext/atomicity.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
  /usr/include/pthread.h /usr/include/sched.h \
@@ -160,28 +163,27 @@ CMakeFiles/asciiDJ.dir/src/TUIdisplay.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/atomic_word.h \
  /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
- /usr/include/c++/14/bits/locale_classes.h \
  /usr/include/c++/14/bits/locale_classes.tcc \
- /usr/include/c++/14/system_error \
- /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
- /usr/include/c++/14/stdexcept /usr/include/c++/14/streambuf \
- /usr/include/c++/14/bits/streambuf.tcc \
- /usr/include/c++/14/bits/basic_ios.h \
  /usr/include/c++/14/bits/locale_facets.h /usr/include/c++/14/cwctype \
  /usr/include/wctype.h /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/ctype_base.h \
+ /usr/include/c++/14/bits/ios_base.h /usr/include/c++/14/streambuf \
+ /usr/include/c++/14/bits/streambuf.tcc \
  /usr/include/c++/14/bits/streambuf_iterator.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/ctype_inline.h \
  /usr/include/c++/14/bits/locale_facets.tcc \
- /usr/include/c++/14/bits/basic_ios.tcc /usr/include/c++/14/ostream \
- /usr/include/c++/14/format /usr/include/c++/14/array \
- /usr/include/c++/14/charconv /usr/include/c++/14/locale \
  /usr/include/c++/14/bits/locale_facets_nonio.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
  /usr/include/libintl.h /usr/include/c++/14/bits/codecvt.h \
  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
- /usr/include/c++/14/bits/locale_conv.h /usr/include/c++/14/optional \
+ /usr/include/c++/14/bits/locale_conv.h /usr/include/c++/14/iomanip \
+ /usr/include/c++/14/bits/quoted_string.h /usr/include/c++/14/sstream \
+ /usr/include/c++/14/istream /usr/include/c++/14/ios \
+ /usr/include/c++/14/bits/basic_ios.h \
+ /usr/include/c++/14/bits/basic_ios.tcc /usr/include/c++/14/ostream \
+ /usr/include/c++/14/format /usr/include/c++/14/array \
+ /usr/include/c++/14/charconv /usr/include/c++/14/optional \
  /usr/include/c++/14/bits/enable_special_members.h \
  /usr/include/c++/14/span /usr/include/c++/14/variant \
  /usr/include/c++/14/bits/ranges_algobase.h \
@@ -193,73 +195,15 @@ CMakeFiles/asciiDJ.dir/src/TUIdisplay.cpp.o: \
  /usr/include/c++/14/bits/unicode-data.h \
  /usr/include/c++/14/bits/ostream.tcc \
  /usr/include/c++/14/bits/istream.tcc \
- /usr/include/c++/14/bits/sstream.tcc \
+ /usr/include/c++/14/bits/sstream.tcc /usr/include/c++/14/codecvt \
+ /usr/include/c++/14/ext/concurrence.h \
  /usr/include/c++/14/bits/shared_ptr.h \
  /usr/include/c++/14/bits/shared_ptr_base.h \
  /usr/include/c++/14/bits/allocated_ptr.h \
  /usr/include/c++/14/bits/unique_ptr.h \
  /usr/include/c++/14/ext/aligned_buffer.h \
- /usr/include/c++/14/ext/concurrence.h /usr/include/c++/14/bits/align.h \
- /usr/include/c++/14/bits/chrono_io.h /usr/include/c++/14/iomanip \
- /usr/include/c++/14/bits/quoted_string.h \
- /home/kali/Desktop/asciiDJ/include/DirReader.hpp \
- /home/kali/Desktop/asciiDJ/include/Deck.hpp /usr/include/c++/14/atomic \
- /usr/include/c++/14/bits/atomic_base.h \
- /usr/include/c++/14/bits/atomic_lockfree_defines.h \
- /usr/include/c++/14/bits/atomic_wait.h /usr/include/c++/14/climits \
- /usr/lib/gcc/x86_64-linux-gnu/14/include/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/14/include/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
- /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
- /usr/include/x86_64-linux-gnu/bits/uio_lim.h /usr/include/unistd.h \
- /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
- /usr/include/x86_64-linux-gnu/bits/environments.h \
- /usr/include/x86_64-linux-gnu/bits/confname.h \
- /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
- /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
- /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
- /usr/include/linux/close_range.h /usr/include/syscall.h \
- /usr/include/x86_64-linux-gnu/sys/syscall.h \
- /usr/lib/linux/uapi/x86/asm/unistd.h \
- /usr/lib/linux/uapi/x86/asm/unistd_64.h \
- /usr/include/x86_64-linux-gnu/bits/syscall.h \
- /usr/include/c++/14/bits/std_mutex.h /usr/include/c++/14/thread \
- /usr/include/c++/14/stop_token /usr/include/c++/14/bits/std_thread.h \
- /usr/include/c++/14/semaphore /usr/include/c++/14/bits/semaphore_base.h \
- /usr/include/c++/14/bits/atomic_timed_wait.h \
- /usr/include/c++/14/bits/this_thread_sleep.h \
- /usr/include/x86_64-linux-gnu/sys/time.h /usr/include/semaphore.h \
- /usr/include/x86_64-linux-gnu/bits/semaphore.h \
- /usr/include/c++/14/iostream \
- /home/kali/Desktop/asciiDJ/third_party/miniaudio/miniaudio.h \
- /home/kali/Desktop/asciiDJ/include/Mixer.hpp \
- /home/kali/Desktop/asciiDJ/include/Equalizer.hpp \
- /usr/include/c++/14/mutex /usr/include/c++/14/bits/unique_lock.h \
- /usr/include/c++/14/utility /usr/include/c++/14/bits/stl_relops.h \
- /usr/include/c++/14/algorithm /usr/include/c++/14/bits/ranges_algo.h \
+ /usr/include/c++/14/bits/align.h /usr/include/c++/14/bits/fs_dir.h \
+ /usr/include/c++/14/bits/fs_ops.h /usr/include/c++/14/algorithm \
+ /usr/include/c++/14/bits/ranges_algo.h \
  /usr/include/c++/14/pstl/glue_algorithm_defs.h \
- /usr/include/c++/14/pstl/execution_defs.h \
- /home/kali/Desktop/asciiDJ/include/FileLoadManager.hpp \
- /usr/include/c++/14/memory \
- /usr/include/c++/14/bits/stl_raw_storage_iter.h \
- /usr/include/c++/14/bits/shared_ptr_atomic.h \
- /usr/include/c++/14/backward/auto_ptr.h \
- /usr/include/c++/14/bits/ranges_uninitialized.h \
- /usr/include/c++/14/bits/out_ptr.h \
- /usr/include/c++/14/pstl/glue_memory_defs.h \
- /home/kali/Desktop/asciiDJ/include/EQsetup.hpp /usr/include/termios.h \
- /usr/include/x86_64-linux-gnu/bits/termios.h \
- /usr/include/x86_64-linux-gnu/bits/termios-struct.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_cc.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_iflag.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_oflag.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_cflag.h \
- /usr/include/x86_64-linux-gnu/bits/termios-cbaud.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_lflag.h \
- /usr/include/x86_64-linux-gnu/bits/termios-tcflow.h \
- /usr/include/x86_64-linux-gnu/bits/termios-misc.h \
- /usr/include/x86_64-linux-gnu/bits/termios-baud.h \
- /usr/include/x86_64-linux-gnu/sys/ttydefaults.h
+ /usr/include/c++/14/pstl/execution_defs.h

@@ -70,6 +70,80 @@ std::string Renderer::renderVerticalFill(int length, int progress)
 	       RenderElements::verticalFillBottomCap;
 }
 
+/// @brief renders a vertical selector string with a pointer marking one stop out of length,
+/// very close to renderVerticalSlider, but instead of the pointer landing on any of length
+/// individual lines, it only lands on one of length+1 evenly spaced stops - spacing filler
+/// lines apart (spacing 0 = a stop every line, spacing 1 = every other line, etc)
+/// @param int length how many stops (0..length) the selector has
+/// @param int value which stop, out of [0, length], to put the pointer on
+/// @param int spacing how many filler lines separate each stop
+std::string Renderer::renderVerticalSelector(int length, int value, int spacing)
+{
+	int stride = spacing + 1;
+
+	auto preFill = std::views::repeat(RenderElements::verticalSelectorBackground, value * stride) | std::views::join;
+	auto postFill = std::views::repeat(RenderElements::verticalSelectorBackground, (length - value) * stride) | std::views::join;
+
+	std::string result = std::string(preFill.begin(), preFill.end()) +
+			      RenderElements::verticalSelectorPointer +
+			      std::string(postFill.begin(), postFill.end());
+
+	// every line (background and pointer alike) bakes in its own trailing "\n" so the repeats
+	// above join cleanly - drop the one dangling off the very last line to match every other
+	// renderer here, none of which leave a trailing newline
+	result.pop_back();
+
+	return result;
+}
+
+/// @brief renders a paginated file list: truncationHeight rows, one file name per row at its own
+/// natural length (via renderValue's string overload, promiseLength set to the name's own
+/// length so it renders as-is rather than looping into repeats), blank (truncationLength-wide)
+/// rows past the end of files. selected picks which page (rows
+/// [selected/truncationHeight*truncationHeight, +truncationHeight)) is shown - the caller is
+/// expected to separately drive a renderVerticalSelector(truncationHeight - 1, selected %
+/// truncationHeight, spacing) alongside this, and passing the same spacing here keeps that
+/// selector's pointer lined up with the currently selected row
+/// @param std::vector<Files::FileEntry> files the full file listing to page through
+/// @param int truncationLength width of the blank rows past the end of files (no longer clamps
+/// file name length - a name longer than this now renders in full rather than being truncated)
+/// @param int truncationHeight how many rows are visible at once (the page size)
+/// @param int selected which file, out of the full files vec, is currently selected
+/// @param int spacing how many filler lines separate each row
+std::string Renderer::renderFileList(const std::vector<Files::FileEntry>& files, int truncationLength, int truncationHeight, int selected, int spacing)
+{
+	if (truncationHeight <= 0)
+		return "";
+
+	int pageStart = (selected / truncationHeight) * truncationHeight;
+	std::string blankRow(std::max(0, truncationLength), ' ');
+
+	std::string result;
+
+	for (int row = 0; row < truncationHeight; row++)
+	{
+		int fileIdx = pageStart + row;
+
+		// promiseLength set to the name's own length (not truncationLength) so renderValue
+		// doesn't loop it into repeats - its behavior whenever promiseLength exceeds the text
+		result += (fileIdx >= 0 && fileIdx < (int)files.size())
+				  ? renderValue(files[fileIdx].displayName, (int)files[fileIdx].displayName.length(), 0)
+				  : blankRow;
+
+		// no filler (or newline) trailing the very last row, matching every other renderer's
+		// "no dangling trailing newline" convention
+		if (row < truncationHeight - 1)
+		{
+			result += "\n";
+
+			for (int fillerLine = 0; fillerLine < spacing; fillerLine++)
+				result += blankRow + "\n";
+		}
+	}
+
+	return result;
+}
+
 /// @brief renders the knob frame for a given position
 /// @param float position knob position in [-1, 1], +1 = max, -1 = min
 std::string Renderer::renderKnob(float position)

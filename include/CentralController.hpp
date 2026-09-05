@@ -5,6 +5,8 @@
 #include <Equalizer.hpp>
 #include <InputReader.hpp>
 #include <InputInterpreter.hpp>
+#include <FileLoadManager.hpp>
+#include <TUIdisplay.hpp>
 
 // that name is sooo fucking tuff
 namespace CommandAndControl
@@ -26,6 +28,16 @@ private:
 	// control
 	Input::InputReader* iReader = nullptr;
 	Input::InputInterpreter* interpreter = nullptr;
+
+	// file browser
+	Files::FileLoadManager* fileManager = nullptr;
+	Graphics::TUIdisplay* display = nullptr;
+	Files::DirReader* dirReader = nullptr;
+
+	// own copy of the mode flag - mirrored into display's toggleFileDisplay on every toggle
+	// (see fileSelectToggleCallback), since TUIdisplay and CentralController are independent
+	// peers with no pointer to each other otherwise
+	bool fileSelectionMode = false;
 
 	// InputInterpreter callbacks are plain function pointers (no way to carry captured
 	// context), so these have to be static; self points back at the instance they act on
@@ -57,6 +69,14 @@ private:
 	static void deck1EQhighCallback(double db);
 	static void deck2EQhighCallback(double db);
 
+	// file browser
+	static void fileSelectToggleCallback();
+
+	static void arrowUpCallback();
+	static void arrowDownCallback();
+	static void arrowLeftCallback();
+	static void arrowRightCallback();
+
 	// setup
 	void configureInputs();
 	void addEQbands();
@@ -67,7 +87,9 @@ public:
 	CentralController(Playback::Deck* deck1, Playback::Deck* deck2,
 			   Playback::Equalizer* eq1, Playback::Equalizer* eq2,
 			   Playback::Mixer* mixer,
-			   Input::InputReader* iReader, Input::InputInterpreter* interpreter);
+			   Input::InputReader* iReader, Input::InputInterpreter* interpreter,
+			   Files::FileLoadManager* fileManager, Graphics::TUIdisplay* display,
+			   Files::DirReader* dirReader);
 
 	~CentralController() = default;
 

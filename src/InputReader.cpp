@@ -12,11 +12,12 @@ namespace Input
 
 namespace
 {
-	// evdev key codes aren't ASCII, so every char InputSchema.hpp actually binds to a
-	// control needs an explicit mapping here; anything unmapped returns -1
-	int charToEvdevKeyCode(char c)
+	// evdev key codes aren't ASCII (or X11 KeySyms), so every key InputSchema.hpp/
+	// InputTuning.hpp actually binds to a control needs an explicit mapping here; anything
+	// unmapped returns -1
+	int keySymToEvdevKeyCode(int keySym)
 	{
-		switch (c)
+		switch (keySym)
 		{
 			case 'a': return KEY_A;
 			case 'b': return KEY_B;
@@ -48,6 +49,12 @@ namespace
 			case ',': return KEY_COMMA;
 			case '.': return KEY_DOT;
 			case ' ': return KEY_SPACE;
+			case '`': return KEY_GRAVE;
+			case XK_Shift_L: return KEY_LEFTSHIFT;
+			case XK_Up: return KEY_UP;
+			case XK_Down: return KEY_DOWN;
+			case XK_Left: return KEY_LEFT;
+			case XK_Right: return KEY_RIGHT;
 			default: return -1;
 		}
 	}
@@ -120,9 +127,9 @@ void InputReader::openEvdevKeyboard()
 }
 
 /// @brief function to query whether a key is down right now or not
-/// @param char key which keyboard key to query
+/// @param int key which keyboard key to query (an X11 KeySym value)
 /// @returns bool true->pressed false->released
-bool InputReader::queryKey(char key)
+bool InputReader::queryKey(int key)
 {
 	if (this->evdevFd >= 0)
 		return this->queryKeyEvdev(key);
@@ -133,7 +140,7 @@ bool InputReader::queryKey(char key)
 /// @brief X11 backend for queryKey() - best-effort: XQueryKeymap only reflects real key
 /// state when this process's X connection belongs to a focused X11/XWayland window, which
 /// this reader never creates, so under Wayland this generally reports nothing pressed
-bool InputReader::queryKeyX11(char key)
+bool InputReader::queryKeyX11(int key)
 {
 	if (!this->dpy)
 		return false;
@@ -151,12 +158,12 @@ bool InputReader::queryKeyX11(char key)
 
 /// @brief evdev backend for queryKey() - reads live key state directly from the kernel via
 /// EVIOCGKEY, independent of X11/Wayland and window focus entirely
-bool InputReader::queryKeyEvdev(char key)
+bool InputReader::queryKeyEvdev(int key)
 {
 	if (this->evdevFd < 0)
 		return false;
 
-	int code = charToEvdevKeyCode(key);
+	int code = keySymToEvdevKeyCode(key);
 
 	if (code < 0)
 		return false;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <X11/keysym.h>
+
 namespace Input
 {
 
@@ -9,7 +11,7 @@ namespace Input
 // travel time each one implies is noted next to it, tune from there
 
 // held to snap whichever control is being touched back to its default instead of nudging it
-inline const char RESET_MODIFIER_KEY = ' ';
+inline const int RESET_MODIFIER_KEY = XK_Shift_L;
 
 // deck speed control (precision mover)
 inline const double SPEED_START_VAL = 1.0;

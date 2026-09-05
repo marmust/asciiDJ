@@ -2,7 +2,7 @@ ASCIIDJ CONTROLS:
 (note: code doesnt pull control schema from here)
 
 modifier:
-	hold SPACE while touching any control to reset it to its default
+	hold LEFT SHIFT while touching any control to reset it to its default
 	(defaults are the *_START_VAL entries in InputTuning.hpp)
 
 mixer:
@@ -42,3 +42,8 @@ right deck:
 	spin forward: ;
 	spin back: l
 	pause / play: .
+
+file browser:
+	toggle file-select mode: `
+	move selection up / down: arrow up / arrow down
+	load selection onto left deck / right deck: arrow left / arrow right (only while in file-select mode)

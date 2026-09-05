@@ -36,10 +36,6 @@ private:
         ma_device device;
 	bool isPlaying = false;
 
-	// temp for identical track metadata enforcement
-	int allowedSampleRate = 0;
-	int allowedChannelCount = 0;
-
 public:
 	// ctor / dtor
 	Mixer();

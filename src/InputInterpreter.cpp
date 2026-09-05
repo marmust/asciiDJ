@@ -24,14 +24,14 @@ void InputInterpreter::provideIReader(InputReader* iReader)
 }
 
 /// @brief adds a new precision mover type input to be processed
-/// @param char positiveDirection which keyboard key to be pressed to move the input in the positive direction
-/// @param char negativeDirection which keyboard key to be pressed to move the input in the negative direction
+/// @param int positiveDirection which keyboard key to be pressed to move the input in the positive direction
+/// @param int negativeDirection which keyboard key to be pressed to move the input in the negative direction
 /// @param double startVal initial value of the slider
 /// @param double speed multiplier on the movement speed of the slider
 /// @param double min the min allowed clamp value of the slider
 /// @param double max the max allowed clamp value of the slider
 /// @param void (*callback)(double) callback func ptr to receive the double slider value on move
-void InputInterpreter::addInput(char positiveDirectionKey, char negativeDirectionKey,
+void InputInterpreter::addInput(int positiveDirectionKey, int negativeDirectionKey,
 	                        double startVal, double speed,
 	                        double min, double max,
 	                        void (*callback)(double))
@@ -47,15 +47,15 @@ void InputInterpreter::addInput(char positiveDirectionKey, char negativeDirectio
 }
 
 /// @brief adds a new momentum mover type input to be processed
-/// @param char positiveDirection which keyboard key to be pressed to move the input in the positive direction
-/// @param char negativeDirection which keyboard key to be pressed to move the input in the negative direction
+/// @param int positiveDirection which keyboard key to be pressed to move the input in the positive direction
+/// @param int negativeDirection which keyboard key to be pressed to move the input in the negative direction
 /// @param double startVal initial value of the slider
 /// @param double speed multiplier on the movement speed of the slider
 /// @param double min the min allowed clamp value of the slider
 /// @param double max the max allowed clamp value of the slider
 /// @param double decayHalfLife seconds for the value to fall halfway back to 0 while released
 /// @param void (*callback)(double) callback func ptr to receive the double slider value on move
-void InputInterpreter::addInput(char positiveDirectionKey, char negativeDirectionKey,
+void InputInterpreter::addInput(int positiveDirectionKey, int negativeDirectionKey,
 		                double startVal, double speed, double decayHalfLife,
 		                double min, double max,
 		                void (*callback)(double))
@@ -71,9 +71,9 @@ void InputInterpreter::addInput(char positiveDirectionKey, char negativeDirectio
 }
 
 /// @brief adds a new momentum mover type input to be processed
-/// @param char activationKey which keyboard key to be pressed to activate the button
+/// @param int activationKey which keyboard key to be pressed to activate the button
 /// @param void (*callback)() callback func ptr to be called on button activation
-void InputInterpreter::addInput(char activationKey, void (*callback)())
+void InputInterpreter::addInput(int activationKey, void (*callback)())
 {
 	// create the appropriate struct
 	ButtonInput newInput = { activationKey, callback };

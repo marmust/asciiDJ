@@ -2,6 +2,7 @@
 #include <InputTuning.hpp>
 #include <InputSchema.hpp>
 #include <EQsetup.hpp>
+#include <DirReader.hpp>
 
 namespace CommandAndControl
 {
@@ -13,7 +14,9 @@ CentralController* CentralController::self = nullptr;
 CentralController::CentralController(Playback::Deck* deck1, Playback::Deck* deck2,
 				      Playback::Equalizer* eq1, Playback::Equalizer* eq2,
 				      Playback::Mixer* mixer,
-				      Input::InputReader* iReader, Input::InputInterpreter* interpreter)
+				      Input::InputReader* iReader, Input::InputInterpreter* interpreter,
+				      Files::FileLoadManager* fileManager, Graphics::TUIdisplay* display,
+				      Files::DirReader* dirReader)
 {
 	this->deck1 = deck1;
 	this->deck2 = deck2;
@@ -25,6 +28,10 @@ CentralController::CentralController(Playback::Deck* deck1, Playback::Deck* deck
 
 	this->iReader = iReader;
 	this->interpreter = interpreter;
+
+	this->fileManager = fileManager;
+	this->display = display;
+	this->dirReader = dirReader;
 
 	CentralController::self = this;
 
@@ -140,6 +147,62 @@ void CentralController::deck2EQhighCallback(double db)
 	self->eq2->changeBand(EQ_HIGH_IDX, EQ_HIGH_FREQ, EQ_HIGH_Q, db);
 }
 
+/// @brief callback from input to toggle file-select mode; keeps this instance's own
+/// fileSelectionMode and display's toggleFileDisplay in sync so both the input gating and the
+/// render mode switch together on the same keypress
+void CentralController::fileSelectToggleCallback()
+{
+	self->fileSelectionMode = !self->fileSelectionMode;
+	self->display->setToggleFileDisplay(self->fileSelectionMode);
+
+	// refresh the manager's listing and reset the selection right as the browser opens - it was
+	// never being populated before, so loadToDeck() was always silently no-opping regardless of
+	// what got pressed
+	if (self->fileSelectionMode)
+	{
+		self->fileManager->reportFiles(self->dirReader->listLocalFiles());
+		self->fileManager->setSelectedIdx(0);
+	}
+}
+
+/// @brief callback from input to move the file selection to the previous entry
+void CentralController::arrowUpCallback()
+{
+	self->fileManager->setSelectedIdx(self->fileManager->getSelectedIdx() - 1);
+}
+
+/// @brief callback from input to move the file selection to the next entry
+void CentralController::arrowDownCallback()
+{
+	self->fileManager->setSelectedIdx(self->fileManager->getSelectedIdx() + 1);
+}
+
+/// @brief callback from input to load the currently selected file onto deck1 (left deck), only
+/// while in file-select mode; drops back out of file-select mode once the load's triggered
+void CentralController::arrowLeftCallback()
+{
+	if (!self->fileSelectionMode)
+		return;
+
+	self->fileManager->loadToDeck(0, self->fileManager->getSelectedIdx());
+
+	self->fileSelectionMode = false;
+	self->display->setToggleFileDisplay(false);
+}
+
+/// @brief callback from input to load the currently selected file onto deck2 (right deck), only
+/// while in file-select mode; drops back out of file-select mode once the load's triggered
+void CentralController::arrowRightCallback()
+{
+	if (!self->fileSelectionMode)
+		return;
+
+	self->fileManager->loadToDeck(1, self->fileManager->getSelectedIdx());
+
+	self->fileSelectionMode = false;
+	self->display->setToggleFileDisplay(false);
+}
+
 /// @brief registers every control with the InputInterpreter, wiring each one to its callback,
 /// keybinds taken from controls.txt (left deck = deck1, right deck = deck2)
 /// NOTE: speed/decay/range values live in InputTuning.hpp, still placeholders, tune to taste
@@ -165,6 +228,13 @@ void CentralController::configureInputs()
 	this->interpreter->addInput(Input::DECK2_EQ_BASS_UP, Input::DECK2_EQ_BASS_DOWN, Input::EQ_START_VAL, Input::EQ_MOVE_SPEED, Input::EQ_MIN, Input::EQ_MAX, deck2EQbassCallback);
 	this->interpreter->addInput(Input::DECK2_EQ_MIDS_UP, Input::DECK2_EQ_MIDS_DOWN, Input::EQ_START_VAL, Input::EQ_MOVE_SPEED, Input::EQ_MIN, Input::EQ_MAX, deck2EQmidsCallback);
 	this->interpreter->addInput(Input::DECK2_EQ_HIGH_UP, Input::DECK2_EQ_HIGH_DOWN, Input::EQ_START_VAL, Input::EQ_MOVE_SPEED, Input::EQ_MIN, Input::EQ_MAX, deck2EQhighCallback);
+
+	// file browser
+	this->interpreter->addInput(Input::FILE_SELECT_TOGGLE, fileSelectToggleCallback);
+	this->interpreter->addInput(Input::ARROW_UP, arrowUpCallback);
+	this->interpreter->addInput(Input::ARROW_DOWN, arrowDownCallback);
+	this->interpreter->addInput(Input::ARROW_LEFT, arrowLeftCallback);
+	this->interpreter->addInput(Input::ARROW_RIGHT, arrowRightCallback);
 }
 
 /// @brief registers the fixed bass/mid/high bands each EQ callback drives by index (order must

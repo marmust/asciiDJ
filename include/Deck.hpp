@@ -59,6 +59,13 @@ struct Track
 
 class Deck
 {
+public:
+	// every track is decoded into this fixed format regardless of its native one (miniaudio's
+	// decoder resamples/remixes internally when given explicit non-zero channels/sampleRate), so
+	// every Deck and the Mixer's own device always agree on format - no per-load enforcement needed
+	static constexpr ma_uint32 kOutputChannels = 2;
+	static constexpr ma_uint32 kOutputSampleRate = 48000;
+
 private:
 	// track frame array
 	Track loadedTrack;
@@ -71,7 +78,6 @@ private:
 
 	// for pausing / unpausing
 	double previousPlaybackSpeed = 1.0;
-	double previousTurntableShift = 0.0;
 
 	// miniaudio backend
 	ma_device device;
@@ -114,6 +120,12 @@ public:
 	bool getIsStandalonePlaying() const;
 	float getTrackProgress() const;
 	double getTimeRemainingSeconds() const;
+
+	// live off deckParams directly rather than the loaded track's ridealong copy, so these stay
+	// meaningful even when unloaded (0/0, same as a paused deck - startRun() pauses every deck
+	// up front regardless of load state) instead of only being readable via getLoadedTrack()
+	double getPlaybackSpeed() const;
+	double getTurntableShift() const;
 };
 
 }
