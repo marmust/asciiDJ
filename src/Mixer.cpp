@@ -92,6 +92,8 @@ void Mixer::data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
 		// mix currentExtracted with the miniaudio output, sample by interleaved sample
 		for (ma_uint32 sampleIdx = 0; sampleIdx < frameCount * channels; sampleIdx++)
 		{
+			// TODO: interleaved channels share one filter history per band, so the EQ acts an octave
+			// above its set frequencies and bleeds L/R into each other. needs per-channel EQ memory
 			(*it)->eq->applyEQ(&currentExtracted[sampleIdx]);
 
 			// apply volume

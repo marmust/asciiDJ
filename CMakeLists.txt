@@ -18,7 +18,6 @@ add_executable(asciiDJ
     src/DirReader.cpp
     src/FileLoadManager.cpp
     src/Renderer.cpp
-    src/FFTprocessor.cpp
     src/TUIdisplay.cpp
     src/GraphicsComposer.cpp
     third_party/miniaudio/miniaudio_impl.cpp

@@ -28,6 +28,18 @@ inline constexpr int waveformOriginX = 13;
 // column the playhead marker draws at: the waveform's center char
 inline constexpr int playheadMarkerX = waveformOriginX + waveformCharCount / 2;
 
+// char length of the deck volume sliders and the crossfader slider
+inline constexpr int volumeSliderLength = 13;
+inline constexpr int xfaderSliderLength = 13;
+
+// file-select list: rows per page, max chars per filename, and blank rows between entries.
+// 8 rows, not 10: frameImage's own "DECK1 =="/"DECK2 ==" rows (2-3) are kept rather than
+// overwritten, which pushes the list down 3 rows - shrunk to still fit inside the frame's 22
+// usable body rows at spacing 1
+inline constexpr int fileListPageRows = 8;
+inline constexpr int fileListNameLength = 40;
+inline constexpr int fileListSpacing = 1;
+
 // all telemetry needed to feed TUI
 struct TUItelemetry
 {
@@ -35,7 +47,7 @@ struct TUItelemetry
 	double d1speed = 1.0;
 	double d1shift = 0.0;
 	std::vector<float> d1waveform;
-	int d1sampleRate = 0;
+	float d1waveformReference = 0.0f;
 	std::string d1name;
 	float d1progress = 0.0f;
 	double d1timeRemaining = 0.0;
@@ -44,7 +56,7 @@ struct TUItelemetry
 	double d2speed = 1.0;
 	double d2shift = 0.0;
 	std::vector<float> d2waveform;
-	int d2sampleRate = 0;
+	float d2waveformReference = 0.0f;
 	std::string d2name;
 	float d2progress = 0.0f;
 	double d2timeRemaining = 0.0;
@@ -92,14 +104,31 @@ private:
 	int deck2LabelWindowPos = 0;
 	std::chrono::steady_clock::time_point deck2LabelLastTick = std::chrono::steady_clock::now();
 
+	// wall-clock waveform normalizer state, one set per deck: the trailing average of each
+	// frame's loudest visible slice the trace scales against, and when it was last updated
+	float waveform1Normalizer = 0.0f;
+	std::chrono::steady_clock::time_point waveform1LastTick = std::chrono::steady_clock::now();
+
+	float waveform2Normalizer = 0.0f;
+	std::chrono::steady_clock::time_point waveform2LastTick = std::chrono::steady_clock::now();
+
 	int advanceTurntableFrame(double speed, double shift, int& frameState,
 				   std::chrono::steady_clock::time_point& lastTick);
 
 	int advanceDisplayValue(int& windowPos, std::chrono::steady_clock::time_point& lastTick);
 
+	float advanceWaveformNormalizer(float windowMax, float& normalizer,
+					std::chrono::steady_clock::time_point& lastTick);
+
+	std::string composeWaveform(const std::vector<float>& waveform, float& normalizer,
+				    std::chrono::steady_clock::time_point& lastTick);
+
 	// text formatting shared by the speed/xfader readouts and the EQ dB readouts
 	static std::string formatSignedReading(const std::string& prefix, const std::string& infix, double value);
 	static std::string formatSignedDb(double value);
+
+	// maps a control's value onto [0, 1] across its own min/max, for sliders and knobs
+	static double rangeFraction(double value, double min, double max);
 
 public:
 	// ctor / dtor

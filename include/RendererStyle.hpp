@@ -73,7 +73,6 @@ namespace RenderElements
  \_|_/)"
 	};
 
-	// deck turntable spin frames, indexed directly (no interpolation - the caller picks the frame)
 	inline std::vector<std::string> turntableFrames = {
 		R"(      __-----------__
      /  ###########  \
@@ -183,22 +182,16 @@ namespace RenderElements
                                    )";
 
 	// static playhead marker, drawn one row above the waveform traces at their center column
-	// to mark where the cursor sits in the +-waveformWindowSeconds window each trace spans
+	// to mark where the cursor sits in the +-Waveform::WINDOW_SECONDS window each trace spans
 	inline std::string playheadMarkerImage = "v";
 
-	// spectrum density ramp, index 0 (BASS) = densest/loudest down to index size()-1 (HI) = sparsest/quietest
-	inline char spectrumBlank = ' ';
+	// fill for a waveform trace with no track loaded
+	inline char waveformBlank = ' ';
 
-	inline std::vector<char> spectrumChars = {
-		'@', '%', '=', '*', '|', ';', '.', '`', ' '
-	};
-
-	// [low, high) frequency bands in Hz, log-spaced across the audible range (20Hz-20kHz),
-	// index-aligned with spectrumChars (band i's char is spectrumChars[i]); non-overlapping
-	// and strictly rising, so a linear scan finds the band containing any given frequency
-	inline std::vector<std::pair<int, int>> frequencyRanges = {
-		{20, 29}, {29, 43}, {43, 63}, {63, 93}, {93, 136}, {136, 200},
-		{200, 294}, {294, 431}, {431, 633}, {633, 929}, {929, 1363}, {1363, 2001},
-		{2001, 2937}, {2937, 4310}, {4310, 6326}, {6326, 9286}, {9286, 13630}, {13630, 20000}
+	// waveform loudness ramp, index 0 = loudest down to index size()-1 = silent
+	inline std::vector<char> waveformChars = {
+		//'@', '%', '=', '*', '|', ';', '.', '`', ' '
+		//'@', '%', '@', '%', '=', '*', '=', '*', '|', ';', '|', ';', '.', '`', '.', '`', ' ', '.', ' ', '.'
+		'@', '%', '@', '%', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ',', '.', '`', ' '
 	};
 }

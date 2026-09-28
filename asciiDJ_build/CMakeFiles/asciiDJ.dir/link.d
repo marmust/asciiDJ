@@ -12,7 +12,6 @@ asciiDJ: \
   CMakeFiles/asciiDJ.dir/src/DirReader.cpp.o \
   CMakeFiles/asciiDJ.dir/src/FileLoadManager.cpp.o \
   CMakeFiles/asciiDJ.dir/src/Renderer.cpp.o \
-  CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.o \
   CMakeFiles/asciiDJ.dir/src/TUIdisplay.cpp.o \
   CMakeFiles/asciiDJ.dir/src/GraphicsComposer.cpp.o \
   CMakeFiles/asciiDJ.dir/third_party/miniaudio/miniaudio_impl.cpp.o \
@@ -74,8 +73,6 @@ CMakeFiles/asciiDJ.dir/src/DirReader.cpp.o:
 CMakeFiles/asciiDJ.dir/src/FileLoadManager.cpp.o:
 
 CMakeFiles/asciiDJ.dir/src/Renderer.cpp.o:
-
-CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.o:
 
 CMakeFiles/asciiDJ.dir/src/TUIdisplay.cpp.o:
 

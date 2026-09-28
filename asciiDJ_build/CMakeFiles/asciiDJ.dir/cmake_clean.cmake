@@ -8,8 +8,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/asciiDJ.dir/src/DirReader.cpp.o.d"
   "CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o"
   "CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.o.d"
-  "CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.o"
-  "CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.o.d"
   "CMakeFiles/asciiDJ.dir/src/FileLoadManager.cpp.o"
   "CMakeFiles/asciiDJ.dir/src/FileLoadManager.cpp.o.d"
   "CMakeFiles/asciiDJ.dir/src/GraphicsComposer.cpp.o"

@@ -225,30 +225,6 @@ src/Equalizer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/Equalizer.cpp.s
 .PHONY : src/Equalizer.cpp.s
 
-src/FFTprocessor.o: src/FFTprocessor.cpp.o
-.PHONY : src/FFTprocessor.o
-
-# target to build an object file
-src/FFTprocessor.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.o
-.PHONY : src/FFTprocessor.cpp.o
-
-src/FFTprocessor.i: src/FFTprocessor.cpp.i
-.PHONY : src/FFTprocessor.i
-
-# target to preprocess a source file
-src/FFTprocessor.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.i
-.PHONY : src/FFTprocessor.cpp.i
-
-src/FFTprocessor.s: src/FFTprocessor.cpp.s
-.PHONY : src/FFTprocessor.s
-
-# target to generate assembly for a file
-src/FFTprocessor.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/asciiDJ.dir/build.make CMakeFiles/asciiDJ.dir/src/FFTprocessor.cpp.s
-.PHONY : src/FFTprocessor.cpp.s
-
 src/FileLoadManager.o: src/FileLoadManager.cpp.o
 .PHONY : src/FileLoadManager.o
 
@@ -486,9 +462,6 @@ help:
 	@echo "... src/Equalizer.o"
 	@echo "... src/Equalizer.i"
 	@echo "... src/Equalizer.s"
-	@echo "... src/FFTprocessor.o"
-	@echo "... src/FFTprocessor.i"
-	@echo "... src/FFTprocessor.s"
 	@echo "... src/FileLoadManager.o"
 	@echo "... src/FileLoadManager.i"
 	@echo "... src/FileLoadManager.s"

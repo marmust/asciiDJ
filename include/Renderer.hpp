@@ -4,7 +4,6 @@
 #include <vector>
 #include <ranges>
 #include <RendererStyle.hpp>
-#include <FFTprocessor.hpp>
 #include <DirReader.hpp>
 
 namespace Graphics
@@ -32,8 +31,8 @@ public:
 
 	static std::string makeTransparent(std::string image);
 
-	static std::string renderSpectrum(const std::vector<int>& dominantFreqRanges);
-	static std::string renderWaveform(const std::vector<float>& waveform, int sampleRate, int charCount);
+	static std::vector<float> measureWaveform(const std::vector<float>& waveform, int charCount);
+	static std::string renderWaveform(const std::vector<float>& sliceVolumes, float normalizer, int charCount);
 };
 
 }

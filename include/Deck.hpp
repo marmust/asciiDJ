@@ -50,6 +50,10 @@ struct Track
 	std::atomic<ma_int64> cursor = 0;
 	std::string name;
 
+	// typical loud-passage level (mean |sample|, mono) the waveform trace normalizes against,
+	// computed once on load so the trace's scale stays fixed instead of rescaling every frame
+	float waveformReference = 0.0f;
+
 	// ride along because we can only access this struct in the data_callback()
 	DeckParams params;
 
@@ -84,6 +88,8 @@ private:
 
 	void syncModifiersToTrack();
 	void resetTrackMetadata();
+	void computeWaveformReference();
+	static float monoSampleAt(const Track& track, ma_uint64 frame);
 
 public:
 	// ctor / dtor

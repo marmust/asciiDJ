@@ -203,15 +203,17 @@ CMakeFiles/asciiDJ.dir/src/GraphicsComposer.cpp.o: \
  /usr/include/c++/14/bits/chrono_io.h /usr/include/c++/14/iomanip \
  /usr/include/c++/14/bits/quoted_string.h \
  /home/kali/Desktop/asciiDJ/include/DirReader.hpp \
+ /home/kali/Desktop/asciiDJ/include/WaveformTuning.hpp \
+ /home/kali/Desktop/asciiDJ/include/InputTuning.hpp \
+ /usr/include/X11/keysym.h /usr/include/X11/keysymdef.h \
  /home/kali/Desktop/asciiDJ/include/Renderer.hpp \
  /usr/include/c++/14/ranges /usr/include/c++/14/iterator \
  /usr/include/c++/14/bits/stream_iterator.h /usr/include/c++/14/utility \
  /usr/include/c++/14/bits/stl_relops.h \
  /usr/include/c++/14/bits/elements_of.h \
  /home/kali/Desktop/asciiDJ/include/RendererStyle.hpp \
- /home/kali/Desktop/asciiDJ/include/FFTprocessor.hpp \
- /usr/include/c++/14/complex /usr/include/c++/14/cmath \
- /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+ /usr/include/c++/14/cmath /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
  /usr/include/x86_64-linux-gnu/bits/fp-logb.h \

@@ -166,8 +166,17 @@ CMakeFiles/asciiDJ.dir/src/Renderer.cpp.o: \
  /usr/include/c++/14/variant /usr/include/c++/14/bits/parse_numbers.h \
  /usr/include/c++/14/bits/elements_of.h \
  /home/kali/Desktop/asciiDJ/include/RendererStyle.hpp \
- /home/kali/Desktop/asciiDJ/include/FFTprocessor.hpp \
- /usr/include/c++/14/complex /usr/include/c++/14/cmath \
+ /home/kali/Desktop/asciiDJ/include/DirReader.hpp \
+ /home/kali/Desktop/asciiDJ/include/WaveformTuning.hpp \
+ /usr/include/c++/14/algorithm /usr/include/c++/14/bits/stl_algo.h \
+ /usr/include/c++/14/bits/algorithmfwd.h \
+ /usr/include/c++/14/bits/stl_heap.h \
+ /usr/include/c++/14/bits/uniform_int_dist.h \
+ /usr/include/c++/14/bits/stl_tempbuf.h \
+ /usr/include/c++/14/bits/ranges_algo.h \
+ /usr/include/c++/14/bits/ranges_algobase.h \
+ /usr/include/c++/14/pstl/glue_algorithm_defs.h \
+ /usr/include/c++/14/pstl/execution_defs.h /usr/include/c++/14/cmath \
  /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
@@ -207,22 +216,12 @@ CMakeFiles/asciiDJ.dir/src/Renderer.cpp.o: \
  /usr/include/libintl.h /usr/include/c++/14/bits/codecvt.h \
  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
  /usr/include/c++/14/bits/locale_conv.h \
- /usr/include/c++/14/bits/ranges_algobase.h \
  /usr/include/c++/14/bits/unicode.h /usr/include/c++/14/cstdint \
  /usr/lib/gcc/x86_64-linux-gnu/14/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
- /usr/include/c++/14/bits/stl_algo.h \
- /usr/include/c++/14/bits/algorithmfwd.h \
- /usr/include/c++/14/bits/stl_heap.h \
- /usr/include/c++/14/bits/uniform_int_dist.h \
- /usr/include/c++/14/bits/stl_tempbuf.h \
  /usr/include/c++/14/bits/unicode-data.h \
  /usr/include/c++/14/bits/ostream.tcc \
  /usr/include/c++/14/bits/istream.tcc \
- /usr/include/c++/14/bits/sstream.tcc \
- /home/kali/Desktop/asciiDJ/include/DirReader.hpp \
- /usr/include/c++/14/algorithm /usr/include/c++/14/bits/ranges_algo.h \
- /usr/include/c++/14/pstl/glue_algorithm_defs.h \
- /usr/include/c++/14/pstl/execution_defs.h /usr/include/c++/14/iomanip \
+ /usr/include/c++/14/bits/sstream.tcc /usr/include/c++/14/iomanip \
  /usr/include/c++/14/bits/quoted_string.h

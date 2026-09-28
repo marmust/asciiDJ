@@ -9,16 +9,16 @@ inline const int EQ_MIDS_IDX = 1;
 inline const int EQ_HIGH_IDX = 2;
 
 // bass band
-inline const double EQ_BASS_FREQ = 100.0;
-inline const double EQ_BASS_Q = 0.7;
+inline const double EQ_BASS_FREQ = 400.0;
+inline const double EQ_BASS_Q = 6.2;
 
 // mids band
-inline const double EQ_MIDS_FREQ = 1000.0;
-inline const double EQ_MIDS_Q = 0.7;
+inline const double EQ_MIDS_FREQ = 2000.0;
+inline const double EQ_MIDS_Q = 6.7;
 
 // high band
-inline const double EQ_HIGH_FREQ = 8000.0;
-inline const double EQ_HIGH_Q = 0.7;
+inline const double EQ_HIGH_FREQ = 12000.0;
+inline const double EQ_HIGH_Q = 6.6;
 
 // gain every band starts at before any control has touched it
 inline const double EQ_INITIAL_GAIN_DB = 0.0;

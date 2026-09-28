@@ -1,4 +1,6 @@
 #include <GraphicsComposer.hpp>
+#include <WaveformTuning.hpp>
+#include <InputTuning.hpp>
 
 #include <Renderer.hpp>
 #include <RendererStyle.hpp>
@@ -77,6 +79,60 @@ int GraphicsComposer::advanceTurntableFrame(double speed, double shift, int& fra
 	return frameState;
 }
 
+/// @brief moves a deck's waveform normalizer a wall-clock-scaled step toward this frame's window
+/// max - an exponential trailing average with a Waveform::NORMALIZER_HALFLIFE half-life, so a kick
+/// scrolling in or out of view eases the trace's scale over rather than snapping every char at once
+/// @param float windowMax the loudest slice volume currently in view
+/// @param float& normalizer this deck's persisted normalizer, advanced in place
+/// @param std::chrono::steady_clock::time_point& lastTick this deck's persisted last-update time
+/// @returns float the normalizer to render this frame with
+float GraphicsComposer::advanceWaveformNormalizer(float windowMax, float& normalizer,
+						  std::chrono::steady_clock::time_point& lastTick)
+{
+	auto now = std::chrono::steady_clock::now();
+	std::chrono::duration<double> elapsed = now - lastTick;
+	lastTick = now;
+
+	// nothing to trail from yet (first frame, or just (re)loaded) - start at the real max
+	// instead of fading up from 0 with every char pinned at full scale
+	if (normalizer <= 0.0f)
+	{
+		normalizer = windowMax;
+		return normalizer;
+	}
+
+	double weight = 1.0 - std::pow(0.5, elapsed.count() / Waveform::NORMALIZER_HALFLIFE);
+	normalizer += (float)weight * (windowMax - normalizer);
+
+	return normalizer;
+}
+
+/// @brief measures a deck's waveform window, advances that deck's normalizer off the window's
+/// loudest slice, and renders the trace against it
+/// @param std::vector<float> waveform the deck's audio window (TUItelemetry::d1waveform/d2waveform)
+/// @param float& normalizer this deck's persisted normalizer
+/// @param std::chrono::steady_clock::time_point& lastTick this deck's persisted normalizer tick
+/// @returns std::string the rendered trace, waveformCharCount chars wide
+std::string GraphicsComposer::composeWaveform(const std::vector<float>& waveform, float& normalizer,
+					      std::chrono::steady_clock::time_point& lastTick)
+{
+	std::vector<float> sliceVolumes = Renderer::measureWaveform(waveform, waveformCharCount);
+
+	// unloaded deck: drop the trailing value so the next track seeds fresh from its own level
+	if (sliceVolumes.empty())
+	{
+		normalizer = 0.0f;
+		return Renderer::renderWaveform(sliceVolumes, normalizer, waveformCharCount);
+	}
+
+	float windowMax = *std::max_element(sliceVolumes.begin(), sliceVolumes.end());
+	float trailingNormalizer = this->advanceWaveformNormalizer(windowMax, normalizer, lastTick);
+
+	float frameNormalizer = trailingNormalizer * Waveform::NORMALIZER_SCALE;
+
+	return Renderer::renderWaveform(sliceVolumes, frameNormalizer, waveformCharCount);
+}
+
 /// @brief continuously advances a scrolling label's window position at a fixed rate, driven by
 /// wall-clock elapsed time, for feeding into Renderer::renderValue's string overload
 /// @param int& windowPos this label's persisted scroll position, advanced in place
@@ -111,11 +167,17 @@ std::string GraphicsComposer::formatSignedReading(const std::string& prefix, con
 	return prefix + std::string(spaces, ' ') + infix + sign + numText;
 }
 
-/// @brief formats a signed dB reading, always exactly 5 chars ("+00.0" .. "+24.0", "-24.0")
+/// @brief formats a signed dB reading with one decimal, zero-padded to a fixed width wide enough
+/// for the EQ's full Input::EQ_MIN/EQ_MAX range (eg "+000.0" .. "-100.0" for +-100dB), so the
+/// readout never changes width or truncates at the extremes
 /// @param double value the dB value to render
 std::string GraphicsComposer::formatSignedDb(double value)
 {
 	std::string sign = value < 0.0 ? "-" : "+";
+
+	// digits in the largest magnitude the EQ can reach
+	int maxMagnitude = (int)std::ceil(std::max(std::abs(Input::EQ_MIN), std::abs(Input::EQ_MAX)));
+	int intDigits = (int)std::to_string(maxMagnitude).length();
 
 	double absRounded = std::round(std::abs(value) * 10.0) / 10.0;
 	int intPart = (int)absRounded;
@@ -127,7 +189,20 @@ std::string GraphicsComposer::formatSignedDb(double value)
 		intPart += 1;
 	}
 
-	return sign + Renderer::renderValue(intPart, 2, 0) + "." + std::to_string(fracPart);
+	return sign + Renderer::renderValue(intPart, intDigits, 0) + "." + std::to_string(fracPart);
+}
+
+/// @brief maps a control's value onto [0, 1] across its own range, clamped
+/// @param double value the control's current value
+/// @param double min the control's minimum (maps to 0)
+/// @param double max the control's maximum (maps to 1)
+/// @returns double the fraction of the range value sits at, 0 for an empty range
+double GraphicsComposer::rangeFraction(double value, double min, double max)
+{
+	if (max <= min)
+		return 0.0;
+
+	return std::clamp((value - min) / (max - min), 0.0, 1.0);
 }
 
 /// @brief composes a single TUI frame from the last reported telemetry into frameBuffer vec
@@ -140,8 +215,8 @@ void GraphicsComposer::composeFrame()
 	std::string divider = Renderer::renderImage(RenderElements::middleDividerImage);
 
 	// per-slice amplitude row for each deck, centered on that deck's playhead
-	std::string deck1Waveform = Renderer::renderWaveform(telemetry.d1waveform, telemetry.d1sampleRate, waveformCharCount);
-	std::string deck2Waveform = Renderer::renderWaveform(telemetry.d2waveform, telemetry.d2sampleRate, waveformCharCount);
+	std::string deck1Waveform = this->composeWaveform(telemetry.d1waveform, this->waveform1Normalizer, this->waveform1LastTick);
+	std::string deck2Waveform = this->composeWaveform(telemetry.d2waveform, this->waveform2Normalizer, this->waveform2LastTick);
 
 	// static "v" marking the playhead column both traces are centered on
 	std::string playheadMarker = Renderer::renderImage(RenderElements::playheadMarkerImage);
@@ -168,16 +243,16 @@ void GraphicsComposer::composeFrame()
 	std::string deck1progress = Renderer::renderValue("DECK1: " + Renderer::renderValue((int)std::lround(telemetry.d1progress * 100.0f), 3, 0) + "%", 11, 0);
 	std::string deck2progress = Renderer::renderValue("DECK2: " + Renderer::renderValue((int)std::lround(telemetry.d2progress * 100.0f), 3, 0) + "%", 11, 0);
 
-	// EQ gain is +-24dB (Input::EQ_MIN/EQ_MAX), knobs expect [-1, 1]
-	std::string EQ1highKnob = Renderer::renderKnob((float)(telemetry.deck1EQhigh / 24.0));
-	std::string EQ1midKnob = Renderer::renderKnob((float)(telemetry.deck1EQmid / 24.0));
-	std::string EQ1lowKnob = Renderer::renderKnob((float)(telemetry.deck1EQlow / 24.0));
+	// knobs take [-1, 1]: -1 at Input::EQ_MIN, +1 at Input::EQ_MAX
+	std::string EQ1highKnob = Renderer::renderKnob((float)(rangeFraction(telemetry.deck1EQhigh, Input::EQ_MIN, Input::EQ_MAX) * 2.0 - 1.0));
+	std::string EQ1midKnob = Renderer::renderKnob((float)(rangeFraction(telemetry.deck1EQmid, Input::EQ_MIN, Input::EQ_MAX) * 2.0 - 1.0));
+	std::string EQ1lowKnob = Renderer::renderKnob((float)(rangeFraction(telemetry.deck1EQlow, Input::EQ_MIN, Input::EQ_MAX) * 2.0 - 1.0));
 
-	std::string EQ2highKnob = Renderer::renderKnob((float)(telemetry.deck2EQhigh / 24.0));
-	std::string EQ2midKnob = Renderer::renderKnob((float)(telemetry.deck2EQmid / 24.0));
-	std::string EQ2lowKnob = Renderer::renderKnob((float)(telemetry.deck2EQlow / 24.0));
+	std::string EQ2highKnob = Renderer::renderKnob((float)(rangeFraction(telemetry.deck2EQhigh, Input::EQ_MIN, Input::EQ_MAX) * 2.0 - 1.0));
+	std::string EQ2midKnob = Renderer::renderKnob((float)(rangeFraction(telemetry.deck2EQmid, Input::EQ_MIN, Input::EQ_MAX) * 2.0 - 1.0));
+	std::string EQ2lowKnob = Renderer::renderKnob((float)(rangeFraction(telemetry.deck2EQlow, Input::EQ_MIN, Input::EQ_MAX) * 2.0 - 1.0));
 
-	// dB readouts next to each knob, always exactly 5 chars ("+00.0" .. "-24.0")
+	// dB readouts next to each knob, fixed width sized to the EQ range (see formatSignedDb)
 	std::string EQ1highDb = this->formatSignedDb(telemetry.deck1EQhigh);
 	std::string EQ1midDb = this->formatSignedDb(telemetry.deck1EQmid);
 	std::string EQ1lowDb = this->formatSignedDb(telemetry.deck1EQlow);
@@ -186,10 +261,11 @@ void GraphicsComposer::composeFrame()
 	std::string EQ2midDb = this->formatSignedDb(telemetry.deck2EQmid);
 	std::string EQ2lowDb = this->formatSignedDb(telemetry.deck2EQlow);
 
-	// volume is [0, 1] (Input::VOLUME_MIN/MAX); slider progress climbs from the top as volume rises
-	constexpr int volumeSliderLength = 13;
-	int deck1VolumeProgress = std::clamp((int)std::lround((1.0 - telemetry.d1volume) * (volumeSliderLength - 1)), 0, volumeSliderLength - 1);
-	int deck2VolumeProgress = std::clamp((int)std::lround((1.0 - telemetry.d2volume) * (volumeSliderLength - 1)), 0, volumeSliderLength - 1);
+	// slider progress climbs from the top as volume rises through Input::VOLUME_MIN..VOLUME_MAX
+	double deck1VolumeFraction = rangeFraction(telemetry.d1volume, Input::VOLUME_MIN, Input::VOLUME_MAX);
+	double deck2VolumeFraction = rangeFraction(telemetry.d2volume, Input::VOLUME_MIN, Input::VOLUME_MAX);
+	int deck1VolumeProgress = (int)std::lround((1.0 - deck1VolumeFraction) * (volumeSliderLength - 1));
+	int deck2VolumeProgress = (int)std::lround((1.0 - deck2VolumeFraction) * (volumeSliderLength - 1));
 
 	std::string deck1volume = Renderer::renderVerticalSlider(volumeSliderLength, deck1VolumeProgress);
 	std::string deck2volume = Renderer::renderVerticalSlider(volumeSliderLength, deck2VolumeProgress);
@@ -198,9 +274,9 @@ void GraphicsComposer::composeFrame()
 	std::string deck1volumeLabel = "vol " + Renderer::renderValue(telemetry.d1volume, 3);
 	std::string deck2volumeLabel = "vol " + Renderer::renderValue(telemetry.d2volume, 3);
 
-	// crossfader is [-1, 1] (Input::XFADER_MIN/MAX)
-	constexpr int xfaderSliderLength = 13;
-	int xfaderProgress = std::clamp((int)std::lround((telemetry.xfader + 1.0) / 2.0 * (xfaderSliderLength - 1)), 0, xfaderSliderLength - 1);
+	// crossfader travels left to right across Input::XFADER_MIN..XFADER_MAX
+	double xfaderFraction = rangeFraction(telemetry.xfader, Input::XFADER_MIN, Input::XFADER_MAX);
+	int xfaderProgress = (int)std::lround(xfaderFraction * (xfaderSliderLength - 1));
 
 	std::string crossfader = Renderer::renderHorizontalSlider(xfaderSliderLength, xfaderProgress);
 
@@ -327,16 +403,9 @@ void GraphicsComposer::composeFileSelectFrame()
 {
 	const TUItelemetry& telemetry = this->reportedTelemetry;
 
-	// 8, not 10: frameImage's own "DECK1 =="/"DECK2 ==" rows (2-3) are kept now rather than
-	// overwritten, which pushes everything below them down 3 rows - shrunk to still fit inside
-	// the frame's 22 usable body rows at spacing 1
-	constexpr int truncationHeight = 8;
-	constexpr int truncationLength = 40;
-	constexpr int spacing = 1;
-
 	// pagination: which row within the visible page is highlighted vs which file (out of the
 	// full list) that actually is - renderFileList derives the same page from fileSelectedIdx
-	int pageLocalSelected = telemetry.fileSelectedIdx % truncationHeight;
+	int pageLocalSelected = telemetry.fileSelectedIdx % fileListPageRows;
 
 	bool hasSelection = telemetry.fileSelectedIdx >= 0 && telemetry.fileSelectedIdx < (int)telemetry.fileList.size();
 	std::string selectedName = hasSelection ? telemetry.fileList[telemetry.fileSelectedIdx].displayName : "";
@@ -345,8 +414,8 @@ void GraphicsComposer::composeFileSelectFrame()
 
 	// waveform traces that pair with the (kept) "DECK1 =="/"DECK2 ==" labels in DJ mode were
 	// missing here entirely, leaving those rows half-drawn (label with no waveform next to it)
-	std::string deck1Waveform = Renderer::renderWaveform(telemetry.d1waveform, telemetry.d1sampleRate, waveformCharCount);
-	std::string deck2Waveform = Renderer::renderWaveform(telemetry.d2waveform, telemetry.d2sampleRate, waveformCharCount);
+	std::string deck1Waveform = this->composeWaveform(telemetry.d1waveform, this->waveform1Normalizer, this->waveform1LastTick);
+	std::string deck2Waveform = this->composeWaveform(telemetry.d2waveform, this->waveform2Normalizer, this->waveform2LastTick);
 
 	// promiseLength set to each line's own length (not a fixed screen width) so renderValue
 	// neither loops the text into repeats (its behavior for a promiseLength longer than the
@@ -357,8 +426,8 @@ void GraphicsComposer::composeFileSelectFrame()
 	std::string header = Renderer::renderValue(openDirLine, (int)openDirLine.length(), 0) + "\n" +
 			      Renderer::renderValue(selectedLine, (int)selectedLine.length(), 0);
 
-	std::string selectorCol = Renderer::renderVerticalSelector(truncationHeight - 1, pageLocalSelected, spacing);
-	std::string fileListCol = Renderer::renderFileList(telemetry.fileList, truncationLength, truncationHeight, telemetry.fileSelectedIdx, spacing);
+	std::string selectorCol = Renderer::renderVerticalSelector(fileListPageRows - 1, pageLocalSelected, fileListSpacing);
+	std::string fileListCol = Renderer::renderFileList(telemetry.fileList, fileListNameLength, fileListPageRows, telemetry.fileSelectedIdx, fileListSpacing);
 
 	// header/selector/fileList shifted +4 on x from last time; the waveform traces stay at the
 	// same waveformOriginX DJ mode uses, since they pair with the DECK1==/DECK2== labels baked

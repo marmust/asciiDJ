@@ -250,8 +250,9 @@ CMakeFiles/asciiDJ.dir/src/TUIdisplay.cpp.o: \
  /usr/include/c++/14/bits/ranges_uninitialized.h \
  /usr/include/c++/14/bits/out_ptr.h \
  /usr/include/c++/14/pstl/glue_memory_defs.h \
- /home/kali/Desktop/asciiDJ/include/EQsetup.hpp /usr/include/termios.h \
- /usr/include/x86_64-linux-gnu/bits/termios.h \
+ /home/kali/Desktop/asciiDJ/include/EQsetup.hpp \
+ /home/kali/Desktop/asciiDJ/include/WaveformTuning.hpp \
+ /usr/include/termios.h /usr/include/x86_64-linux-gnu/bits/termios.h \
  /usr/include/x86_64-linux-gnu/bits/termios-struct.h \
  /usr/include/x86_64-linux-gnu/bits/termios-c_cc.h \
  /usr/include/x86_64-linux-gnu/bits/termios-c_iflag.h \

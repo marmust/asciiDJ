@@ -4,7 +4,8 @@
 #include <random>
 #include <vector>
 #include <cmath>
-#include <FFTprocessor.hpp>
+#include <algorithm>
+#include <cstdio>
 #include <Deck.hpp>
 #include <Mixer.hpp>
 #include <Equalizer.hpp>
@@ -18,6 +19,10 @@
 #include <InputTuning.hpp>
 #include <FileLoadManager.hpp>
 #include <DirReader.hpp>
+#include <RendererStyle.hpp>
+
+#include <unistd.h>
+#include <termios.h>
 
 int main()
 {

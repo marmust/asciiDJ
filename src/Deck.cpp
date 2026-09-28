@@ -1,7 +1,9 @@
 #include <Deck.hpp>
+#include <WaveformTuning.hpp>
 
 #include <filesystem>
 #include <algorithm>
+#include <cmath>
 
 namespace Playback
 {
@@ -77,6 +79,7 @@ void Deck::loadTrack(std::string fpath)
 	}
 
 	this->loadedTrack.frameCount = this->loadedTrack.frames.size() / this->loadedTrack.channels;
+	this->computeWaveformReference();
 	this->isLoaded = true;
 
 	ma_decoder_uninit(&decoder);
@@ -98,6 +101,55 @@ void Deck::resetTrackMetadata()
 	this->loadedTrack.sampleRate = 0;
 	this->loadedTrack.frameCount = 0;
 	this->loadedTrack.name = "";
+	this->loadedTrack.waveformReference = 0.0f;
+}
+
+/// @brief mixes one frame of a track down to mono by averaging its channels
+/// @param Track track the track to read from
+/// @param ma_uint64 frame the frame index, must be < track.frameCount
+/// @returns float the mono sample, 0 for a track with no channels
+float Deck::monoSampleAt(const Track& track, ma_uint64 frame)
+{
+	if (track.channels == 0)
+		return 0.0f;
+
+	float sum = 0.0f;
+	for (ma_uint32 ch = 0; ch < track.channels; ch++)
+		sum += track.frames[(size_t)frame * track.channels + ch];
+
+	return sum / (float)track.channels;
+}
+
+/// @brief measures the loaded track's mean |sample| (mono) over consecutive blocks and stores the
+/// Waveform::REFERENCE_PERCENTILE-th block level as the track's waveformReference, the fixed level
+/// the waveform trace normalizes against
+void Deck::computeWaveformReference()
+{
+	Track* track = &this->loadedTrack;
+
+	std::vector<float> blockLevels;
+	blockLevels.reserve(track->frameCount / Waveform::AVERAGING_FRAMES + 1);
+
+	for (ma_uint64 blockStart = 0; blockStart < track->frameCount; blockStart += Waveform::AVERAGING_FRAMES)
+	{
+		ma_uint64 blockEnd = std::min<ma_uint64>(track->frameCount, blockStart + Waveform::AVERAGING_FRAMES);
+
+		float sum = 0.0f;
+		for (ma_uint64 frame = blockStart; frame < blockEnd; frame++)
+			sum += std::abs(monoSampleAt(*track, frame));
+
+		blockLevels.push_back(sum / (float)(blockEnd - blockStart));
+	}
+
+	if (blockLevels.empty())
+	{
+		track->waveformReference = 0.0f;
+		return;
+	}
+
+	size_t percentileIdx = (size_t)(Waveform::REFERENCE_PERCENTILE * (double)(blockLevels.size() - 1));
+	std::nth_element(blockLevels.begin(), blockLevels.begin() + percentileIdx, blockLevels.end());
+	track->waveformReference = blockLevels[percentileIdx];
 }
 
 /// @brief resets playback position and modifiers back to their defaults, keeps loaded audio intact
@@ -203,13 +255,12 @@ Track* Deck::getLoadedTrack()
 	return &this->loadedTrack;
 }
 
-/// @brief extracts the track waveform expected to play over the next/previous 10 seconds of
-/// *replay* time (so at 10x combined speed, that's +-100 track-seconds = 200 total), stepping
-/// the same way data_callback does (accounting for playback speed and turntable shift) so the
-/// preview matches what will actually be heard. Positions outside the loaded track are silence.
-/// mono-mixed across channels (one float per output sample) for use as a single waveform trace.
-/// Sampled as raw track content (not adjusted for current playback speed/shift), so the window
-/// always spans a fixed amount of actual track audio regardless of how fast the deck is playing.
+/// @brief extracts a window of track audio centered on the cursor, mono-mixed across channels
+/// (one float per output sample) for use as a single waveform trace. The window spans
+/// +-windowSeconds of *replay* time: frames are sampled every |playbackSpeed| track frames, so the
+/// returned array is always the same length but covers more track audio the faster the deck plays
+/// (the trace squishes/expands with speed instead of scrolling faster/slower). Turntable shift is
+/// deliberately ignored so scratches don't warp the trace. Positions outside the track are silence.
 /// @returns std::vector<float> the extracted waveform, empty if no track is loaded
 std::vector<float> Deck::extractExpectedWaveform(double windowSeconds)
 {
@@ -218,11 +269,13 @@ std::vector<float> Deck::extractExpectedWaveform(double windowSeconds)
 
 	Track* track = &this->loadedTrack;
 
-	ma_uint32 channels = track->channels;
-
-	// +-windowSeconds of raw track content around the cursor
+	// +-windowSeconds of replay time around the cursor
 	long halfWindowFrames = (long)(windowSeconds * track->sampleRate);
 	long totalFrames = halfWindowFrames * 2;
+
+	// step through the track at the playback speed's rate, same multiplier data_callback advances
+	// by. abs() keeps the trace reading left-to-right in reverse
+	double stride = std::max(std::abs((double)track->params.playbackSpeed), Waveform::MIN_STRIDE);
 
 	std::vector<float> waveform;
 	waveform.reserve((size_t)totalFrames);
@@ -231,20 +284,10 @@ std::vector<float> Deck::extractExpectedWaveform(double windowSeconds)
 
 	for (long i = 0; i < totalFrames; i++)
 	{
-		double trackSample = cursor + (double)(i - halfWindowFrames);
-		long sampleIndex = (long)trackSample;
+		long sampleIndex = (long)(cursor + (double)(i - halfWindowFrames) * stride);
 
-		if (sampleIndex < 0 || (ma_uint64)sampleIndex >= track->frameCount)
-		{
-			waveform.push_back(0.0f);
-			continue;
-		}
-
-		float sum = 0.0f;
-		for (ma_uint32 ch = 0; ch < channels; ch++)
-			sum += track->frames[(size_t)sampleIndex * channels + ch];
-
-		waveform.push_back(channels > 0 ? sum / (float)channels : 0.0f);
+		bool inTrack = sampleIndex >= 0 && (ma_uint64)sampleIndex < track->frameCount;
+		waveform.push_back(inTrack ? monoSampleAt(*track, (ma_uint64)sampleIndex) : 0.0f);
 	}
 
 	return waveform;

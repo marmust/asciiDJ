@@ -1,6 +1,7 @@
 #include <TUIdisplay.hpp>
 #include <EQsetup.hpp>
 #include <DirReader.hpp>
+#include <WaveformTuning.hpp>
 
 #include <iostream>
 #include <thread>
@@ -12,12 +13,6 @@
 
 namespace Graphics
 {
-
-namespace
-{
-	// how many seconds of raw track content each deck's waveform preview should span
-	constexpr double waveformWindowSeconds = 2.0;
-}
 
 /// @brief ctor, saves the terminal's current cursor position so later frames get redrawn in
 /// place instead of scrolling the terminal
@@ -200,10 +195,10 @@ TUItelemetry TUIdisplay::gatherTUItelemetry()
 		if (Playback::Track* track = this->deck1->getLoadedTrack())
 		{
 			telemetry.d1name = track->name;
-			telemetry.d1sampleRate = (int)track->sampleRate;
+			telemetry.d1waveformReference = track->waveformReference;
 		}
 
-		telemetry.d1waveform = this->deck1->extractExpectedWaveform(waveformWindowSeconds);
+		telemetry.d1waveform = this->deck1->extractExpectedWaveform(Waveform::WINDOW_SECONDS);
 		telemetry.d1progress = this->deck1->getTrackProgress();
 		telemetry.d1timeRemaining = this->deck1->getTimeRemainingSeconds();
 	}
@@ -216,10 +211,10 @@ TUItelemetry TUIdisplay::gatherTUItelemetry()
 		if (Playback::Track* track = this->deck2->getLoadedTrack())
 		{
 			telemetry.d2name = track->name;
-			telemetry.d2sampleRate = (int)track->sampleRate;
+			telemetry.d2waveformReference = track->waveformReference;
 		}
 
-		telemetry.d2waveform = this->deck2->extractExpectedWaveform(waveformWindowSeconds);
+		telemetry.d2waveform = this->deck2->extractExpectedWaveform(Waveform::WINDOW_SECONDS);
 		telemetry.d2progress = this->deck2->getTrackProgress();
 		telemetry.d2timeRemaining = this->deck2->getTimeRemainingSeconds();
 	}
