@@ -24,8 +24,7 @@ public:
 	void addDeck(Playback::Deck* deck);
 	void reportFiles(std::vector<FileEntry> files);
 
-	// loads files[fileIdx]'s fpath onto decks[deckIdx]; silently no-ops if either index is out
-	// of range
+	// loads files[fileIdx] onto decks[deckIdx], no-op if either index is out of range
 	void loadToDeck(int deckIdx, int fileIdx);
 
 	int getSelectedIdx() const;

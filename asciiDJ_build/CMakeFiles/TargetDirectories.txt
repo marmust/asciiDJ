@@ -1,3 +1,0 @@
-/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/asciiDJ.dir
-/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/edit_cache.dir
-/home/kali/Desktop/asciiDJ/asciiDJ_build/CMakeFiles/rebuild_cache.dir

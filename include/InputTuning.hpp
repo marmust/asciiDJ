@@ -1,17 +1,9 @@
 #pragma once
 
-#include <X11/keysym.h>
-
 namespace Input
 {
 
-// MOVE_SPEED values are units of travel PER SECOND (they used to be per poll pass, back when
-// the loop ran at a fixed rate). converted by multiplying the old per-pass figures by the
-// ~814Hz the throttled loop actually achieved, so the feel carries over unchanged; the full
-// travel time each one implies is noted next to it, tune from there
-
-// held to snap whichever control is being touched back to its default instead of nudging it
-inline const int RESET_MODIFIER_KEY = XK_Shift_L;
+// MOVE_SPEED values are units of travel per second, full travel times noted alongside
 
 // deck speed control (precision mover)
 inline const double SPEED_START_VAL = 1.0;
@@ -22,8 +14,7 @@ inline const double SPEED_MAX = 3.0;
 // deck turntable shift / scratch control (momentum mover)
 inline const double SHIFT_START_VAL = 0.0;
 inline const double SHIFT_MOVE_SPEED = 3.0;
-// seconds for a released scratch to fall halfway back to 0. the old 0.9-per-pass decay worked
-// out to a 6.58 pass half-life, ie ~8ms at the rate the loop was running - near instant snap back
+// seconds for a released scratch to fall halfway back to 0
 inline const double SHIFT_DECAY_HALFLIFE = 0.2;
 inline const double SHIFT_MIN = -3.0;
 inline const double SHIFT_MAX = 3.0;

@@ -1,7 +1,9 @@
 #include <Renderer.hpp>
+#include <RendererStyle.hpp>
 #include <WaveformTuning.hpp>
 
 #include <algorithm>
+#include <ranges>
 #include <cmath>
 #include <sstream>
 #include <iomanip>
@@ -71,10 +73,7 @@ std::string Renderer::renderVerticalFill(int length, int progress)
 	       RenderElements::verticalFillBottomCap;
 }
 
-/// @brief renders a vertical selector string with a pointer marking one stop out of length,
-/// very close to renderVerticalSlider, but instead of the pointer landing on any of length
-/// individual lines, it only lands on one of length+1 evenly spaced stops - spacing filler
-/// lines apart (spacing 0 = a stop every line, spacing 1 = every other line, etc)
+/// @brief renders a vertical selector with a pointer on one of length+1 stops, spacing filler lines apart
 /// @param int length how many stops (0..length) the selector has
 /// @param int value which stop, out of [0, length], to put the pointer on
 /// @param int spacing how many filler lines separate each stop
@@ -89,25 +88,15 @@ std::string Renderer::renderVerticalSelector(int length, int value, int spacing)
 			      RenderElements::verticalSelectorPointer +
 			      std::string(postFill.begin(), postFill.end());
 
-	// every line (background and pointer alike) bakes in its own trailing "\n" so the repeats
-	// above join cleanly - drop the one dangling off the very last line to match every other
-	// renderer here, none of which leave a trailing newline
+	// drop the trailing newline, no renderer leaves one
 	result.pop_back();
 
 	return result;
 }
 
-/// @brief renders a paginated file list: truncationHeight rows, one file name per row at its own
-/// natural length (via renderValue's string overload, promiseLength set to the name's own
-/// length so it renders as-is rather than looping into repeats), blank (truncationLength-wide)
-/// rows past the end of files. selected picks which page (rows
-/// [selected/truncationHeight*truncationHeight, +truncationHeight)) is shown - the caller is
-/// expected to separately drive a renderVerticalSelector(truncationHeight - 1, selected %
-/// truncationHeight, spacing) alongside this, and passing the same spacing here keeps that
-/// selector's pointer lined up with the currently selected row
+/// @brief renders the page of files containing selected, pair with renderVerticalSelector at the same spacing
 /// @param std::vector<Files::FileEntry> files the full file listing to page through
-/// @param int truncationLength width of the blank rows past the end of files (no longer clamps
-/// file name length - a name longer than this now renders in full rather than being truncated)
+/// @param int truncationLength width of the blank rows past the end of files
 /// @param int truncationHeight how many rows are visible at once (the page size)
 /// @param int selected which file, out of the full files vec, is currently selected
 /// @param int spacing how many filler lines separate each row
@@ -125,14 +114,12 @@ std::string Renderer::renderFileList(const std::vector<Files::FileEntry>& files,
 	{
 		int fileIdx = pageStart + row;
 
-		// promiseLength set to the name's own length (not truncationLength) so renderValue
-		// doesn't loop it into repeats - its behavior whenever promiseLength exceeds the text
+		// promiseLength = the name's own length, so renderValue doesn't loop it
 		result += (fileIdx >= 0 && fileIdx < (int)files.size())
 				  ? renderValue(files[fileIdx].displayName, (int)files[fileIdx].displayName.length(), 0)
 				  : blankRow;
 
-		// no filler (or newline) trailing the very last row, matching every other renderer's
-		// "no dangling trailing newline" convention
+		// no filler or newline after the last row
 		if (row < truncationHeight - 1)
 		{
 			result += "\n";
@@ -169,17 +156,14 @@ std::string Renderer::renderTurntable(int frame)
 	return RenderElements::turntableFrames[frame];
 }
 
-/// @brief passes through a pre-baked static multi-line image (eg a frame border or decorative
-/// divider) so callers draw it the same way as every other renderX element
+/// @brief passes a pre-baked static image through, so it's drawn like every other element
 /// @param std::string image the baked image to render
 std::string Renderer::renderImage(const std::string& image)
 {
 	return image;
 }
 
-/// @brief renders a double, zero-padded at the start and truncated after the decimal point
-/// to fit exactly promiseLength chars (drops the decimal point entirely if no room for any
-/// fractional digits)
+/// @brief renders a double zero-padded and truncated to exactly promiseLength chars
 /// @param double value the value to render
 /// @param int promiseLength the exact length the returned string should be
 std::string Renderer::renderValue(double value, int promiseLength)
@@ -222,8 +206,7 @@ std::string Renderer::renderValue(float value, int promiseLength)
 /// @brief renders a sliding, looping window of a string
 /// @param std::string value the text to slide the window over
 /// @param int promiseLength the exact length (window size) of the returned string
-/// @param int windowPos how far into the looped text (text + one space, repeating) the
-/// window starts; any int works, negative or larger than the loop included
+/// @param int windowPos start offset into the looped text (text + one space), any int works
 std::string Renderer::renderValue(const std::string& value, int promiseLength, int windowPos)
 {
 	if (value.empty() || promiseLength <= 0)
@@ -244,8 +227,7 @@ std::string Renderer::renderValue(const std::string& value, int promiseLength, i
 	return result;
 }
 
-/// @brief renders an int, zero-padded at the start; if it doesn't fit promiseLength,
-/// falls back to the string overload (at windowPos) to scroll it instead of truncating digits
+/// @brief renders an int zero-padded, scrolls it via the string overload if it doesn't fit
 /// @param int value the value to render
 /// @param int promiseLength the exact length the returned string should be
 /// @param int windowPos only used if value doesn't fit promiseLength, see the string overload
@@ -265,9 +247,7 @@ std::string Renderer::renderValue(int value, int promiseLength, int windowPos)
 	return sign + digits;
 }
 
-/// @brief replaces every run of spaces with an ANSI cursor-forward escape of the same
-/// width, so printing the result over existing terminal content leaves whatever was under
-/// those spaces untouched instead of overwriting it with blanks
+/// @brief replaces runs of spaces with cursor-forward escapes, so spaces don't overwrite the terminal
 /// @param std::string image the string to convert
 std::string Renderer::makeTransparent(std::string image)
 {
@@ -295,15 +275,13 @@ std::string Renderer::makeTransparent(std::string image)
 	return result;
 }
 
-/// @brief measures a waveform window's loudness per char: each of charCount slices gets the mean
-/// absolute amplitude over a Waveform::AVERAGING_FRAMES window centered on it
+/// @brief measures the mean absolute amplitude around each of charCount evenly spaced slices
 /// @param std::vector<float> waveform the audio window to analyze (eg Deck::extractExpectedWaveform)
 /// @param int charCount how many time-slices (chars) to measure across the window
 /// @returns std::vector<float> one volume per slice, empty if there's no waveform (no track loaded)
 std::vector<float> Renderer::measureWaveform(const std::vector<float>& waveform, int charCount)
 {
-	// an unloaded deck reports an empty waveform; bail before hopSize's divide and before
-	// indexing into a buffer that isn't there
+	// an unloaded deck reports an empty waveform
 	if (waveform.empty() || charCount <= 0)
 		return {};
 
@@ -314,15 +292,10 @@ std::vector<float> Renderer::measureWaveform(const std::vector<float>& waveform,
 
 	for (int currentChar = 0; currentChar < charCount; currentChar++)
 	{
-		// computed directly from currentChar (not accumulated hop-by-hop), so slice 0 starts
-		// exactly at sample 0 and the array's true center - the playhead, per
-		// Deck::extractExpectedWaveform's centered window - always lands exactly on the
-		// boundary between the two middle slices, regardless of charCount/hopSize rounding
+		// computed from currentChar so the playhead lands exactly between the two middle slices
 		size_t sliceCenter = (size_t)currentChar * hopSize + hopSize / 2;
 
-		// centered on the slice (not starting at it), so a transient lights up the chars around
-		// where it actually is rather than the ones before it. clamped to the buffer at both ends
-		// and divided by what was actually summed, so edge slices never read past this deck's audio
+		// averaging window centered on the slice, clamped to the buffer
 		size_t sliceStart = sliceCenter > halfAveraging ? sliceCenter - halfAveraging : 0;
 		size_t sliceEnd = std::min(waveform.size(), sliceCenter + halfAveraging);
 
@@ -336,8 +309,7 @@ std::vector<float> Renderer::measureWaveform(const std::vector<float>& waveform,
 	return sliceVolumes;
 }
 
-/// @brief renders measured slice volumes as a row of RenderElements::waveformChars (index 0 =
-/// loudest), each scaled against normalizer and clipped to full scale
+/// @brief renders slice volumes as waveformChars, scaled against normalizer and clipped
 /// @param std::vector<float> sliceVolumes per-char volumes (eg from measureWaveform)
 /// @param float normalizer the volume that renders as full scale; <= 0 renders blank
 /// @param int charCount how many chars to produce; blank if sliceVolumes doesn't match it

@@ -16,7 +16,6 @@ Deck::~Deck()
 {
 	this->stopStandalone();
 	this->unloadTrack();
-	this->isLoaded = false;
 }
 
 /// @brief helper to copy all the deck's modifiers into the track struct ridealong section
@@ -31,9 +30,7 @@ void Deck::syncModifiersToTrack()
 /// @param std::string fpath the filepath to load
 void Deck::loadTrack(std::string fpath)
 {
-	// setup a temporary miniaudio decoder - fixed output channels/sampleRate rather than 0/0
-	// (native) so every loaded track ends up in the same canonical format, decoder does the
-	// resampling/remixing internally
+	// decode into the fixed output format, miniaudio resamples/remixes internally
 	ma_decoder_config decoderConfig = ma_decoder_config_init(ma_format_f32, kOutputChannels, kOutputSampleRate);
 	ma_decoder decoder;
 
@@ -41,15 +38,10 @@ void Deck::loadTrack(std::string fpath)
 		// possibly add a warning system through TUI later
 		return;
 
-	// tear down a live standalone device first: it may still be reading loadedTrack on its own
-	// thread, and resetTrackMetadata() below is about to mutate that data out from under it. also
-	// means playStandalone() never has to reinit for a new track's format - format is now always
-	// the same canonical one, so a fresh init is only ever needed the first time it's started
+	// the standalone device may still be reading loadedTrack, stop it before mutating the track
 	this->stopStandalone();
 
-	// wipe any previously loaded track's audio data/metadata first - loadTrack must be safe to
-	// call on a deck that already has a track loaded (e.g. picking a new file from a browser),
-	// and the frame-extraction loop below appends rather than replaces
+	// clear any previous track, the extraction loop below appends
 	this->resetTrackMetadata();
 
 	// setup metadata
@@ -84,16 +76,12 @@ void Deck::loadTrack(std::string fpath)
 
 	ma_decoder_uninit(&decoder);
 
-	// reset cursor/params to fresh defaults, then land the deck paused at the start of the fresh
-	// track rather than mid-track and playing. explicit here rather than relying on
-	// stopStandalone() above for this - it only resets as a side effect of actually having been
-	// playing, and is a no-op otherwise (e.g. driven by a Mixer instead, which never touches
-	// isStandalonePlaying)
+	// land the fresh track paused at the start
 	this->resetTrack();
 	this->pause();
 }
 
-/// @brief helper to wipe the loaded track's audio data and metadata (frames, channels, sampleRate, frameCount)
+/// @brief wipes the loaded track's audio data and metadata
 void Deck::resetTrackMetadata()
 {
 	this->loadedTrack.frames = {};
@@ -120,9 +108,7 @@ float Deck::monoSampleAt(const Track& track, ma_uint64 frame)
 	return sum / (float)track.channels;
 }
 
-/// @brief measures the loaded track's mean |sample| (mono) over consecutive blocks and stores the
-/// Waveform::REFERENCE_PERCENTILE-th block level as the track's waveformReference, the fixed level
-/// the waveform trace normalizes against
+/// @brief stores the REFERENCE_PERCENTILE-th block loudness of the track as its waveformReference
 void Deck::computeWaveformReference()
 {
 	Track* track = &this->loadedTrack;
@@ -157,17 +143,15 @@ void Deck::resetTrack()
 {
 	// reset params;
 	this->loadedTrack.cursor = 0;
-	this->deckParams.playbackSpeed = 1.0;
-	this->deckParams.turntableShift = 0.0;
+	this->deckParams.playbackSpeed = Input::SPEED_START_VAL;
+	this->deckParams.turntableShift = Input::SHIFT_START_VAL;
 	this->deckParams.volume = 1.0;
 	this->isPaused = false;
 
 	// push to the active track
 	this->syncModifiersToTrack();
 
-	// flatten the interpolation ramp too, otherwise the next audio callback lerps from whatever
-	// params were trailing before this reset (e.g. leftover from a track loaded onto this deck
-	// previously) instead of starting flat at the just-reset values
+	// flatten the interpolation ramp so the next callback starts at the reset values
 	this->loadedTrack.trailingParams = this->loadedTrack.params;
 }
 
@@ -179,9 +163,11 @@ void Deck::unloadTrack()
 
 	// and reset playback position/modifiers on top of that
 	this->resetTrack();
+
+	this->isLoaded = false;
 }
 
-/// @brief a func to be called upon by the miniaudio's audio thread, reads track and sends a batch to miniaudio
+/// @brief miniaudio audio thread callback, renders the next batch of the track into pOutput
 /// @param idk u asking me?
 void Deck::data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
@@ -194,8 +180,7 @@ void Deck::data_callback(ma_device* pDevice, void* pOutput, const void* pInput, 
 	int currentlyTransferred = 0;
 	double currentSample = (double)track->cursor; // is double because speed control is analog
 
-	// snapshot of the live params at the start of this callback, DeckParams' copy ctor
-	// handles the atomic members (a plain brace-init no longer works now that it has one)
+	// snapshot of the live params at the start of this callback
 	DeckParams interpolationParams = track->params;
 
 	// BuT A fOr LoOp iS tHe CorReCT oNe
@@ -233,19 +218,14 @@ void Deck::data_callback(ma_device* pDevice, void* pOutput, const void* pInput, 
 		currentlyTransferred++;
 	}
 
-	// update the struct to the new cursor position, clamped to the track's limits so a
-	// backwards scratch parks at the start instead of running away before it. the upper bound
-	// is frameCount rather than frameCount - 1 on purpose: "at or past the end" has to stay
-	// representable for getTrackProgress/getTimeRemainingSeconds to read 100% and 0:00.
-	// note this clamps only what gets PERSISTED - currentSample walks unclamped through the
-	// block above so the silence guard still decides per sample whether there is audio there
+	// persist the cursor clamped to [0, frameCount], so progress can read 100%
 	track->cursor = (ma_int64)std::clamp(currentSample, 0.0, (double)track->frameCount);
 
 	// update interpolation for next cycle
 	track->trailingParams = track->params;
 }
 
-/// @brief external accessor to the loaded track struct (used to give back to this instance's callback in the mixer)
+/// @brief accessor to the loaded track struct, used by the mixer's callback
 /// @returns Track* to currently loaded track struct (nullptr if unloaded)
 Track* Deck::getLoadedTrack()
 {
@@ -255,12 +235,7 @@ Track* Deck::getLoadedTrack()
 	return &this->loadedTrack;
 }
 
-/// @brief extracts a window of track audio centered on the cursor, mono-mixed across channels
-/// (one float per output sample) for use as a single waveform trace. The window spans
-/// +-windowSeconds of *replay* time: frames are sampled every |playbackSpeed| track frames, so the
-/// returned array is always the same length but covers more track audio the faster the deck plays
-/// (the trace squishes/expands with speed instead of scrolling faster/slower). Turntable shift is
-/// deliberately ignored so scratches don't warp the trace. Positions outside the track are silence.
+/// @brief extracts a mono window of +-windowSeconds playback time around the cursor, ignoring turntable shift
 /// @returns std::vector<float> the extracted waveform, empty if no track is loaded
 std::vector<float> Deck::extractExpectedWaveform(double windowSeconds)
 {
@@ -273,8 +248,7 @@ std::vector<float> Deck::extractExpectedWaveform(double windowSeconds)
 	long halfWindowFrames = (long)(windowSeconds * track->sampleRate);
 	long totalFrames = halfWindowFrames * 2;
 
-	// step through the track at the playback speed's rate, same multiplier data_callback advances
-	// by. abs() keeps the trace reading left-to-right in reverse
+	// step at the playback speed's rate, abs() keeps the trace left-to-right in reverse
 	double stride = std::max(std::abs((double)track->params.playbackSpeed), Waveform::MIN_STRIDE);
 
 	std::vector<float> waveform;
@@ -305,15 +279,13 @@ bool Deck::getIsStandalonePlaying() const
 	return this->isStandalonePlaying;
 }
 
-/// @brief external accessor for the deck's live playback speed, meaningful whether or not a
-/// track is loaded (0.0 while paused/unloaded, same value the audio callback actually uses)
+/// @brief accessor for the deck's live playback speed (0 while paused)
 double Deck::getPlaybackSpeed() const
 {
 	return this->deckParams.playbackSpeed;
 }
 
-/// @brief external accessor for the deck's live turntable shift, meaningful whether or not a
-/// track is loaded (0.0 while paused/unloaded, same value the audio callback actually uses)
+/// @brief accessor for the deck's live turntable shift
 double Deck::getTurntableShift() const
 {
 	return this->deckParams.turntableShift;
@@ -330,8 +302,7 @@ float Deck::getTrackProgress() const
 	return std::clamp(progress, 0.0f, 1.0f);
 }
 
-/// @brief external accessor for the loaded track's remaining content duration; ignores current
-/// playback speed (same content-position basis as getTrackProgress, not a wall-clock ETA)
+/// @brief accessor for the loaded track's remaining content duration, ignores playback speed
 /// @returns double seconds remaining, 0 if no track is loaded
 double Deck::getTimeRemainingSeconds() const
 {
@@ -341,8 +312,7 @@ double Deck::getTimeRemainingSeconds() const
 	ma_int64 cursor = this->loadedTrack.cursor;
 	ma_int64 frameCount = (ma_int64)this->loadedTrack.frameCount;
 
-	// clamped at both ends: past the end nothing is left, and scratched back before the start
-	// there is still only a whole track ahead, not more than one
+	// clamped to [0, frameCount]: nothing past the end, at most a whole track before the start
 	ma_int64 remainingFrames = std::clamp(frameCount - cursor, (ma_int64)0, frameCount);
 
 	return (double)remainingFrames / (double)this->loadedTrack.sampleRate;
@@ -362,8 +332,7 @@ void Deck::playStandalone()
     	deviceConfig.sampleRate        = this->loadedTrack.sampleRate;
 	deviceConfig.dataCallback      = this->data_callback;
 	deviceConfig.pUserData         = &this->loadedTrack;
-	// default low-latency period is ~10ms; ask for ~10x faster callbacks (a hint - the backend may clamp it)
-	deviceConfig.periodSizeInMilliseconds = 1;
+	deviceConfig.periodSizeInMilliseconds = kPeriodSizeMilliseconds;
 
 	// launch failiure checks
 	if (ma_device_init(NULL, &deviceConfig, &this->device) != MA_SUCCESS)
@@ -393,10 +362,7 @@ void Deck::stopStandalone()
 	this->resetTrack();
 }
 
-/// @brief function to pause a currently playing track (keeps cursor pos and turntable shift),
-/// independent of whether the deck's audio is being pulled by its own standalone device or by a
-/// mixer. only playbackSpeed freezes - turntableShift is left alone so the deck can still be
-/// scratched while paused, same as a real turntable's platter
+/// @brief pauses by freezing playbackSpeed, turntableShift stays live so the deck can still be scratched
 void Deck::pause()
 {
 	// no op if already paused
@@ -411,8 +377,7 @@ void Deck::pause()
 	// DO NOT reset track params so cursor & deck mods stay the same
 }
 
-/// @brief function to unpause and keep playing the loaded track from the position left off when
-/// paused, restoring whatever playback speed was active before the pause
+/// @brief unpauses, restoring the playback speed from before the pause
 void Deck::unpause()
 {
 	// no op if not paused
@@ -424,8 +389,7 @@ void Deck::unpause()
 	this->isPaused = false;
 }
 
-/// @brief setter for the turn table shift (record scratch) - always live, paused or not, so
-/// scratching still moves the cursor while playbackSpeed is frozen at 0
+/// @brief setter for the turntable shift (record scratch), live while paused too
 /// @param double shift new shift
 void Deck::setTurntableShift(double shift)
 {
@@ -433,8 +397,7 @@ void Deck::setTurntableShift(double shift)
 	this->syncModifiersToTrack();
 }
 
-/// @brief setter for the turn table speed - touching this while paused means "make it move
-/// again", so it unpauses first rather than only parking the value for a later manual unpause
+/// @brief setter for the playback speed, unpauses the deck first if paused
 /// @param double speed new speed
 void Deck::setPlaybackSpeed(double speed)
 {

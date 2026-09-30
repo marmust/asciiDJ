@@ -1,7 +1,9 @@
 #include <InputInterpreter.hpp>
-#include <InputTuning.hpp>
+#include <InputSchema.hpp>
 
+#include <algorithm>
 #include <cmath>
+#include <thread>
 
 namespace Input
 {
@@ -36,7 +38,6 @@ void InputInterpreter::addInput(int positiveDirectionKey, int negativeDirectionK
 	                        double min, double max,
 	                        void (*callback)(double))
 {
-	// create the appropriate struct
 	// startVal doubles as the default the reset modifier snaps back to
 	PrecisionMoverInput newInput = { positiveDirectionKey, negativeDirectionKey,
 					 startVal, startVal, speed, max, min, callback };
@@ -83,7 +84,7 @@ void InputInterpreter::addInput(int activationKey, void (*callback)())
 	this->buttonLocks.emplace_back();
 }
 
-/// @brief function to  update a given precision mover input based on the report of the iReader and report to input's callback
+/// @brief updates a precision mover input from the iReader and reports to its callback
 /// @param PrecisionMoverInput* input input pointer to which input to update / report
 void InputInterpreter::processInput(PrecisionMoverInput* input)
 {
@@ -97,12 +98,10 @@ void InputInterpreter::processInput(PrecisionMoverInput* input)
 	direction += positivePressed ? 1.0 : 0;
 	direction += negativePressed ? -1.0 : 0;
 
-	// speed is units per second, so scale by however long this pass actually covered - the
-	// same key held for the same real time travels the same distance at any loop rate
+	// speed is units per second, so scale by the time this pass covers
 	direction *= input->speed * this->deltaTime;
 
-	// touching the control with the reset modifier down hard sets it to its default instead
-	// of nudging it, for as long as both stay held
+	// reset modifier held: snap to the default instead of nudging
 	if (this->resetModifierHeld && (positivePressed || negativePressed))
 		input->value = input->defaultValue;
 	else
@@ -115,7 +114,7 @@ void InputInterpreter::processInput(PrecisionMoverInput* input)
 		input->callback(input->value);
 }
 
-/// @brief function to update a given momentum mover input based on the report of the iReader and report to input's callback
+/// @brief updates a momentum mover input from the iReader and reports to its callback
 /// @param MomentumMoverInput* input input pointer to which input to update / report
 void InputInterpreter::processInput(MomentumMoverInput* input)
 {
@@ -135,8 +134,7 @@ void InputInterpreter::processInput(MomentumMoverInput* input)
 	// apply the direction over the input
 	if (this->resetModifierHeld && (positivePressed || negativePressed))
 	{
-		// a momentum control's rest position is dead centre, so reset means straight to 0.
-		// ahead of the decay arm below, so it parks there instead of sagging off it
+		// a momentum control rests at 0
 		input->value = 0.0;
 	}
 	else if (positivePressed || negativePressed)
@@ -145,9 +143,7 @@ void InputInterpreter::processInput(MomentumMoverInput* input)
 	}
 	else if (input->decayHalfLife > 0.0)
 	{
-		// exponential decay expressed as a half-life, so the value released from any
-		// position takes the same real time to fall halfway back to 0 no matter how many
-		// passes the loop fits into that time
+		// exponential decay by half-life, independent of the loop rate
 		input->value *= std::pow(0.5, this->deltaTime / input->decayHalfLife);
 	}
 	else
@@ -159,17 +155,17 @@ void InputInterpreter::processInput(MomentumMoverInput* input)
 	// apply clamp
 	input->value = std::clamp(input->value, input->min, input->max);
 
-	// for now always report to callback
+	// always report to callback, the value decays while released
 	input->callback(input->value);
 }
 
-/// @brief function to update a given button input based on the report of the iReader and report to input's callback
+/// @brief updates a button input from the iReader and fires its callback on press
 /// @param ButtonInput* input input pointer to which input to update / report
 void InputInterpreter::processInput(ButtonInput* input)
 {
 	input->pressed = this->iReader->queryKey(input->activationKey);
 
-	// callback only if the button is PRESSED and not RELEASED and there was a difference between the current and trailing status
+	// fire on the press edge only
 	if (input->pressed && input->pressed != input->lastPressed)
 		input->callback();
 
@@ -177,8 +173,7 @@ void InputInterpreter::processInput(ButtonInput* input)
 	input->lastPressed = input->pressed;
 }
 
-/// @brief runs one polling pass over every registered input, updating state and firing callbacks
-/// as needed; each mover picks up this->deltaTime on its own, so call advanceDeltaTime() first
+/// @brief runs one polling pass over every registered input, call advanceDeltaTime() first
 void InputInterpreter::updateAllMovers()
 {
 	for (int currentInputIdx = 0; currentInputIdx < this->precisionMoverInputs.size(); currentInputIdx++)
@@ -200,40 +195,36 @@ void InputInterpreter::updateAllMovers()
 	}
 }
 
-/// @brief rolls this->deltaTime forward to cover the pass about to be processed, to be called
-/// once at the top of every pass; every mover in that pass then scales its travel by it
+/// @brief rolls deltaTime forward to cover the pass about to be processed, call once per pass
 void InputInterpreter::advanceDeltaTime()
 {
 	auto now = std::chrono::steady_clock::now();
 
-	// clamped so a scheduling hiccup (or a suspended process) can't teleport every control
-	// across its whole range on the pass that follows
+	// clamped to maxDeltaTime so a stalled pass can't jump controls
 	this->deltaTime = std::min(std::chrono::duration<double>(now - this->previousCycle).count(),
 				    Input::maxDeltaTime);
 
 	this->previousCycle = now;
 }
 
-/// @brief samples the reset modifier once for the pass about to be processed, so every mover in
-/// it reads one key state instead of each re-querying the same key
-void InputInterpreter::refreshResetModifier()
+/// @brief snapshots the keyboard once for the pass about to be processed
+void InputInterpreter::refreshKeyState()
 {
-	this->resetModifierHeld = this->iReader != nullptr && this->iReader->queryKey(RESET_MODIFIER_KEY);
+	this->iReader->poll();
+	this->resetModifierHeld = this->iReader->queryKey(RESET_MODIFIER_KEY);
 }
 
-/// @brief thread func that polls the inputs as fast as the governor allows; deltaTime is rolled
-/// forward once per pass so travel is measured in real seconds rather than in poll passes
+/// @brief poll thread loop, one pass per pollIntervalMicroseconds
 /// @param InputInterpreter* self this pointer to accomodate threads being static funcs only
 void InputInterpreter::moverUpdateLoop(InputInterpreter* self)
 {
 	while (self->running)
 	{
 		self->advanceDeltaTime();
-		self->refreshResetModifier();
+		self->refreshKeyState();
 		self->updateAllMovers();
 
-		// governor only: deltaTime already decouples feel from the loop rate, this just keeps
-		// the poll loop from pegging a core on queryKey() syscalls
+		// CPU governor only, deltaTime keeps feel independent of the loop rate
 		std::this_thread::sleep_for(std::chrono::microseconds(Input::pollIntervalMicroseconds));
 	}
 }
@@ -241,8 +232,7 @@ void InputInterpreter::moverUpdateLoop(InputInterpreter* self)
 /// @brief func to launch the refresh thread and detach
 void InputInterpreter::startRefreshThread()
 {
-	// rebase the clock, so however long sat between construction and this call isn't charged
-	// to the first pass as one big deltaTime
+	// rebase the clock so the first pass doesn't get a huge deltaTime
 	this->previousCycle = std::chrono::steady_clock::now();
 	this->deltaTime = 0.0;
 

@@ -3,23 +3,20 @@
 #include <vector>
 #include <atomic>
 #include <string>
-#include <chrono>
-#include <thread>
-#include <iostream>
 
 #include "miniaudio.h"
+#include <InputTuning.hpp>
 
 namespace Playback
 {
 
 struct DeckParams
 {
-	std::atomic<ma_double> playbackSpeed = 1.0;
-	std::atomic<ma_double> turntableShift = 0.0;
+	std::atomic<ma_double> playbackSpeed = Input::SPEED_START_VAL;
+	std::atomic<ma_double> turntableShift = Input::SHIFT_START_VAL;
 	std::atomic<ma_double> volume = 1.0;
 
-	// std::atomic itself is neither copyable nor assignable, so DeckParams needs these spelled
-	// out by hand (loading/storing the underlying value rather than copying the atomics themselves)
+	// copy ctor / assignment spelled out since std::atomic is neither copyable nor assignable
 	DeckParams() = default;
 
 	DeckParams(const DeckParams& other)
@@ -44,14 +41,11 @@ struct Track
 	ma_uint64 frameCount = 0;
 	ma_uint32 channels = 0;
 	ma_uint32 sampleRate = 0;
-	// signed: a backwards scratch can legitimately walk the playhead before the start of the
-	// track, and both read paths below already treat a negative index as silence. as an
-	// unsigned type the negative double converted straight back to a ~1.8e19 garbage cursor
+	// signed so a backwards scratch can move the playhead before the track start (reads as silence)
 	std::atomic<ma_int64> cursor = 0;
 	std::string name;
 
-	// typical loud-passage level (mean |sample|, mono) the waveform trace normalizes against,
-	// computed once on load so the trace's scale stays fixed instead of rescaling every frame
+	// typical loud-passage level (mean |sample|, mono) the waveform trace normalizes against, set on load
 	float waveformReference = 0.0f;
 
 	// ride along because we can only access this struct in the data_callback()
@@ -64,11 +58,12 @@ struct Track
 class Deck
 {
 public:
-	// every track is decoded into this fixed format regardless of its native one (miniaudio's
-	// decoder resamples/remixes internally when given explicit non-zero channels/sampleRate), so
-	// every Deck and the Mixer's own device always agree on format - no per-load enforcement needed
+	// fixed format every track is decoded into, shared by every Deck and the Mixer's device
 	static constexpr ma_uint32 kOutputChannels = 2;
 	static constexpr ma_uint32 kOutputSampleRate = 48000;
+
+	// audio callback period for every Deck and the Mixer's device (a hint, the backend may clamp it)
+	static constexpr ma_uint32 kPeriodSizeMilliseconds = 1;
 
 private:
 	// track frame array
@@ -127,9 +122,7 @@ public:
 	float getTrackProgress() const;
 	double getTimeRemainingSeconds() const;
 
-	// live off deckParams directly rather than the loaded track's ridealong copy, so these stay
-	// meaningful even when unloaded (0/0, same as a paused deck - startRun() pauses every deck
-	// up front regardless of load state) instead of only being readable via getLoadedTrack()
+	// read from deckParams, so they stay valid while no track is loaded
 	double getPlaybackSpeed() const;
 	double getTurntableShift() const;
 };

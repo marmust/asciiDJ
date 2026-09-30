@@ -8,20 +8,16 @@
 namespace Graphics
 {
 
-// seconds per turntable frame at |speed + shift| == 1.0; interval scales down as
-// |speed + shift| grows, so a faster/harder-scratched deck visibly spins faster
+// seconds per turntable frame at |speed + shift| == 1.0, scales down as the rate grows
 inline constexpr double turntableBaseInterval = 0.14;
 
-// |speed + shift| at or below this is clamped to an exact stop, so a paused deck doesn't
-// slowly creep from leftover rate instead of comparing floats to 0 directly
+// |speed + shift| at or below this counts as stopped
 inline constexpr double turntableStopThreshold = 0.01;
 
 // chars per second a scrolling label's window position advances
 inline constexpr double marqueeScrollRate = 4.0;
 
-// how many chars wide each deck's waveform trace renders, and which column it starts at.
-// odd, so the window's center - the playhead - gets a char of its own to sit under rather
-// than falling between two
+// waveform trace width and start column; width is odd so the playhead gets its own center char
 inline constexpr int waveformCharCount = 89;
 inline constexpr int waveformOriginX = 13;
 
@@ -32,10 +28,7 @@ inline constexpr int playheadMarkerX = waveformOriginX + waveformCharCount / 2;
 inline constexpr int volumeSliderLength = 13;
 inline constexpr int xfaderSliderLength = 13;
 
-// file-select list: rows per page, max chars per filename, and blank rows between entries.
-// 8 rows, not 10: frameImage's own "DECK1 =="/"DECK2 ==" rows (2-3) are kept rather than
-// overwritten, which pushes the list down 3 rows - shrunk to still fit inside the frame's 22
-// usable body rows at spacing 1
+// file-select list: rows per page, max chars per filename, blank rows between entries
 inline constexpr int fileListPageRows = 8;
 inline constexpr int fileListNameLength = 40;
 inline constexpr int fileListSpacing = 1;
@@ -88,9 +81,7 @@ private:
 
 	std::vector<std::string> frameBuffer;
 
-	// wall-clock turntable animation state, one set per deck: which frame is currently
-	// showing, and when it started showing - so frame advancement is driven by real elapsed
-	// time rather than by how often composeFrame() happens to get called
+	// turntable animation state per deck: current frame and when it started showing
 	int turntable1Frame = 0;
 	std::chrono::steady_clock::time_point turntable1LastTick = std::chrono::steady_clock::now();
 
@@ -104,8 +95,7 @@ private:
 	int deck2LabelWindowPos = 0;
 	std::chrono::steady_clock::time_point deck2LabelLastTick = std::chrono::steady_clock::now();
 
-	// wall-clock waveform normalizer state, one set per deck: the trailing average of each
-	// frame's loudest visible slice the trace scales against, and when it was last updated
+	// waveform normalizer state per deck: trailing average of the loudest visible slice, last update
 	float waveform1Normalizer = 0.0f;
 	std::chrono::steady_clock::time_point waveform1LastTick = std::chrono::steady_clock::now();
 
@@ -141,8 +131,7 @@ public:
 	// meat and potatoes
 	void composeFrame();
 
-	// dummy for now: not wired into the update loop or any mode toggle yet, just proves
-	// renderVerticalSelector/renderFileList line up when driven off the same telemetry
+	// composes the file browser frame, used while file-select mode is on
 	void composeFileSelectFrame();
 
 	const std::vector<std::string>* getFrameBuffer() const;

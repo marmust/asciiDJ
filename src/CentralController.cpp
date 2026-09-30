@@ -2,12 +2,9 @@
 #include <InputTuning.hpp>
 #include <InputSchema.hpp>
 #include <EQsetup.hpp>
-#include <DirReader.hpp>
 
 namespace CommandAndControl
 {
-
-CentralController* CentralController::self = nullptr;
 
 /// @brief ctor
 /// @param you get the picture
@@ -147,17 +144,13 @@ void CentralController::deck2EQhighCallback(double db)
 	self->eq2->changeBand(EQ_HIGH_IDX, EQ_HIGH_FREQ, EQ_HIGH_Q, db);
 }
 
-/// @brief callback from input to toggle file-select mode; keeps this instance's own
-/// fileSelectionMode and display's toggleFileDisplay in sync so both the input gating and the
-/// render mode switch together on the same keypress
+/// @brief callback from input to toggle file-select mode, synced into display's toggleFileDisplay
 void CentralController::fileSelectToggleCallback()
 {
 	self->fileSelectionMode = !self->fileSelectionMode;
 	self->display->setToggleFileDisplay(self->fileSelectionMode);
 
-	// refresh the manager's listing and reset the selection right as the browser opens - it was
-	// never being populated before, so loadToDeck() was always silently no-opping regardless of
-	// what got pressed
+	// refresh the listing and reset the selection as the browser opens
 	if (self->fileSelectionMode)
 	{
 		self->fileManager->reportFiles(self->dirReader->listLocalFiles());
@@ -177,8 +170,7 @@ void CentralController::arrowDownCallback()
 	self->fileManager->setSelectedIdx(self->fileManager->getSelectedIdx() + 1);
 }
 
-/// @brief callback from input to load the currently selected file onto deck1 (left deck), only
-/// while in file-select mode; drops back out of file-select mode once the load's triggered
+/// @brief callback from input to load the selected file onto deck1 and leave file-select mode
 void CentralController::arrowLeftCallback()
 {
 	if (!self->fileSelectionMode)
@@ -190,8 +182,7 @@ void CentralController::arrowLeftCallback()
 	self->display->setToggleFileDisplay(false);
 }
 
-/// @brief callback from input to load the currently selected file onto deck2 (right deck), only
-/// while in file-select mode; drops back out of file-select mode once the load's triggered
+/// @brief callback from input to load the selected file onto deck2 and leave file-select mode
 void CentralController::arrowRightCallback()
 {
 	if (!self->fileSelectionMode)
@@ -203,9 +194,7 @@ void CentralController::arrowRightCallback()
 	self->display->setToggleFileDisplay(false);
 }
 
-/// @brief registers every control with the InputInterpreter, wiring each one to its callback,
-/// keybinds taken from controls.txt (left deck = deck1, right deck = deck2)
-/// NOTE: speed/decay/range values live in InputTuning.hpp, still placeholders, tune to taste
+/// @brief registers every control with the InputInterpreter
 void CentralController::configureInputs()
 {
 	// left deck (deck1)
@@ -237,10 +226,7 @@ void CentralController::configureInputs()
 	this->interpreter->addInput(Input::ARROW_RIGHT, arrowRightCallback);
 }
 
-/// @brief registers the fixed bass/mid/high bands each EQ callback drives by index (order must
-/// match EQ_BASS_IDX/EQ_MIDS_IDX/EQ_HIGH_IDX in EQsetup.hpp)
-/// requires reportSampleRate() to have already been called on eq1/eq2 first, otherwise
-/// addBand() silently no-ops and changeBand()'s unchecked bands[bandIdx] becomes UB
+/// @brief registers the bass/mid/high bands in EQ_*_IDX order; eqs need reportSampleRate() called first
 void CentralController::addEQbands()
 {
 	this->eq1->addBand(EQ_BASS_FREQ, EQ_BASS_Q, EQ_INITIAL_GAIN_DB);
@@ -278,8 +264,7 @@ void CentralController::startRun()
 /// @brief stops decks, mixer, and the InputInterpreter
 void CentralController::stopRun()
 {
-	// stop the mixer, freeze decks - mixer->stop() fully tears down its ma_device (blocks
-	// until its audio thread exits), so resetEQs() below can't race the EQ apply loop
+	// stops the mixer's device and blocks until its audio thread exits, so resetEQs() can't race it
 	this->mixer->stop();
 
 	this->deck1->pause();
@@ -288,8 +273,7 @@ void CentralController::stopRun()
 	// stop input loop
 	this->interpreter->stopRefreshThread();
 
-	// drop the bands added by startRun(), so a stray EQ callback firing between
-	// stopRun() and the next startRun() finds nothing to (unsafely) index into
+	// drop the bands, so an EQ callback before the next startRun() has nothing to index into
 	this->resetEQs();
 }
 

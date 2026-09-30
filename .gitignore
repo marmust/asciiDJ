@@ -1,1 +1,14 @@
-./asciiDJ_build/
+# build output
+build/
+asciiDJ_build/
+
+# editor files
+*.swp
+*.swo
+*~
+
+# audio files, keep music out of the repo
+music/
+*.mp3
+*.wav
+*.flac

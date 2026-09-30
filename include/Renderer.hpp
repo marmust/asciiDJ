@@ -2,8 +2,6 @@
 
 #include <string>
 #include <vector>
-#include <ranges>
-#include <RendererStyle.hpp>
 #include <DirReader.hpp>
 
 namespace Graphics

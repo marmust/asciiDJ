@@ -1,4 +1,7 @@
 #include <Mixer.hpp>
+#include <InputTuning.hpp>
+
+#include <algorithm>
 
 namespace Playback
 {
@@ -11,9 +14,7 @@ Mixer::Mixer() {}
 /// @param Equalizer* eq externally owned EQ to be applied over that deck
 void Mixer::addDeck(Deck* newDeck, Equalizer* eq)
 {
-	// no format enforcement needed here: Deck::loadTrack() always decodes into the fixed
-	// Deck::kOutputChannels/kOutputSampleRate format, so every deck (loaded now or later,
-	// including a track swapped in after this call) is already guaranteed to match
+	// no format check needed, every deck decodes into Deck's fixed output format
 
 	// craft a deck ridealong struct (default init params)
 	this->decks.push_back(std::make_unique<DeckRidealong>(newDeck, eq));
@@ -32,12 +33,10 @@ void Mixer::play()
         deviceConfig.playback.channels = Deck::kOutputChannels;
         deviceConfig.sampleRate        = Deck::kOutputSampleRate;
         deviceConfig.dataCallback      = this->data_callback;
-        // pack pointers to decks and crossfader together, just for this handoff (pUserData is a
-        // single void*), unpacked back out at the top of data_callback
+        // pUserData is a single void*, so decks and crossfader travel as a pair
         this->callbackData = { &this->decks, &this->crossfader };
         deviceConfig.pUserData         = &this->callbackData;
-        // default low-latency period is ~10ms; ask for ~10x faster callbacks (a hint - the backend may clamp it)
-        deviceConfig.periodSizeInMilliseconds = 1;
+        deviceConfig.periodSizeInMilliseconds = Deck::kPeriodSizeMilliseconds;
 
         // launch failiure checks
         if (ma_device_init(NULL, &deviceConfig, &this->device) != MA_SUCCESS)
@@ -53,7 +52,7 @@ void Mixer::play()
         this->isPlaying = true;
 }
 
-/// @brief callback for miniaudio to use, relies on the callbacks of the decks, returns a mixed frame stream according to mixer params
+/// @brief miniaudio audio thread callback, mixes every deck's output according to mixer params
 /// @param you get the picture
 void Mixer::data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
@@ -66,7 +65,7 @@ void Mixer::data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
 	double crossfader = *callbackData->second;
 	double normedXfader = (crossfader + 1.0) / 2.0;
 
-	// used to only activate the crossfader on the even / odd tracks
+	// even decks sit on the left of the crossfader, odd decks on the right
 	int currentTrack = 0;
 
 	// request from each deck his share of audio (decks' callback), and mix according to mixer params
@@ -82,7 +81,7 @@ void Mixer::data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
 		ma_device dummyDevice{};
 		dummyDevice.pUserData = deckTrack;
 
-		// frames/out are interleaved per channel, so the extraction buffer needs frameCount * channels floats
+		// frames are interleaved, so the buffer holds frameCount * channels floats
 		ma_uint32 channels = deckTrack->channels;
 		float* currentExtracted = new float[(size_t)frameCount * channels]{};
 
@@ -92,8 +91,7 @@ void Mixer::data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
 		// mix currentExtracted with the miniaudio output, sample by interleaved sample
 		for (ma_uint32 sampleIdx = 0; sampleIdx < frameCount * channels; sampleIdx++)
 		{
-			// TODO: interleaved channels share one filter history per band, so the EQ acts an octave
-			// above its set frequencies and bleeds L/R into each other. needs per-channel EQ memory
+			// TODO: channels share one filter history per band, so the EQ bleeds L/R
 			(*it)->eq->applyEQ(&currentExtracted[sampleIdx]);
 
 			// apply volume
@@ -145,7 +143,7 @@ void Mixer::setVolume(double volume, int deckIdx)
 void Mixer::setXfader(double xfaderPos)
 {
 	// clamp to supported range
-	xfaderPos = std::clamp(xfaderPos, -1.0, 1.0);
+	xfaderPos = std::clamp(xfaderPos, Input::XFADER_MIN, Input::XFADER_MAX);
 
 	this->crossfader = xfaderPos;
 }

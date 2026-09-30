@@ -1,36 +1,37 @@
 #pragma once
 
-#include <X11/Xlib.h>
-#include <X11/keysym.h>
+#include <linux/input.h>
+#include <vector>
 
 namespace Input
 {
 
+// reads system-wide key state via evdev; needs root or the input group (sudo usermod -aG input $USER)
 class InputReader
 {
 private:
-	// X11 backend - only used when not running as root; under Wayland this backend can't
-	// see real key state unless it belongs to a focused X11/XWayland window (which this
-	// reader never creates), so it's best-effort
-	Display* dpy = nullptr;
+	// every keyboard device that could be opened, their key states are merged
+	std::vector<int> keyboardFds;
 
-	// evdev backend - used when running as root, since reading /dev/input/event* needs
-	// that; reads live key state straight from the kernel, unaffected by X11 vs Wayland or
-	// window focus entirely
-	int evdevFd = -1;
+	// snapshot of which keys are down, one bit per evdev key code, refreshed by poll()
+	unsigned char keyState[(KEY_MAX + 7) / 8] = {0};
 
-	bool isRoot();
-	void openEvdevKeyboard();
-
-	bool queryKeyX11(int key);
-	bool queryKeyEvdev(int key);
+	void openKeyboards();
+	static bool testBit(const unsigned char* bits, int code);
 
 public:
 	// ctor / dtor
 	InputReader();
 	~InputReader();
 
-	bool queryKey(int key);
+	// owns file descriptors, so no copies
+	InputReader(const InputReader&) = delete;
+	InputReader& operator=(const InputReader&) = delete;
+
+	bool hasKeyboard() const;
+
+	void poll();
+	bool queryKey(int key) const;
 };
 
 }

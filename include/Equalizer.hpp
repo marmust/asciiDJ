@@ -25,8 +25,7 @@ struct EQsetup
 
 struct EQparams : public EQmemory, public EQsetup
 {
-	// the gain (dB) computeIIRparams() was last called with for this band, kept around
-	// purely for telemetry - the biquad coefficients above are what's actually applied
+	// gain (dB) the band's coefficients were computed from, kept for telemetry
 	float gainDB = 0.0;
 };
 

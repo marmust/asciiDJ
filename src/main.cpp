@@ -1,28 +1,15 @@
-#include <iostream>
-#include <thread>
-#include <chrono>
-#include <random>
-#include <vector>
-#include <cmath>
-#include <algorithm>
-#include <cstdio>
 #include <Deck.hpp>
 #include <Mixer.hpp>
 #include <Equalizer.hpp>
 #include <InputReader.hpp>
 #include <InputInterpreter.hpp>
 #include <CentralController.hpp>
-#include <Renderer.hpp>
-#include <TUIdisplay.hpp>
-#include <GraphicsComposer.hpp>
-#include <InputSchema.hpp>
-#include <InputTuning.hpp>
 #include <FileLoadManager.hpp>
 #include <DirReader.hpp>
-#include <RendererStyle.hpp>
+#include <GraphicsComposer.hpp>
+#include <TUIdisplay.hpp>
 
 #include <unistd.h>
-#include <termios.h>
 
 int main()
 {
@@ -39,9 +26,7 @@ int main()
 
 	Playback::Mixer mixer = Playback::Mixer();
 
-	// the EQ's sample rate is a property of the pipeline's fixed output format
-	// (Deck::kOutputSampleRate), not of whatever track happens to be loaded on a deck - so this
-	// doesn't need to wait on (or crash on the absence of) a loaded track
+	// the EQ sample rate is the pipeline's fixed output rate, independent of any loaded track
 	eq1.reportSampleRate((int)Playback::Deck::kOutputSampleRate);
 	eq2.reportSampleRate((int)Playback::Deck::kOutputSampleRate);
 
@@ -52,8 +37,7 @@ int main()
 	fileManager.addDeck(&deck1);
 	fileManager.addDeck(&deck2);
 
-	// scans the local dir once, right here, and caches it - listLocalFiles() is a plain getter
-	// from then on
+	// scans and caches the working directory
 	Files::DirReader dirReader;
 
 	Graphics::GraphicsComposer composer;
@@ -68,15 +52,14 @@ int main()
 	display.setDirReader(&dirReader);
 	display.setFileManager(&fileManager);
 
-	// wires every control (speed/shift/pause/volume/EQ, both decks, file browser) into
-	// interpreter itself
+	// wires every control into interpreter
 	CommandAndControl::CentralController controller(&deck1, &deck2, &eq1, &eq2, &mixer, &iReader, &interpreter, &fileManager, &display, &dirReader);
 
 	controller.startRun();
 	display.startUpdateLoop();
 
-	for (int x = 0; x < 999; x++)
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+	// everything runs on its own threads from here, main sleeps until a signal (ctrl+c kills the process)
+	pause();
 
 	display.stopUpdateLoop();
 

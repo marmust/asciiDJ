@@ -21,8 +21,7 @@ void GraphicsComposer::reportAudioEngineTelemetry(TUItelemetry telemetry)
 	this->reportedTelemetry = telemetry;
 }
 
-/// @brief shifts a string in place so its top left most (first) char is y newlines down, and
-/// x spaces to the right
+/// @brief shifts a string in place so its first char lands y rows down and x columns right
 /// @param std::string& image the string to be shifted (modified in place)
 /// @param int x the left shift (tabs) to draw at
 /// @param int y the top shift (newlines) to draw at
@@ -41,9 +40,7 @@ void GraphicsComposer::drawAtPosition(std::string& image, int x, int y)
 	image = std::string(y, '\n') + cursorForward + image;
 }
 
-/// @brief advances a turntable's spin frame according to wall-clock elapsed time (however long
-/// it's actually been since the last advance, regardless of how often composeFrame() gets
-/// called), rather than one frame-step per call
+/// @brief advances a turntable's spin frame by wall-clock time elapsed since the last advance
 /// @param double speed the deck's playback speed
 /// @param double shift the deck's turntable shift (scratch)
 /// @param int& frameState this deck's persisted frame index, advanced in place
@@ -79,9 +76,7 @@ int GraphicsComposer::advanceTurntableFrame(double speed, double shift, int& fra
 	return frameState;
 }
 
-/// @brief moves a deck's waveform normalizer a wall-clock-scaled step toward this frame's window
-/// max - an exponential trailing average with a Waveform::NORMALIZER_HALFLIFE half-life, so a kick
-/// scrolling in or out of view eases the trace's scale over rather than snapping every char at once
+/// @brief eases a deck's waveform normalizer toward this frame's window max (NORMALIZER_HALFLIFE)
 /// @param float windowMax the loudest slice volume currently in view
 /// @param float& normalizer this deck's persisted normalizer, advanced in place
 /// @param std::chrono::steady_clock::time_point& lastTick this deck's persisted last-update time
@@ -93,8 +88,7 @@ float GraphicsComposer::advanceWaveformNormalizer(float windowMax, float& normal
 	std::chrono::duration<double> elapsed = now - lastTick;
 	lastTick = now;
 
-	// nothing to trail from yet (first frame, or just (re)loaded) - start at the real max
-	// instead of fading up from 0 with every char pinned at full scale
+	// nothing to trail from yet, start at the real max
 	if (normalizer <= 0.0f)
 	{
 		normalizer = windowMax;
@@ -107,8 +101,7 @@ float GraphicsComposer::advanceWaveformNormalizer(float windowMax, float& normal
 	return normalizer;
 }
 
-/// @brief measures a deck's waveform window, advances that deck's normalizer off the window's
-/// loudest slice, and renders the trace against it
+/// @brief measures a deck's waveform window, advances its normalizer and renders the trace
 /// @param std::vector<float> waveform the deck's audio window (TUItelemetry::d1waveform/d2waveform)
 /// @param float& normalizer this deck's persisted normalizer
 /// @param std::chrono::steady_clock::time_point& lastTick this deck's persisted normalizer tick
@@ -133,8 +126,7 @@ std::string GraphicsComposer::composeWaveform(const std::vector<float>& waveform
 	return Renderer::renderWaveform(sliceVolumes, frameNormalizer, waveformCharCount);
 }
 
-/// @brief continuously advances a scrolling label's window position at a fixed rate, driven by
-/// wall-clock elapsed time, for feeding into Renderer::renderValue's string overload
+/// @brief advances a scrolling label's window position by wall-clock time at marqueeScrollRate
 /// @param int& windowPos this label's persisted scroll position, advanced in place
 /// @param std::chrono::steady_clock::time_point& lastTick this label's persisted last-tick time
 /// @returns int the window position to render this call
@@ -153,8 +145,7 @@ int GraphicsComposer::advanceDisplayValue(int& windowPos, std::chrono::steady_cl
 	return windowPos;
 }
 
-/// @brief formats a signed reading like "speed  x1.0" / "speed x-1.0" or "xfader  0.5" /
-/// "xfader -0.5" - the sign eats one of the two separator spaces so the total width never changes
+/// @brief formats a fixed-width signed reading, eg "speed  x1.0" / "speed x-1.0"
 /// @param std::string prefix the leading label ("speed", "xfader")
 /// @param std::string infix text right before the number, no sign ("x" for speed, "" for xfader)
 /// @param double value the value to render, magnitude assumed <= 9.9
@@ -167,9 +158,7 @@ std::string GraphicsComposer::formatSignedReading(const std::string& prefix, con
 	return prefix + std::string(spaces, ' ') + infix + sign + numText;
 }
 
-/// @brief formats a signed dB reading with one decimal, zero-padded to a fixed width wide enough
-/// for the EQ's full Input::EQ_MIN/EQ_MAX range (eg "+000.0" .. "-100.0" for +-100dB), so the
-/// readout never changes width or truncates at the extremes
+/// @brief formats a signed dB reading with one decimal, zero-padded to fit the full EQ range
 /// @param double value the dB value to render
 std::string GraphicsComposer::formatSignedDb(double value)
 {
@@ -238,8 +227,7 @@ void GraphicsComposer::composeFrame()
 	std::string deck1label = Renderer::renderValue(telemetry.d1name.empty() ? "DECK 1 UNLOADED" : telemetry.d1name, 19, deck1LabelScroll);
 	std::string deck2label = Renderer::renderValue(telemetry.d2name.empty() ? "DECK 2 UNLOADED" : telemetry.d2name, 19, deck2LabelScroll);
 
-	// progress as a zero-padded percentage (eg "093%"); fixed length matching promiseLength
-	// with windowPos hardwired to 0 so it renders statically instead of scrolling
+	// progress as a static zero-padded percentage (eg "093%")
 	std::string deck1progress = Renderer::renderValue("DECK1: " + Renderer::renderValue((int)std::lround(telemetry.d1progress * 100.0f), 3, 0) + "%", 11, 0);
 	std::string deck2progress = Renderer::renderValue("DECK2: " + Renderer::renderValue((int)std::lround(telemetry.d2progress * 100.0f), 3, 0) + "%", 11, 0);
 
@@ -280,24 +268,19 @@ void GraphicsComposer::composeFrame()
 
 	std::string crossfader = Renderer::renderHorizontalSlider(xfaderSliderLength, xfaderProgress);
 
-	// "speed  x1.0" / "speed x-1.0" and "xfader  0.5" / "xfader -0.5"; the sign eats one of
-	// the two separator spaces so the total width never changes
+	// the sign takes one of the two separator spaces, so the width never changes
 	std::string deck1speedLabel = this->formatSignedReading("speed", "x", telemetry.d1speed);
 	std::string deck2speedLabel = this->formatSignedReading("speed", "x", telemetry.d2speed);
 	std::string xfaderLabel = this->formatSignedReading("xfader", "", telemetry.xfader);
 
-	// time remaining is content time left (not adjusted for current playback speed), clamped
-	// to [0:00, 9:59] so the field's width never changes
+	// content time left (ignores playback speed), clamped to 9:59 to keep the width fixed
 	int deck1RemainingSecs = std::clamp((int)std::lround(telemetry.d1timeRemaining), 0, 599);
 	int deck2RemainingSecs = std::clamp((int)std::lround(telemetry.d2timeRemaining), 0, 599);
 
 	std::string deck1TimeRemaining = "time remaining " + std::to_string(deck1RemainingSecs / 60) + ":" + Renderer::renderValue(deck1RemainingSecs % 60, 2, 0);
 	std::string deck2TimeRemaining = "time remaining " + std::to_string(deck2RemainingSecs / 60) + ":" + Renderer::renderValue(deck2RemainingSecs % 60, 2, 0);
 
-	// pin every element to its own fixed cell on the grid (all fixed-size, so redrawing this
-	// same layout every frame overwrites the previous one in place instead of piling raw,
-	// unpositioned multi-line strings on top of each other); coordinates match the reference
-	// layout char for char, background images first so the dynamic elements draw over them
+	// every element pinned to a fixed grid cell, backgrounds first so dynamic elements draw over them
 	this->drawAtPosition(frame, 0, 0);
 	this->drawAtPosition(divider, 34, 5);
 
@@ -396,15 +379,12 @@ void GraphicsComposer::composeFrame()
 	this->frameBuffer.push_back(deck2TimeRemaining);
 }
 
-/// @brief composes the file-select frame (border + directory/selection header + selector pointer
-/// column + truncated file list) - swapped in by TUIdisplay::composeCurrentFrame() while
-/// toggleFileDisplay is on. Coordinates/rowcount below are still tuned by eye, not derived
+/// @brief composes the file-select frame: border, header, selector column and file list
 void GraphicsComposer::composeFileSelectFrame()
 {
 	const TUItelemetry& telemetry = this->reportedTelemetry;
 
-	// pagination: which row within the visible page is highlighted vs which file (out of the
-	// full list) that actually is - renderFileList derives the same page from fileSelectedIdx
+	// row highlighted within the visible page
 	int pageLocalSelected = telemetry.fileSelectedIdx % fileListPageRows;
 
 	bool hasSelection = telemetry.fileSelectedIdx >= 0 && telemetry.fileSelectedIdx < (int)telemetry.fileList.size();
@@ -412,14 +392,11 @@ void GraphicsComposer::composeFileSelectFrame()
 
 	std::string frame = Renderer::renderImage(RenderElements::frameImage);
 
-	// waveform traces that pair with the (kept) "DECK1 =="/"DECK2 ==" labels in DJ mode were
-	// missing here entirely, leaving those rows half-drawn (label with no waveform next to it)
+	// waveform traces next to the frame's DECKn labels
 	std::string deck1Waveform = this->composeWaveform(telemetry.d1waveform, this->waveform1Normalizer, this->waveform1LastTick);
 	std::string deck2Waveform = this->composeWaveform(telemetry.d2waveform, this->waveform2Normalizer, this->waveform2LastTick);
 
-	// promiseLength set to each line's own length (not a fixed screen width) so renderValue
-	// neither loops the text into repeats (its behavior for a promiseLength longer than the
-	// text) nor pads it
+	// promiseLength = each line's own length, so renderValue neither loops nor pads it
 	std::string openDirLine = "open directory: " + telemetry.localDir;
 	std::string selectedLine = "selected file: " + selectedName;
 
@@ -429,9 +406,7 @@ void GraphicsComposer::composeFileSelectFrame()
 	std::string selectorCol = Renderer::renderVerticalSelector(fileListPageRows - 1, pageLocalSelected, fileListSpacing);
 	std::string fileListCol = Renderer::renderFileList(telemetry.fileList, fileListNameLength, fileListPageRows, telemetry.fileSelectedIdx, fileListSpacing);
 
-	// header/selector/fileList shifted +4 on x from last time; the waveform traces stay at the
-	// same waveformOriginX DJ mode uses, since they pair with the DECK1==/DECK2== labels baked
-	// into frame (unmoved, x=0) rather than with the file-browser-specific elements below them
+	// waveforms stay at waveformOriginX next to the frame's DECKn labels
 	this->drawAtPosition(frame, 0, 0);
 	this->drawAtPosition(deck1Waveform, waveformOriginX, 2);
 	this->drawAtPosition(deck2Waveform, waveformOriginX, 3);

@@ -6,12 +6,11 @@
 #include <Equalizer.hpp>
 #include <DirReader.hpp>
 #include <FileLoadManager.hpp>
-#include <chrono>
+#include <string>
+#include <vector>
 #include <memory>
 
-// forward declared rather than #include <termios.h> here - that header #defines macros (eg
-// SPEED_MAX, a baud rate constant) that collide with unrelated same-named constants (eg
-// Input::SPEED_MAX) in any file that includes this header transitively
+// forward declared, termios.h #defines macros (eg SPEED_MAX) that collide with Input constants
 struct termios;
 
 namespace Graphics
@@ -23,8 +22,7 @@ struct CursorPos
 	int y = 0;
 };
 
-// governs TUIupdateLoop's redraw rate - purely a CPU governor (60fps is already far smoother
-// than a terminal needs), not tied to any control feel like InputInterpreter's poll interval is
+// redraw interval of TUIupdateLoop (~60fps)
 inline constexpr int tuiFrameIntervalMicroseconds = 16666;
 
 class TUIdisplay
@@ -45,15 +43,11 @@ private:
 	CursorPos startPos;
 	GraphicsComposer* composer = nullptr;
 
-	// the terminal's settings from before disableTerminalEcho() touched them, so the dtor can
-	// put the user's shell back to normal (echoing, canonical) on exit. unique_ptr (rather than
-	// a plain member) since termios is only forward declared here
+	// terminal settings from before disableTerminalEcho(), restored by the dtor
 	std::unique_ptr<termios> originalTermios;
 	void disableTerminalEcho();
 
-	// which compose function composeCurrentFrame() calls - own copy of the mode flag (mirrored
-	// from CentralController's fileSelectionMode via setToggleFileDisplay(), since TUIdisplay
-	// and CentralController are independent peers with no pointer to each other otherwise)
+	// file-select mode flag, picks which compose function composeCurrentFrame() calls
 	bool toggleFileDisplay = false;
 
 	CursorPos queryCursorPos();

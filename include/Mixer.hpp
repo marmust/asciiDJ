@@ -3,8 +3,9 @@
 #include <Deck.hpp>
 #include <Equalizer.hpp>
 #include <vector>
+#include <atomic>
+#include <memory>
 #include <utility>
-#include <algorithm>
 
 namespace Playback
 {

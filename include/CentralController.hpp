@@ -6,6 +6,7 @@
 #include <InputReader.hpp>
 #include <InputInterpreter.hpp>
 #include <FileLoadManager.hpp>
+#include <DirReader.hpp>
 #include <TUIdisplay.hpp>
 
 // that name is sooo fucking tuff
@@ -15,8 +16,7 @@ namespace CommandAndControl
 class CentralController
 {
 private:
-	// audio
-	// even though mixer supports n-deck hardwire L/R
+	// audio, hardwired to two decks (L/R) although the mixer supports n
 	Playback::Deck* deck1 = nullptr;
 	Playback::Deck* deck2 = nullptr;
 
@@ -34,17 +34,13 @@ private:
 	Graphics::TUIdisplay* display = nullptr;
 	Files::DirReader* dirReader = nullptr;
 
-	// own copy of the mode flag - mirrored into display's toggleFileDisplay on every toggle
-	// (see fileSelectToggleCallback), since TUIdisplay and CentralController are independent
-	// peers with no pointer to each other otherwise
+	// file-select mode flag, mirrored into display's toggleFileDisplay on every toggle
 	bool fileSelectionMode = false;
 
-	// InputInterpreter callbacks are plain function pointers (no way to carry captured
-	// context), so these have to be static; self points back at the instance they act on
-	static CentralController* self;
+	// callbacks are plain function pointers, so they reach the instance through this
+	static inline CentralController* self = nullptr;
 
-	// InputInterpreter callbacks
-	// decks
+	// InputInterpreter callbacks: decks
 	static void deck1SpeedCallback(double speed);
 	static void deck2SpeedCallback(double speed);
 

@@ -7,8 +7,7 @@
 namespace Files
 {
 
-/// @brief lists every supported audio file directly inside dir; silently returns an empty vec on
-/// any failure (nonexistent dir, permission error, or anything else std::filesystem might throw)
+/// @brief lists every supported audio file directly inside dir, empty on any failure
 /// @param const std::string& dir the directory to scan (non-recursive, subdirectories ignored)
 /// @returns std::vector<FileEntry> the discovered files, empty on failure or if none match
 std::vector<FileEntry> DirReader::scanDir(const std::string& dir)
@@ -42,8 +41,7 @@ std::vector<FileEntry> DirReader::scanDir(const std::string& dir)
 	return found;
 }
 
-/// @brief scans the directory the program is currently running from once, caching the result for
-/// listLocalFiles() to hand back - silently ends up with an empty listing on any failure
+/// @brief scans the working directory once and caches the result, empty on any failure
 DirReader::DirReader()
 {
 	std::error_code ec;

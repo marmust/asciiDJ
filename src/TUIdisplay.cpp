@@ -1,21 +1,20 @@
 #include <TUIdisplay.hpp>
 #include <EQsetup.hpp>
-#include <DirReader.hpp>
 #include <WaveformTuning.hpp>
 
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <algorithm>
 #include <cstdio>
+
 #include <unistd.h>
 #include <termios.h>
-#include <algorithm>
 
 namespace Graphics
 {
 
-/// @brief ctor, saves the terminal's current cursor position so later frames get redrawn in
-/// place instead of scrolling the terminal
+/// @brief ctor, disables echo and saves the cursor position frames are redrawn from
 TUIdisplay::TUIdisplay()
 {
 	std::ios_base::sync_with_stdio(false);
@@ -24,18 +23,14 @@ TUIdisplay::TUIdisplay()
 	this->startPos = this->queryCursorPos();
 }
 
-/// @brief dtor, makes sure the update loop is stopped and the terminal's original settings
-/// (echo/canonical mode) are put back so the shell behaves normally again after exit
+/// @brief dtor, stops the update loop and restores the terminal's original settings
 TUIdisplay::~TUIdisplay()
 {
 	this->stopUpdateLoop();
 	tcsetattr(STDIN_FILENO, TCSANOW, this->originalTermios.get());
 }
 
-/// @brief disables terminal echo/canonical mode for the rest of the process's life (restored in
-/// the dtor) - physical keystrokes are read directly by InputReader (X11/evdev), not typed into
-/// this program's stdin, so without this the terminal's own line discipline still echoes every
-/// keypress onto the screen, garbling the TUI's carefully cursor-positioned output
+/// @brief disables terminal echo/canonical mode until the dtor, keys pressed would otherwise garble the TUI
 void TUIdisplay::disableTerminalEcho()
 {
 	tcgetattr(STDIN_FILENO, this->originalTermios.get());
@@ -82,8 +77,7 @@ void TUIdisplay::setEq2(Playback::Equalizer* eq2)
 	this->eq2 = eq2;
 }
 
-/// @brief setter for which compose function composeCurrentFrame() calls - pushed here by
-/// CentralController's file-select toggle callback, so both bools change together
+/// @brief setter for which compose function composeCurrentFrame() calls
 void TUIdisplay::setToggleFileDisplay(bool toggleFileDisplay)
 {
 	this->toggleFileDisplay = toggleFileDisplay;
@@ -122,9 +116,7 @@ void TUIdisplay::stopUpdateLoop()
 	this->composer->reportAudioEngineTelemetry(this->gatherTUItelemetry());
 	this->composeCurrentFrame();
 
-	// unlike startUpdateLoop, don't cursor back up to the top afterward - this is the last
-	// thing printed, so the cursor should stay past the ascii for whatever prints next (eg
-	// the shell prompt), not land back in the middle of it
+	// leave the cursor below the frame, for whatever prints next
 	this->reserveRenderingSpace(this->calcFrameHeight(this->composer->getFrameBuffer()), false);
 }
 
@@ -162,15 +154,12 @@ void TUIdisplay::moveCursorToPos(CursorPos pos)
 	std::cout << "\033[" << pos.y << ";" << pos.x << "H";
 }
 
-/// @brief gathers a fresh telemetry snapshot from all reporting components (2 decks, mixer,
-/// their eqs), null/unloaded components are left at TUItelemetry's defaults
+/// @brief gathers a telemetry snapshot, missing components are left at TUItelemetry's defaults
 /// @returns TUItelemetry the gathered snapshot
 TUItelemetry TUIdisplay::gatherTUItelemetry()
 {
 	TUItelemetry telemetry;
 
-	// dirReader caches its listing at construction, so this is a plain in-memory read now, no
-	// disk I/O - safe to pull unconditionally every tick same as everything else below
 	if (this->dirReader)
 	{
 		telemetry.fileList = this->dirReader->listLocalFiles();
@@ -185,10 +174,7 @@ TUItelemetry TUIdisplay::gatherTUItelemetry()
 
 	if (this->deck1)
 	{
-		// off deckParams directly (not the loaded track's ridealong copy) so an unloaded deck
-		// correctly reports 0/0 (paused, same as startRun() leaves every deck) instead of
-		// falling back to TUItelemetry's struct defaults (1.0/0.0 - "playing") when there's no
-		// track to read real params from
+		// read from deckParams so an unloaded deck reports its real 0/0
 		telemetry.d1speed = this->deck1->getPlaybackSpeed();
 		telemetry.d1shift = this->deck1->getTurntableShift();
 
@@ -243,8 +229,7 @@ TUItelemetry TUIdisplay::gatherTUItelemetry()
 	return telemetry;
 }
 
-/// @brief composes whichever frame is currently selected - the normal deck/mixer frame, or the
-/// file-select frame while toggleFileDisplay is on
+/// @brief composes the deck/mixer frame, or the file-select frame while toggleFileDisplay is on
 void TUIdisplay::composeCurrentFrame()
 {
 	if (this->toggleFileDisplay)
@@ -278,9 +263,7 @@ int TUIdisplay::calcFrameHeight(const std::vector<std::string>* buffer)
 	return frameHeight;
 }
 
-/// @brief prints a given amount of newlines to reserve terminal space for a frame; when
-/// returnToTop, moves back up and re-syncs startPos (needed before further rendering), otherwise
-/// leaves the cursor sitting past the reserved block (needed when this is the last thing printed)
+/// @brief prints height newlines to reserve space for a frame, returnToTop moves back up and resyncs startPos
 /// @param int height how many newlines to print
 /// @param bool returnToTop whether to cursor back up to the top of the reserved block afterward
 void TUIdisplay::reserveRenderingSpace(int height, bool returnToTop)
@@ -309,12 +292,7 @@ void TUIdisplay::TUIupdateLoop(TUIdisplay* self)
 
 	while (self->running)
 	{
-		// composeFrame() and composeFileSelectFrame() draw entirely different sets of
-		// elements covering different parts of the shared frame border, and every dynamic
-		// element is positioned via cursor-forward escapes (which skip columns rather than
-		// overwriting them) - so switching modes can leave whatever the previous mode drew
-		// sitting in a spot the new mode's elements never touch. Hard-clear once, right on
-		// the transition frame, so nothing carries over
+		// clear once on a mode switch, the modes draw different elements so leftovers would remain
 		if (self->toggleFileDisplay != previousToggleFileDisplay)
 		{
 			self->moveCursorToPos(self->startPos);
@@ -327,10 +305,7 @@ void TUIdisplay::TUIupdateLoop(TUIdisplay* self)
 		self->composeCurrentFrame();
 		self->flushBufferToConsole(self->composer->getFrameBuffer());
 
-		// governor: this loop had no throttle at all before, so it span as fast as the CPU
-		// allowed - usually masked somewhat by the mixer's audio thread contending for the
-		// same CPU time, but fully exposed (extreme flicker) whenever that thread had less to
-		// do, eg with a deck unloaded. 60fps is far more than a terminal needs to look smooth
+		// frame rate governor
 		std::this_thread::sleep_for(std::chrono::microseconds(tuiFrameIntervalMicroseconds));
 	}
 }

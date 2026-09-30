@@ -118,12 +118,14 @@ void Equalizer::changeBand(int bandIdx, float freq, float q, float gainDB)
 	// lock mtx
 	std::lock_guard<std::mutex> lock(this->bandsMtx);
 
+	// handle range
+	if (bandIdx < 0 || bandIdx >= (int)this->bands.size())
+		return;
+
 	EQparams computedBand = this->computeIIRparams(this->sampleRate, freq, q, gainDB);
 	computedBand.gainDB = gainDB;
 
-	// keep the existing filter memory - only the coefficients should change, otherwise every
-	// call (which happens on every poll tick while a control is held) wipes the filter's
-	// history and it never accumulates enough state to produce an audible response
+	// keep the filter memory, resetting it on every change would keep the filter from ever responding
 	EQmemory preservedMemory = this->bands[bandIdx];
 	computedBand.x1 = preservedMemory.x1;
 	computedBand.x2 = preservedMemory.x2;

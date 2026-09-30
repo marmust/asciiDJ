@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <thread>
+#include <utility>
 
 namespace Files
 {
@@ -20,11 +21,7 @@ void FileLoadManager::reportFiles(std::vector<FileEntry> files)
 	this->files = std::move(files);
 }
 
-/// @brief loads files[fileIdx]'s fpath onto decks[deckIdx]; silently no-ops if either index is
-/// out of range (no track selected / no such deck registered). Deck::loadTrack() is a full
-/// synchronous decode, and this is called straight off the InputInterpreter poll thread (the one
-/// thread driving every other control too) - fire it off on its own detached thread instead of
-/// blocking that thread for however long the decode takes
+/// @brief loads files[fileIdx] onto decks[deckIdx] on a detached thread, no-op if out of range
 /// @param int deckIdx which registered deck to load onto (see addDeck)
 /// @param int fileIdx which file, out of the last reported listing, to load
 void FileLoadManager::loadToDeck(int deckIdx, int fileIdx)
@@ -47,9 +44,7 @@ int FileLoadManager::getSelectedIdx() const
 	return this->selectedIdx;
 }
 
-/// @brief external setter for the currently selected file's index, clamped into [0, file count
-/// - 1] (or pinned to 0 if there are no files) so it can never point past the listing - callers
-/// (eg CentralController's up/down arrow callbacks) don't need to know the file count themselves
+/// @brief setter for the selected file index, clamped into the listing (0 if empty)
 /// @param int idx the index to select
 void FileLoadManager::setSelectedIdx(int idx)
 {
